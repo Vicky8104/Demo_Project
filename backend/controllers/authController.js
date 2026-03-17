@@ -2,9 +2,12 @@ const User = require("../models/User");
 const School = require("../models/School");
 const jwt = require("jsonwebtoken");
 const { sendOTPEmail } = require("../utils/Mailer");
+<<<<<<< HEAD
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+=======
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 
 // ================= OTP generator =================
 function generateOTP(length = 6) {
@@ -33,7 +36,11 @@ async function sendOtp(req, res) {
       email: email.toLowerCase() // lowercase ensure
     });
 
+<<<<<<< HEAD
     // console.log("FOUND USER:", user);
+=======
+    console.log("FOUND USER:", user);
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -133,7 +140,29 @@ async function getUser(req, res) {
   }
 }
 
+<<<<<<< HEAD
 
+=======
+// =================================================
+// GET SCHOOLS (POST + SUBJECT BASED)
+// =================================================
+// async function getSchools(req, res) {
+//   try {
+//     const { post, subject } = req.query;
+
+//     const schools = await School.find({
+//       post,
+//       subject: { $regex: `^${subject}$`, $options: "i" },
+//     });
+
+//     res.status(200).json({ schools });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// }
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 async function getSchools(req, res) {
   try {
 
@@ -160,9 +189,12 @@ async function submitSchools(req, res) {
     const user = await User.findById(req.userId);
 
     if (!user) return res.status(404).json({ message: "User not found" });
+<<<<<<< HEAD
     if (user.formSubmitted ) {
       return res.status(403).json({ message: "Form locked after final submission"});
     }
+=======
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 
     user.schoolChoices = selectedSchools;
 
@@ -178,6 +210,7 @@ async function submitSchools(req, res) {
   }
 }
 
+<<<<<<< HEAD
 
 
 
@@ -415,11 +448,16 @@ async function submitFinalForm(req, res) {
   }
 
 }
+=======
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 module.exports = {
   sendOtp,
   verifyOtp,
   getUser,
   getSchools,
   submitSchools,
+<<<<<<< HEAD
   submitFinalForm,
+=======
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 };

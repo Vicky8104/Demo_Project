@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+/* Center container */
+.launch-box {
+  min-height: 45vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 400px; /* Desktop max size */
+  background: #ffffff;
+  padding: 35px 30px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+/* Hover effect desktop only */
+@media (hover: hover) {
+  .login-card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.login-card h1 {
+  font-size: 22px;
+  margin-bottom: 5px;
+  color: #1a237e;
+}
+
+.login-card h2 {
+  font-size: 16px;
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.login-card select,
+.login-card input {
+  width: 100%;
+  box-sizing: border-box; /* 🔥 important fix */
+  padding: 12px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.login-card select:focus,
+.login-card input:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 6px rgba(63, 81, 181, 0.3);
+}
+
+/* Button */
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #3f51b5, #5c6bc0);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.login-card button:hover {
+  background: linear-gradient(45deg, #303f9f, #3949ab);
+}
+
+/* ========================= */
+/* 📱 Mobile Responsive */
+/* ========================= */
+
+@media (max-width: 768px) {
+  .launch-box {
+    min-height: auto;
+    padding: 25px 15px;
+  }
+
+  .login-card {
+    max-width: 100%;
+    padding: 25px 20px;
+    border-radius: 10px;
+  }
+
+  .login-card h1 {
+    font-size: 18px;
+  }
+
+  .login-card h2 {
+    font-size: 14px;
+  }
+
+  .login-card select,
+  .login-card input {
+    font-size: 14px;
+    padding: 11px;
+  }
+
+  .login-card button {
+    font-size: 14px;
+    padding: 11px;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 20px 15px;
+  }
+}

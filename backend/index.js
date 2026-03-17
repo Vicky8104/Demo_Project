@@ -40,7 +40,10 @@ app.use("/api", authRoutes);
 // });
 
 
+<<<<<<< HEAD
 app.use("/pdfs", express.static("pdfs"));
 
+=======
+>>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

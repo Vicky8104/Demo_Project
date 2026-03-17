@@ -1,0 +1,71 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e293b;
+  color: white;
+  padding: 15px 20px;
+  flex-wrap: wrap;
+}
+
+.footer-left,
+.footer-center,
+.footer-right {
+  flex: 1;
+}
+
+.footer-left {
+  text-align: left;
+}
+
+.footer-center {
+  text-align: center;
+  font-weight: bold;
+}
+
+.created-by {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.slider h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.slider p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+.right-content {
+  display: inline-block; /* width sirf content jitni hogi */
+  text-align: center; /* andar ka text center */
+}
+.footer-right {
+  text-align: right;
+}
+/* Responsive */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-center {
+    order: 1;
+    margin-bottom: 10px;
+  }
+
+  .footer-left {
+    order: 2;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .footer-right {
+    order: 3;
+    text-align: center;
+  }
+}
