@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "react-toastify": "^11.0.5"
   },
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview"
-}
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
 }

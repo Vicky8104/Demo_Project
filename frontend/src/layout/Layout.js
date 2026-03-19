@@ -1,11 +1,31 @@
+// import Header from "../components/Header";
+// import Footer from "../components/Footer";
+// import "./Layout.css";
+
+// export default function Layout({ children }) {
+//   return (
+//     <div className="layout">
+//       <Header />
+//       <main className="main-content">{children}</main>
+//       <Footer />
+//     </div>
+//   );
+// }
+
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "./Layout.css";
 
-export default function Layout({ children }) {
+export default function Layout({ children, user, setUser, setOtpSent, setOtp }) {
   return (
     <div className="layout">
-      <Header />
+      <Header
+        user={user}
+        setUser={setUser}
+        setOtpSent={setOtpSent}
+        setOtp={setOtp}
+      />
       <main className="main-content">{children}</main>
       <Footer />
     </div>

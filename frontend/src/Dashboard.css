@@ -42,3 +42,12 @@
 .dashboard-card.unlocked:hover {
   transform: scale(1.05);
 }
+
+.logout-btn {
+  background: red;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

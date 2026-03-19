@@ -21,7 +21,6 @@ npm-debug.log_
 
 .DS_Store
 Thumbs.db
-<<<<<<< HEAD
+
 backend/pdfs/
-=======
->>>>>>> e0e39ce85a499e87c9ea036bbc2c41883874a7da
+

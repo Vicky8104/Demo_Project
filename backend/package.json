@@ -22,7 +22,8 @@
     "mongoose": "^9.2.1",
     "nodemailer": "^8.0.1",
     "otp-generator": "^4.0.1",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "nodemon": "^1.0.2"
