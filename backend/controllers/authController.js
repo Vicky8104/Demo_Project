@@ -26,12 +26,18 @@ async function sendOtp(req, res) {
     console.log("REQ BODY:", req.body);
 
     // DB me user search
-    const user = await User.findOne({
-      post: post,
-      subject: subject,
-      rollno: rollno,
-      email: email.toLowerCase() // lowercase ensure
-    });
+    // const user = await User.findOne({
+    //   post: post,
+    //   subject: subject,
+    //   rollno: rollno,
+    //   email: { $regex: `^${email}$`, $options: "i" }// lowercase ensure
+    // });
+        const user = await User.findOne({
+        post: { $regex: `^${post}$`, $options: "i" },
+        subject: { $regex: `^${subject}$`, $options: "i" },
+        rollno: String(rollno).trim(),
+        email: { $regex: `^${email}$`, $options: "i" }
+        });
 
 
     // console.log("FOUND USER:", user);
@@ -81,9 +87,24 @@ async function verifyOtp(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
+    // if (String(user.otp) !== String(otp).trim()) {
+    //   return res.status(400).json({ message: "Invalid OTP" });
+    // }
+    // 🚫 Check attempts
+      if (user.failedAttempts >= 5) {
+        return res.status(429).json({ message: "Too many attempts. Try later." });
+      }
+      
+      // ❌ Wrong OTP
+      if (String(user.otp) !== String(otp).trim()) {
+        user.failedAttempts = (user.failedAttempts || 0) + 1;
+        await user.save();
+      
+        return res.status(400).json({ message: "Invalid OTP" });
+      }
+      
+      // ✅ Correct OTP → reset attempts
+      user.failedAttempts = 0;
 
     if (user.otpExpiry < new Date()) {
       return res.status(400).json({ message: "OTP expired" });
@@ -124,7 +145,8 @@ async function verifyOtp(req, res) {
 // =================================================
 async function getUser(req, res) {
   try {
-    const user = await User.findById(req.params.id)
+    // const user = await User.findById(req.params.id)
+    const user = await User.findById(req.userId)
       .select("-otp -otpExpiry");
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -137,25 +159,7 @@ async function getUser(req, res) {
   }
 }
 
-// =================================================
-// GET SCHOOLS (POST + SUBJECT BASED)
-// =================================================
-// async function getSchools(req, res) {
-//   try {
-//     const { post, subject } = req.query;
 
-//     const schools = await School.find({
-//       post,
-//       subject: { $regex: `^${subject}$`, $options: "i" },
-//     });
-
-//     res.status(200).json({ schools });
-
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
 async function getSchools(req, res) {
   try {
 
@@ -203,81 +207,78 @@ async function submitSchools(req, res) {
   }
 }
 
+
 async function submitFinalForm(req, res) {
-
   try {
-
     const { personalData, schoolData, schoolNames } = req.body;
+    
+    if (!schoolNames || schoolNames.length === 0) {
+    return res.status(400).json({ message: "No school selected" });
+    }
 
     const user = await User.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-     if (user.formSubmitted) {
-      return res.status(403).json({ message: "Form already submitted. You cannot submit again"});
-     }
+
+    if (user.formSubmitted) {
+      return res.status(403).json({
+        message: "Form already submitted. You cannot submit again",
+      });
+    }
 
     user.maritalStatus = personalData.maritalStatus;
     user.homeDistrict = personalData.homeDistrict;
     user.otherCategory = personalData.otherCategory;
 
-    user.schoolChoices = schoolData;
+    user.schoolChoices = schoolNames;
 
-    const pdfFolder = path.join(__dirname, "../pdfs");
-
-    if (!fs.existsSync(pdfFolder)) {
-      fs.mkdirSync(pdfFolder);
-    }
-
-    const pdfPath = path.join(pdfFolder, `${user._id}.pdf`);
-
+    // ✅ PDF CREATE
     const doc = new PDFDocument({ margin: 40 });
 
-    doc.pipe(fs.createWriteStream(pdfPath));
+    const chunks = [];
+    doc.on("data", (chunk) => chunks.push(chunk));
 
+    // ================= HEADER =================
     const leftX = 40;
-    const rightX = 300;
-
-    const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+    const pageWidth =
+      doc.page.width - doc.page.margins.left - doc.page.margins.right;
 
     let y = doc.y;
 
-    // ================= HEADER =================
-
-    doc.font("Helvetica-Bold")
+    doc
+      .font("Helvetica-Bold")
       .fontSize(25)
-      .text("Department of Sanskrit Education", 0, y, { align: "center" });
+      .text("Department of Sanskrit Education", 0, y, {
+        align: "center",
+      });
+
     doc.moveDown(0.3);
-    doc.moveTo(doc.page.margins.left, doc.y)
+
+    doc
+      .moveTo(doc.page.margins.left, doc.y)
       .lineTo(doc.page.width - doc.page.margins.right, doc.y)
       .stroke();
 
     doc.moveDown(0.5);
-    doc.fontSize(16)
-    doc.text("Counseling Application Form", { align: "center" });
 
-    // doc.fontSize(16)
-    //   .text(`${user.post} ${user.subject} Counseling Form`, {
-    //     align: "center"
-    //   });
+    doc.fontSize(16).text("Counseling Application Form", {
+      align: "center",
+    });
 
     doc.moveDown(0.3);
+
     doc.text(`Post: ${user.post} | Subject: ${user.subject}`, {
       align: "center",
-    fontSize: 12
+      fontSize: 12,
     });
-    // doc.font("Helvetica-Bold")
-    //   .fontSize(12)
-    //   .text(`Post: ${user.post}`, leftX);
-
-    // doc.text(`Subject: ${user.subject}`, rightX, doc.y - 14);
 
     doc.moveDown(2);
 
     // ================= PERSONAL DETAILS =================
-
-    doc.font("Helvetica-Bold")
+    doc
+      .font("Helvetica-Bold")
       .fontSize(14)
       .text("PERSONAL DETAILS", 0, doc.y, { align: "center" });
 
@@ -289,38 +290,32 @@ async function submitFinalForm(req, res) {
     const totalRows = 5;
     const boxHeight = rowHeight * totalRows;
 
-    // Outer box
     doc.rect(leftX, y, pageWidth, boxHeight).stroke();
 
-    // Middle vertical line
-    doc.moveTo(leftX + pageWidth / 2, y)
+    doc
+      .moveTo(leftX + pageWidth / 2, y)
       .lineTo(leftX + pageWidth / 2, y + boxHeight)
       .stroke();
 
     function row(label1, value1, label2, value2, index) {
-
       const rowY = y + index * rowHeight;
 
-      // Horizontal lines
       if (index !== 0) {
-        doc.moveTo(leftX, rowY)
+        doc
+          .moveTo(leftX, rowY)
           .lineTo(leftX + pageWidth, rowY)
           .stroke();
       }
 
-      // Left side
-      doc.font("Helvetica-Bold")
-        .fontSize(10)
-        .text(`${label1}:`, leftX + 5, rowY + 6);
+      doc.font("Helvetica-Bold").fontSize(10).text(`${label1}:`, leftX + 5, rowY + 6);
+      doc.font("Helvetica").text(value1 || "-", leftX + 90, rowY + 6);
 
-      doc.font("Helvetica")
-        .text(value1 || "-", leftX + 90, rowY + 6);
-
-      // Right side
-      doc.font("Helvetica-Bold")
+      doc
+        .font("Helvetica-Bold")
         .text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
 
-      doc.font("Helvetica")
+      doc
+        .font("Helvetica")
         .text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
     }
 
@@ -333,10 +328,10 @@ async function submitFinalForm(req, res) {
     doc.moveDown(2);
 
     // ================= SCHOOL CHOICES =================
-
     doc.y = y + boxHeight + 30;
 
-    doc.font("Helvetica-Bold")
+    doc
+      .font("Helvetica-Bold")
       .fontSize(14)
       .text("School Choices", 0, doc.y, { align: "center" });
 
@@ -348,22 +343,20 @@ async function submitFinalForm(req, res) {
     const totalRowsChoice = Math.ceil(schoolNames.length / 2);
     const schoolBoxHeight = totalRowsChoice * choiceRowHeight;
 
-    // Outer box
     doc.rect(leftX, schoolTop, pageWidth, schoolBoxHeight).stroke();
 
-    // Middle vertical line
-    doc.moveTo(leftX + pageWidth / 2, schoolTop)
+    doc
+      .moveTo(leftX + pageWidth / 2, schoolTop)
       .lineTo(leftX + pageWidth / 2, schoolTop + schoolBoxHeight)
       .stroke();
 
     for (let i = 0; i < schoolNames.length; i += 2) {
-
       const rowIndex = Math.floor(i / 2);
       const rowY = schoolTop + rowIndex * choiceRowHeight;
 
-      // Horizontal lines
       if (rowIndex !== 0) {
-        doc.moveTo(leftX, rowY)
+        doc
+          .moveTo(leftX, rowY)
           .lineTo(leftX + pageWidth, rowY)
           .stroke();
       }
@@ -371,73 +364,109 @@ async function submitFinalForm(req, res) {
       const name1 = schoolNames[i];
       const name2 = schoolNames[i + 1];
 
-      // Left
-      doc.font("Helvetica-Bold")
+      doc
+        .font("Helvetica-Bold")
         .fontSize(10)
         .text(`Choice ${i + 1}:`, leftX + 5, rowY + 6);
 
-      doc.font("Helvetica")
-        .text(name1 || "-", leftX + 80, rowY + 6, {
-          width: pageWidth / 2 - 90
-        });
+      doc.font("Helvetica").text(name1 || "-", leftX + 80, rowY + 6, {
+        width: pageWidth / 2 - 90,
+      });
 
-      // Right
       if (name2) {
-        doc.font("Helvetica-Bold")
+        doc
+          .font("Helvetica-Bold")
           .text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
 
-        doc.font("Helvetica")
-          .text(name2, leftX + pageWidth / 2 + 80, rowY + 6, {
-            width: pageWidth / 2 - 90
-          });
+        doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, rowY + 6, {
+          width: pageWidth / 2 - 90,
+        });
       }
     }
 
     // ================= SIGNATURE =================
-
     doc.moveDown(4);
 
     const signX = doc.page.width - 200;
 
-    doc.font("Helvetica-Bold")
-      .text("Candidate Signature", signX);
+    doc.font("Helvetica-Bold").text("Candidate Signature", signX);
 
     doc.moveDown();
 
-    doc.font("Helvetica")
+    doc
+      .font("Helvetica")
       .text(`Name: ${user.name}`, signX)
       .text(`Post: ${user.post}`, signX)
       .text(`Subject: ${user.subject}`, signX);
 
     const now = new Date();
 
-    doc.text(
-      `Date: ${now.toLocaleDateString()}`,
-      signX
-    );
+    doc.text(`Date: ${now.toLocaleDateString()}`, signX);
 
+    // ✅ FINALIZE PDF
     doc.end();
 
-    user.pdfUrl = `/pdfs/${user._id}.pdf`;
-    user.formSubmitted = true;
+    // ✅ SAVE AFTER PDF READY
+    doc.on("end", async () => {
+      try {
+        const pdfBuffer = Buffer.concat(chunks);
 
-    await user.save();
+        let pdfUrl = "";
 
-    res.json({
-      message: "Form submitted successfully",
-      pdfUrl: user.pdfUrl
+        if (process.env.NODE_ENV === "production") {
+          const cloudinary = require("../utils/cloudinary");
+
+          const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+              {
+                resource_type: "raw",
+                folder: "pdfs",
+                public_id: user._id.toString(),
+              },
+              (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+              }
+            ).end(pdfBuffer);
+          });
+
+          pdfUrl = result.secure_url;
+
+        } else {
+          const pdfFolder = path.join(__dirname, "../pdfs");
+
+          if (!fs.existsSync(pdfFolder)) {
+            // fs.mkdirSync(pdfFolder);
+            fs.mkdirSync(pdfFolder, { recursive: true });
+          }
+
+          const pdfPath = path.join(pdfFolder, `${user._id}.pdf`);
+          fs.writeFileSync(pdfPath, pdfBuffer);
+
+          pdfUrl = `/pdfs/${user._id}.pdf`;
+        }
+
+        user.pdfUrl = pdfUrl;
+        user.formSubmitted = true;
+
+        await user.save();
+
+        res.json({
+          message: "Form submitted successfully",
+          pdfUrl,
+        });
+
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error generating PDF" });
+      }
     });
 
   } catch (err) {
-
     console.error(err);
-
     res.status(500).json({ message: "Server error" });
-
   }
-
 }
-
 module.exports = {
   sendOtp,
   verifyOtp,

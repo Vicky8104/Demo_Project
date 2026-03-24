@@ -1,7 +1,10 @@
 
 import React, { useState, useEffect } from "react"; // ✅ useEffect add
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 import Layout from "./layout/Layout";
 import Dashboard from "./Dashboard";
+import API from "./config";
 
 function App() {
   const [form, setForm] = useState({
@@ -16,6 +19,61 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+// useEffect(() => {
+//   const token = localStorage.getItem("token");
+
+//   if (token && !user) {
+//     console.log("User already logged in");
+//   }
+// }, []);
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    fetch(`${API}user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+          setUser (null);
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data?.user) setUser(data.user);
+          else setUser(data);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+      });
+  }
+}, []);
+
+    useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      if (payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
+        setUser(null);
+      }
+    } catch {
+      localStorage.removeItem("token");
+    }
+  }
+}, []);
+
 
   // ✅🔥 ADD THIS (MOST IMPORTANT)
   useEffect(() => {
@@ -56,7 +114,7 @@ function App() {
     }
 
     if (name === "email") {
-      setForm({ ...form, email: value.toLowerCase() });
+      setForm({ ...form, email: value.toLowerCase().trim() });
       return;
     }
 
@@ -83,7 +141,7 @@ function App() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/send-otp", {
+      const res = await fetch(`${API}/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -105,12 +163,13 @@ function App() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/verify-otp", {
+      const res = await fetch(`${API}/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           post: form.post,
           subject: form.subject,
+          rollno: form.rollno,
           email: form.email,
           otp,
         }),
@@ -128,6 +187,7 @@ function App() {
 
     setLoading(false);
   };
+if (loading) return <h2 style={{ textAlign: "center" }}>{loading ? "Sending..." : "Send OTP"}</h2>;
 
   if (user && localStorage.getItem("token"))
     return (
@@ -212,7 +272,9 @@ function App() {
 
             <input
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+                setOtp(value)}}
               placeholder="OTP"
               autoComplete="off"   // ✅ ADD
             />

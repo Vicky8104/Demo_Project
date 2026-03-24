@@ -19,6 +19,9 @@ export default function SchoolChoices({ schools = [], selectedSchools = [], onSu
 
   }, [schools, selectedSchools]);
 
+  const isSelectedElsewhere = (code, currentIndex) => {
+  return choices.some((c, i) => c === code && i !== currentIndex);
+};
 
   const handleChange = (index, value) => {
 
@@ -90,10 +93,11 @@ export default function SchoolChoices({ schools = [], selectedSchools = [], onSu
                   <option
                     key={s._id}
                     value={s.code}
-                    disabled={
-                      choices.includes(s.code) &&
-                      choices[index] !== s.code
-                    }
+                    // disabled={
+                    //   choices.includes(s.code) &&
+                    //   choices[index] !== s.code
+                    // }
+                    disabled={isSelectedElsewhere(s.code, index)}
                   >
                     {s.name}
                   </option>

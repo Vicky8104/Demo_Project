@@ -5,7 +5,11 @@ function verifyToken(req, res, next) {
   if (!authHeader)
     return res.status(401).json({ message: "No token provided" });
 
+  if (!authHeader.startsWith("Bearer ")) {
+  return res.status(401).json({ message: "Invalid token format" });
+  }
   const token = authHeader.split(" ")[1]; // Expect Bearer <token>
+  
   if (!token) return res.status(401).json({ message: "Token missing" });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

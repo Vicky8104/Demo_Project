@@ -47,34 +47,7 @@ const Navbar = ({ user, setUser, setOtpSent, setOtp }) => {
     navigate("/", { replace: true }); // 🔐 back block
   };
 
-  // return (
-  //   <div className="navbar">
-  //     <div className="nav-left">
-  //       {!user ? (
-  //         <span className="active-tab">Home</span>
-  //       ) : (
-  //         <span className="active-tab">Dashboard</span>
-  //       )}
-  //     </div>
 
-  //     {user && (
-  //       <>
-  //         <div className="nav-center">
-  //           <span>
-  //             Form Status: {user.formSubmitted ? "Submitted" : "Pending"}
-  //           </span>
-  //         </div>
-
-  //         <div className="nav-right">
-  //           <span>Welcome {user.name}</span>
-  //           <button className="logout-btn" onClick={handleLogout}>
-  //             Logout
-  //           </button>
-  //         </div>
-  //       </>
-  //     )}
-  //   </div>
-  // );
   return (
   <div className="navbar">
     <div className="nav-left">
@@ -87,7 +60,7 @@ const Navbar = ({ user, setUser, setOtpSent, setOtp }) => {
       <div className="nav-right">
         <span className="welcome">Welcome {user.name}</span>
         <span className="status">
-          Status: {user.formSubmitted ? "Submitted" : "Pending"}
+          {user.formSubmitted ? "Submitted" : "Pending"}
         </span>
         <button className="logout-btn" onClick={handleLogout}>
           Logout

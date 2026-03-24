@@ -54,7 +54,8 @@
   font-size: 16px;
   white-space: nowrap;   /* desktop पर single line */
 }
-
+.done { color: green; }
+.pending { color: orange; }
 /* MOBILE FIX */
 
 /* 🔥 MOBILE PERFECT COLUMN */

@@ -159,7 +159,7 @@ export default function PreviewPage({
 
           <ol>
 
-            {schoolData.map((schoolId, index) => {
+            {(schoolData || []).map((schoolId, index) => {
 
               const school = schools?.find(s => s.code === schoolId);
 
