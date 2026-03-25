@@ -15,23 +15,36 @@ function generateOTP(length = 6) {
   return otp;
 }
 
+// ================= TIME VALIDATION =================
+function isFormActive() {
+  const now = new Date();
+  const start = new Date(process.env.FORM_START);
+  const end = new Date(process.env.FORM_END);
+
+  if (now < start) return { active: false, message: "Form अभी शुरू नहीं हुआ है ⏳" };
+  if (now > end) return { active: false, message: "Form बंद हो चुका है ❌" };
+  return { active: true };
+}
+
+
 // =================================================
 // 🚀 SEND OTP (CASE-INSENSITIVE MATCH)
 // =================================================
 
 async function sendOtp(req, res) {
   try {
+
+    const timing = isFormActive();
+    if (!timing.active) {
+      return res.status(403).json({ message: timing.message });
+    }
+
+
     const { post, subject, rollno, email } = req.body;
 
     console.log("REQ BODY:", req.body);
 
-    // DB me user search
-    // const user = await User.findOne({
-    //   post: post,
-    //   subject: subject,
-    //   rollno: rollno,
-    //   email: { $regex: `^${email}$`, $options: "i" }// lowercase ensure
-    // });
+
         const user = await User.findOne({
         post: { $regex: `^${post}$`, $options: "i" },
         subject: { $regex: `^${subject}$`, $options: "i" },
@@ -39,11 +52,7 @@ async function sendOtp(req, res) {
         email: { $regex: `^${email}$`, $options: "i" }
         });
 
-
     // console.log("FOUND USER:", user);
-
-    console.log("FOUND USER:", user);
-
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -75,10 +84,16 @@ async function sendOtp(req, res) {
 // =================================================
 async function verifyOtp(req, res) {
   try {
+
+    const timing = isFormActive();
+    if (!timing.active) {
+      return res.status(403).json({ message: timing.message });
+    } 
+    
     const { post, subject, email, otp } = req.body;
 
     const user = await User.findOne({
-      post: post,
+      post: { $regex: `^${post}$`, $options: "i" },
       subject: { $regex: `^${subject}$`, $options: "i" },
       email: { $regex: `^${email}$`, $options: "i" },
     });
@@ -87,14 +102,15 @@ async function verifyOtp(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // if (String(user.otp) !== String(otp).trim()) {
-    //   return res.status(400).json({ message: "Invalid OTP" });
-    // }
-    // 🚫 Check attempts
+
       if (user.failedAttempts >= 5) {
         return res.status(429).json({ message: "Too many attempts. Try later." });
       }
       
+      if (user.otpExpiry < new Date()) {
+      return res.status(400).json({ message: "OTP expired" });
+      }
+
       // ❌ Wrong OTP
       if (String(user.otp) !== String(otp).trim()) {
         user.failedAttempts = (user.failedAttempts || 0) + 1;
@@ -105,6 +121,7 @@ async function verifyOtp(req, res) {
       
       // ✅ Correct OTP → reset attempts
       user.failedAttempts = 0;
+      await user.save();
 
     if (user.otpExpiry < new Date()) {
       return res.status(400).json({ message: "OTP expired" });
@@ -191,8 +208,6 @@ async function submitSchools(req, res) {
       return res.status(403).json({ message: "Form locked after final submission"});
     }
 
-
-
     user.schoolChoices = selectedSchools;
 
     await user.save();
@@ -210,6 +225,21 @@ async function submitSchools(req, res) {
 
 async function submitFinalForm(req, res) {
   try {
+
+    const now = new Date();
+    const start = new Date(process.env.FORM_START);
+    const end = new Date(process.env.FORM_END);
+
+    if (now < start) {
+      return res.status(403).json({ message: "Form not started yet" });
+    }
+
+    if (now > end) {
+      return res.status(403).json({ message: "Form closed" });
+    }
+
+
+
     const { personalData, schoolData, schoolNames } = req.body;
     
     if (!schoolNames || schoolNames.length === 0) {
@@ -399,7 +429,7 @@ async function submitFinalForm(req, res) {
       .text(`Post: ${user.post}`, signX)
       .text(`Subject: ${user.subject}`, signX);
 
-    const now = new Date();
+    // const now = new Date();
 
     doc.text(`Date: ${now.toLocaleDateString()}`, signX);
 
@@ -467,12 +497,13 @@ async function submitFinalForm(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
+
+
 module.exports = {
   sendOtp,
   verifyOtp,
   getUser,
   getSchools,
   submitSchools,
-
   submitFinalForm,
 };

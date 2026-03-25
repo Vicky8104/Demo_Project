@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
 
+  // const [formStatus, setFormStatus] = useState(null);
   const navigate = useNavigate();
 
   const [cards, setCards] = useState([
@@ -24,6 +25,20 @@ export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
   const [userState, setUserState] = useState(user);
 
   useEffect(() => {
+//   const fetchFormStatus = async () => {
+//     try {
+//       const res = await fetch(`${BASE_URL}/api/form-status`);
+//       const data = await res.json();
+//       setFormStatus(data);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   fetchFormStatus();
+//  }, [setFormStatus]);
+
+//   useEffect(() => {
   setUserState(user);
   }, [user]);
 
@@ -187,11 +202,6 @@ export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
   return (
     <div className="dashboard-container">
 
-      {/* <h1>
-        {user.post} {user.subject} Counseling Portal
-      </h1>
-
-      <h2>Welcome, {user.name}</h2> */}
       {user && (
       <>
       <h1>
@@ -217,7 +227,7 @@ export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
       {userState?.formSubmitted && (
         <div style={{ marginTop: "20px", textAlign: "center" }}>
           <h3>✅ Form Submitted</h3>
-          <button onClick={() => window.open(pdfUrl, "_blank")}>
+          <button style={{maxWidth:"150px"}} onClick={() => window.open(pdfUrl, "_blank")}>
             Download PDF
           </button>
         </div>
@@ -258,6 +268,7 @@ export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
           schools={schools}
           onEdit={() => setActiveForm("personal")}
           onFinalSubmit={handleFinalSubmit}
+          
         />
       )}
 

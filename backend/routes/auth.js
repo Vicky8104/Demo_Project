@@ -26,8 +26,4 @@ router.post("/submit-schools", verifyToken, submitSchools);
 
 router.post("/submit-form", verifyToken, submitFinalForm);
 
-// router.get("/user/:id", verifyToken, getUser);
-// router.get("/schools", verifyToken, getSchools);
-// router.post("/submit-schools", verifyToken, submitSchools);
-
 module.exports = router;

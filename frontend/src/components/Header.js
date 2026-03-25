@@ -6,7 +6,7 @@ import "./Header.css";
 const members = [
   {
     img: "https://i.pravatar.cc/300?img=42",
-    name: "Priyanka Jodhawar",
+    name: "Priyanka Jodhawat",
     post: "Commissioner",
   },
   {
