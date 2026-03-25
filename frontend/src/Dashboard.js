@@ -175,6 +175,10 @@ export default function Dashboard({ user, setUser, setOtpSent, setOtp }) {
         formSubmitted: true,
         pdfUrl: data.pdfUrl
       });
+      setUser((prev) => ({
+      ...prev,
+      formSubmitted: true,
+      }));
 
       // setPdfUrl(`http://localhost:5000${data.pdfUrl}`);
     setPdfUrl(
