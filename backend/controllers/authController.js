@@ -848,7 +848,8 @@ const jwt = require("jsonwebtoken");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
-const cloudinary = require("cloudinary").v2; // ✅ ADDED
+// const cloudinary = require("cloudinary").v2; // ✅ ADDED
+const cloudinary = require("../utils/cloudinary");
 
 // ✅ SAFE REGEX HELPER
 const escapeRegex = (text) =>
