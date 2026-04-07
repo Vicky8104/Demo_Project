@@ -222,7 +222,7 @@ export default function Dashboard({ user, setUser }) {
       </div>
 
       {user?.formSubmitted === true && (
-        <div style={{ marginTop: "20px", textAlign: "center", maxWidth:"100px", }}>
+        <div style={{ marginTop: "20px", textAlign: "center", }}>
           <h3>✅ Form Submitted</h3>
           <button onClick={() => window.open(pdfUrl, "_blank")}>
             Download PDF
