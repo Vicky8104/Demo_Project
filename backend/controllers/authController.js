@@ -324,216 +324,133 @@ async function submitFinalForm(req, res) {
     doc.text(`Date: ${now.toLocaleDateString()}`, signX);
 
     // ✅ FINALIZE PDF
-    doc.end();
+//     doc.end();
 
-    // ✅ SAVE AFTER PDF READY
-    doc.on("end", async () => {
-      try {
-        const pdfBuffer = Buffer.concat(chunks);
-
-        let pdfUrl = "";
-
-        if (process.env.NODE_ENV === "production") {
-          const cloudinary = require("../utils/cloudinary");
-
-          const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
-              {
-                resource_type: "raw",
-                folder: "pdfs",
-                public_id: user._id.toString(),
-              },
-              (error, result) => {
-                if (error) return reject(error);
-                resolve(result);
-              }
-            ).end(pdfBuffer);
-          });
-
-          pdfUrl = result.secure_url;
-
-        } else {
-          const pdfFolder = path.join(__dirname, "../pdfs");
-
-          if (!fs.existsSync(pdfFolder)) {
-            // fs.mkdirSync(pdfFolder);
-            fs.mkdirSync(pdfFolder, { recursive: true });
-          }
-
-          const pdfPath = path.join(pdfFolder, `${user._id}.pdf`);
-          fs.writeFileSync(pdfPath, pdfBuffer);
-
-          pdfUrl = `/pdfs/${user._id}.pdf`;
-        }
-
-        user.pdfUrl = pdfUrl;
-        user.formSubmitted = true;
-
-        await user.save();
-
-        res.json({
-          message: "Form submitted successfully",
-          pdfUrl,
-        });
-
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error generating PDF" });
-      }
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
-  }
-}
-
-// async function submitFinalForm(req, res) {
-//   try {
-//     const now = new Date();
-//     const start = new Date(process.env.FORM_START);
-//     const end = new Date(process.env.FORM_END);
-
-//     if (now < start) return res.status(403).json({ message: "Form not started yet" });
-//     if (now > end) return res.status(403).json({ message: "Form closed" });
-
-//     const { personalData } = req.body;
-
-//     const user = await User.findById(req.userId);
-//     if (!user) return res.status(404).json({ message: "User not found" });
-
-//     if (user.formSubmitted) {
-//       return res.status(403).json({ message: "Form already submitted" });
-//     }
-
-//     if (!user.schoolChoices || user.schoolChoices.length === 0) {
-//       return res.status(400).json({ message: "No school selected" });
-//     }
-
-//     // ✅ SAVE USER DATA IMMEDIATELY
-//     user.maritalStatus = personalData?.maritalStatus || user.maritalStatus;
-//     user.homeDistrict = personalData?.homeDistrict || user.homeDistrict;
-//     user.otherCategory = personalData?.otherCategory || user.otherCategory;
-//     user.formSubmitted = true; // LOCK FORM
-//     await user.save();
-
-//     // ✅ RESPOND FIRST
-//     res.json({ message: "Form submitted successfully" });
-
-//     // ================= CREATE PDF IN BACKGROUND =================
-//     const doc = new PDFDocument({ margin: 40 });
-//     const chunks = [];
-//     doc.on("data", (chunk) => chunks.push(chunk));
+//     // ✅ SAVE AFTER PDF READY
 //     doc.on("end", async () => {
 //       try {
 //         const pdfBuffer = Buffer.concat(chunks);
+
 //         let pdfUrl = "";
 
 //         if (process.env.NODE_ENV === "production") {
 //           const cloudinary = require("../utils/cloudinary");
+
 //           const result = await new Promise((resolve, reject) => {
 //             cloudinary.uploader.upload_stream(
-//               { resource_type: "raw", folder: "pdfs", public_id: user._id.toString() },
-//               (error, result) => (error ? reject(error) : resolve(result))
+//               {
+//                 resource_type: "raw",
+//                 folder: "pdfs",
+//                 public_id: user._id.toString(),
+//               },
+//               (error, result) => {
+//                 if (error) return reject(error);
+//                 resolve(result);
+//               }
 //             ).end(pdfBuffer);
 //           });
+
 //           pdfUrl = result.secure_url;
+
 //         } else {
 //           const pdfFolder = path.join(__dirname, "../pdfs");
-//           if (!fs.existsSync(pdfFolder)) fs.mkdirSync(pdfFolder, { recursive: true });
+
+//           if (!fs.existsSync(pdfFolder)) {
+//             // fs.mkdirSync(pdfFolder);
+//             fs.mkdirSync(pdfFolder, { recursive: true });
+//           }
+
 //           const pdfPath = path.join(pdfFolder, `${user._id}.pdf`);
 //           fs.writeFileSync(pdfPath, pdfBuffer);
+
 //           pdfUrl = `/pdfs/${user._id}.pdf`;
 //         }
 
 //         user.pdfUrl = pdfUrl;
+//         user.formSubmitted = true;
+
 //         await user.save();
+
+//         res.json({
+//           message: "Form submitted successfully",
+//           pdfUrl,
+//         });
+
 //       } catch (err) {
-//         console.error("PDF GENERATION ERROR:", err);
+//         console.error(err);
+//         res.status(500).json({ message: "Error generating PDF" });
 //       }
 //     });
-
-//     // ================= FILL PDF =================
-//     const leftX = 40;
-//     const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
-//     let y = doc.y;
-
-//     doc.font("Helvetica-Bold").fontSize(25).text("Department of Sanskrit Education", { align: "center" });
-//     doc.moveDown(0.3);
-//     doc.moveTo(doc.page.margins.left, doc.y).lineTo(doc.page.width - doc.page.margins.right, doc.y).stroke();
-//     doc.moveDown(0.5);
-//     doc.fontSize(16).text("Counseling Application Form", { align: "center" });
-//     doc.moveDown(0.3);
-//     doc.text(`Post: ${user.post} | Subject: ${user.subject}`, { align: "center", fontSize: 12 });
-//     doc.moveDown(2);
-
-//     // PERSONAL DETAILS
-//     const rowHeight = 24;
-//     const totalRows = 5;
-//     const boxHeight = rowHeight * totalRows;
-//     doc.rect(leftX, y, pageWidth, boxHeight).stroke();
-//     doc.moveTo(leftX + pageWidth / 2, y).lineTo(leftX + pageWidth / 2, y + boxHeight).stroke();
-
-//     function row(label1, value1, label2, value2, index) {
-//       const rowY = y + index * rowHeight;
-//       if (index !== 0) doc.moveTo(leftX, rowY).lineTo(leftX + pageWidth, rowY).stroke();
-//       doc.font("Helvetica-Bold").fontSize(10).text(`${label1}:`, leftX + 5, rowY + 6);
-//       doc.font("Helvetica").text(value1 || "-", leftX + 90, rowY + 6);
-//       doc.font("Helvetica-Bold").text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
-//       doc.font("Helvetica").text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
-//     }
-
-//     row("Name", user.name, "Father Name", user.fatherName, 0);
-//     row("DOB", user.dob, "Gender", user.gender, 1);
-//     row("Category", user.category, "Mobile", user.mobile, 2);
-//     row("Email", user.email, "Marital Status", user.maritalStatus, 3);
-//     row("Home District", user.homeDistrict, "Merit No", user.meritNo, 4);
-
-//     doc.moveDown(2);
-
-//     // SCHOOL CHOICES
-//     doc.y = y + boxHeight + 30;
-//     doc.font("Helvetica-Bold").fontSize(14).text("School Choices", { align: "center" });
-//     doc.moveDown(0.5);
-
-//     let schoolTop = doc.y;
-//     const choiceRowHeight = 24;
-//     const totalRowsChoice = Math.ceil(user.schoolChoices.length / 2);
-//     const schoolBoxHeight = totalRowsChoice * choiceRowHeight;
-//     doc.rect(leftX, schoolTop, pageWidth, schoolBoxHeight).stroke();
-//     doc.moveTo(leftX + pageWidth / 2, schoolTop).lineTo(leftX + pageWidth / 2, schoolTop + schoolBoxHeight).stroke();
-
-//     for (let i = 0; i < user.schoolChoices.length; i += 2) {
-//       const rowIndex = Math.floor(i / 2);
-//       const rowY = schoolTop + rowIndex * choiceRowHeight;
-//       if (rowIndex !== 0) doc.moveTo(leftX, rowY).lineTo(leftX + pageWidth, rowY).stroke();
-//       const name1 = user.schoolChoices[i];
-//       const name2 = user.schoolChoices[i + 1];
-//       doc.font("Helvetica-Bold").fontSize(10).text(`Choice ${i + 1}:`, leftX + 5, rowY + 6);
-//       doc.font("Helvetica").text(name1 || "-", leftX + 80, rowY + 6, { width: pageWidth / 2 - 90 });
-//       if (name2) {
-//         doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
-//         doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, rowY + 6, { width: pageWidth / 2 - 90 });
-//       }
-//     }
-
-//     // SIGNATURE
-//     doc.moveDown(4);
-//     const signX = doc.page.width - 200;
-//     doc.font("Helvetica-Bold").text("Candidate Signature", signX);
-//     doc.moveDown();
-//     doc.font("Helvetica").text(`Name: ${user.name}`, signX).text(`Post: ${user.post}`, signX).text(`Subject: ${user.subject}`, signX);
-//     doc.text(`Date: ${now.toLocaleDateString()}`, signX);
-
-//     doc.end();
 
 //   } catch (err) {
 //     console.error(err);
 //     res.status(500).json({ message: err.message });
 //   }
 // }
+// ✅ FINALIZE PDF
 
+// 🔥 FIX: end listener pehle lagao
+doc.on("end", async () => {
+  try {
+    const pdfBuffer = Buffer.concat(chunks);
 
+    let pdfUrl = "";
+
+    if (process.env.NODE_ENV === "production") {
+      const cloudinary = require("../utils/cloudinary");
+
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: "raw",
+            folder: "pdfs",
+            public_id: user._id.toString(),
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        ).end(pdfBuffer);
+      });
+
+      pdfUrl = result.secure_url;
+
+    } else {
+      const pdfFolder = path.join(__dirname, "../pdfs");
+
+      if (!fs.existsSync(pdfFolder)) {
+        fs.mkdirSync(pdfFolder, { recursive: true });
+      }
+
+      const pdfPath = path.join(pdfFolder, `${user._id}.pdf`);
+      fs.writeFileSync(pdfPath, pdfBuffer);
+
+      pdfUrl = `/pdfs/${user._id}.pdf`;
+    }
+
+    user.pdfUrl = pdfUrl;
+    user.formSubmitted = true;
+
+    await user.save();
+
+    res.json({
+      message: "Form submitted successfully",
+      pdfUrl,
+    });
+
+  } catch (err) {
+    console.error("🔥 PDF ERROR:", err);
+    res.status(500).json({ message: "Error generating PDF", error: err.message });
+  }
+});
+
+// ❗ LAST me end karo
+doc.end();
+    } catch (err) {
+  console.error(err);
+  res.status(500).json({ message: err.message });
+}
+}
 
 
 module.exports = {
