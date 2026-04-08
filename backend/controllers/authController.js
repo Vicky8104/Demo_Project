@@ -146,69 +146,38 @@ async function submitFinalForm(req, res) {
     user.homeDistrict = personalData.homeDistrict;
     user.otherCategory = personalData.otherCategory;
     user.schoolChoices = schoolNames;
-
+ 
     // ================= PDF =================
-    const doc = new PDFDocument({ margin: 40 });
-    const chunks = [];
-    doc.on("data", (chunk) => chunks.push(chunk));
+const doc = new PDFDocument({ margin: 40 });
+const chunks = [];
+doc.on("data", (chunk) => chunks.push(chunk));
 
-    const leftX = 40;
-    const pageWidth =
-      doc.page.width - doc.page.margins.left - doc.page.margins.right;
-
-    doc.font("Helvetica-Bold").fontSize(25).text("Department of Sanskrit Education", { align: "center" });
-    doc.moveDown();
-    doc.fontSize(16).text("Counseling Application Form", { align: "center" });
-    doc.moveDown();
-    doc.text(`Post: ${user.post} | Subject: ${user.subject}`, { align: "center" });
-
-    doc.moveDown(2);
-
-    doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
-    doc.moveDown();
-
-    let y = doc.y;
-    // const rowHeight = 24;
-    // const boxHeight = rowHeight * 5;
-
-    // doc.rect(leftX, y, pageWidth, boxHeight).stroke();
-
-    // doc.moveTo(leftX + pageWidth / 2, y)
-    //   .lineTo(leftX + pageWidth / 2, y + boxHeight)
-    //   .stroke();
-
-    // function row(label1, value1, label2, value2, index) {
-    //   const rowY = y + index * rowHeight;
-
-    //   if (index !== 0) {
-    //     doc.moveTo(leftX, rowY).lineTo(leftX + pageWidth, rowY).stroke();
-    //   }
-
-    //   doc.font("Helvetica-Bold").fontSize(10)
-    //     .text(`${label1}:`, leftX + 5, rowY + 6);
-
-    //   doc.font("Helvetica")
-    //     .text(value1 || "-", leftX + 90, rowY + 6);
-
-    //   doc.font("Helvetica-Bold")
-    //     .text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
-
-    //   doc.font("Helvetica")
-    //     .text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
-    // }
-
-const rowHeight = 24; // हर row की height
 const leftX = 40;
 const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+const rowHeight = 24;
+
+// HEADER
+doc.font("Helvetica-Bold").fontSize(20).text("Department of Sanskrit Education", { align: "center" });
+doc.moveDown();
+doc.fontSize(16).text("Counseling Application Form", { align: "center" });
+doc.moveDown();
+doc.text(`Post: ${user.post} | Subject: ${user.subject}`, { align: "center" });
+doc.moveDown(2);
+
+// PERSONAL DETAILS TITLE
+doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
+doc.moveDown();
+
+let y = doc.y;
 
 // Row function
 function row(label1, value1, label2, value2, index) {
   const rowY = y + index * rowHeight;
 
-  // Outer border for all rows
+  // Outer border for row
   doc.rect(leftX, rowY, pageWidth, rowHeight).stroke();
 
-  // Divider between two columns
+  // Vertical divider
   doc.moveTo(leftX + pageWidth / 2, rowY)
      .lineTo(leftX + pageWidth / 2, rowY + rowHeight)
      .stroke();
@@ -221,79 +190,85 @@ function row(label1, value1, label2, value2, index) {
   doc.font("Helvetica-Bold").text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
   doc.font("Helvetica").text(value2 || "-", leftX + (3 * pageWidth) / 4 - 10, rowY + 6);
 }
-    // row("Name", user.name, "Father Name", user.fatherName, 0);
-    // row("DOB", user.dob, "Gender", user.gender, 1);
-    // row("Category", user.category, "Mobile", user.mobile, 2);
-    // row("Email", user.email, "Marital Status", user.maritalStatus, 3);
-    // row("Home District", user.homeDistrict, "Merit No", user.meritNo, 4);
-    
-    row("Subject", user.subject, "Merit No", user.meritNo, 0)
-    row("Name", user.name, "Father Name", user.fatherName, 1);
-    row("DOB", user.dob, "Gender", user.gender, 2);
-    row("Merital Status", user.maritalStatus, "Home District", user.homeDistrict,3);
-    row("Category", user.category, "Selection Category", user.selectionCategory, 4);
-    row("Special Category", user.specialCategory, "If Other", user.otherCategory,5)
-    row("Mobile", user.mobile, "Email", user.email, 6);
 
-    doc.y = y + boxHeight + 30;
+// Rows
+row("Subject", user.subject, "Merit No", user.meritNo, 0);
+row("Name", user.name, "Father Name", user.fatherName, 1);
+row("DOB", user.dob, "Gender", user.gender, 2);
+row("Marital Status", user.maritalStatus, "Home District", user.homeDistrict, 3);
+row("Category", user.category, "Selection Category", user.selectionCategory, 4);
+row("Special Category", user.specialCategory, "If Other", user.otherCategory, 5);
+row("Mobile", user.mobile, "Email", user.email, 6);
 
-    doc.font("Helvetica-Bold").text("School Choices", { align: "center" });
-    doc.moveDown();
+doc.y = y + rowHeight * 7 + 20; // +20 for spacing after last row
 
-    let startY = doc.y;
-    let currentY = startY;
-    const padding = 6;
-    const textWidth = pageWidth / 2 - 90;
+// ================= SCHOOL CHOICES =================
+// doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
+//   align: "center",
+// });
+// doc.moveDown(1);
+// doc.fontSize(12);
+const headerText = "School Choices";
+const headerFontSize = 18;
+doc.font("Helvetica-Bold").fontSize(headerFontSize);
 
-    for (let i = 0; i < schoolNames.length; i += 2) {
-      const name1 = schoolNames[i] || "-";
-      const name2 = schoolNames[i + 1] || "-";
+// Manual centering
+const textWidthHeader = doc.widthOfString(headerText);
+const xCenter = (doc.page.width - textWidthHeader) / 2;
+doc.text(headerText, xCenter, doc.y); // doc.y current y-position
+doc.moveDown(1); // space after header
 
-      const h1 = doc.heightOfString(name1, { width: textWidth });
-      const h2 = doc.heightOfString(name2, { width: textWidth });
+// Reset font for table
+doc.fontSize(10);
+let startY = doc.y; // correct y for table start
+let currentY = startY;
+const padding = 6;
+const textWidth = pageWidth / 2 - 90;
 
-      const rowH = Math.max(h1, h2) + padding * 2;
+for (let i = 0; i < schoolNames.length; i += 2) {
+  const name1 = schoolNames[i] || "-";
+  const name2 = schoolNames[i + 1] || "-";
 
-      if (i !== 0) {
-        doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
-      }
+  const h1 = doc.heightOfString(name1, { width: textWidth });
+  const h2 = doc.heightOfString(name2, { width: textWidth });
+  const rowH = Math.max(h1, h2) + padding * 2;
 
-      doc.font("Helvetica-Bold")
-        .text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
+  // Horizontal divider for each row
+  if (i !== 0) {
+    doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
+  }
 
-      doc.font("Helvetica")
-        .text(name1, leftX + 80, currentY + padding, { width: textWidth });
+  // Left choice
+  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
+  doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, { width: textWidth });
 
-      if (schoolNames[i + 1]) {
-        doc.font("Helvetica-Bold")
-          .text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
+  // Right choice
+  if (schoolNames[i + 1]) {
+    doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
+    doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, currentY + padding, { width: textWidth });
+  }
 
-        doc.font("Helvetica")
-          .text(name2, leftX + pageWidth / 2 + 80, currentY + padding, {
-            width: textWidth,
-          });
-      }
+  // Vertical divider
+  doc.moveTo(leftX + pageWidth / 2, currentY)
+     .lineTo(leftX + pageWidth / 2, currentY + rowH)
+     .stroke();
 
-      currentY += rowH;
-    }
+  currentY += rowH;
+}
 
-    doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
+// Outer border for school choices table
+doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
 
-    doc.moveTo(leftX + pageWidth / 2, startY)
-      .lineTo(leftX + pageWidth / 2, currentY)
-      .stroke();
+doc.y = currentY + 30;
 
-    doc.y = currentY;
-
-    doc.moveDown(3);
-    const signX = doc.page.width - 200;
-
-    doc.text("Candidate Signature", signX);
-    doc.moveDown();
-    doc.text(`Name: ${user.name}`, signX);
-    doc.text(`Post: ${user.post}`, signX);
-    doc.text(`Subject: ${user.subject}`, signX);
-    doc.text(`Date: ${now.toLocaleDateString()}`, signX);
+// SIGNATURE
+const signX = doc.page.width - 200;
+doc.text("Candidate Signature", signX);
+doc.moveDown();
+doc.text(`Name: ${user.name}`, signX);
+doc.text(`Post: ${user.post}`, signX);
+doc.text(`Subject: ${user.subject}`, signX);
+doc.text(`Date: ${now.toLocaleDateString()}`, signX);
 
     // ================= SAVE (CLOUDINARY) =================
     doc.on("end", async () => {
