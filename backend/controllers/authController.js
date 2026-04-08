@@ -197,11 +197,19 @@ async function submitFinalForm(req, res) {
         .text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
     }
 
-    row("Name", user.name, "Father Name", user.fatherName, 0);
-    row("DOB", user.dob, "Gender", user.gender, 1);
-    row("Category", user.category, "Mobile", user.mobile, 2);
-    row("Email", user.email, "Marital Status", user.maritalStatus, 3);
-    row("Home District", user.homeDistrict, "Merit No", user.meritNo, 4);
+    // row("Name", user.name, "Father Name", user.fatherName, 0);
+    // row("DOB", user.dob, "Gender", user.gender, 1);
+    // row("Category", user.category, "Mobile", user.mobile, 2);
+    // row("Email", user.email, "Marital Status", user.maritalStatus, 3);
+    // row("Home District", user.homeDistrict, "Merit No", user.meritNo, 4);
+    
+    row("Subject", user.subject, "Merit No", user.meritNo, 0)
+    row("Name", user.name, "Father Name", user.fatherName, 1);
+    row("DOB", user.dob, "Gender", user.gender, 2);
+    row("Merital Status", user.maritalStatus, "Home District", user.homeDistrict,3);
+    row("Category", user.category, "Selection Category", user.selectionCategory, 4);
+    row("Special Category", user.specialCategory, "If Other", user.otherCategory,5)
+    row("Mobile", user.mobile, "Email", user.email, 6);
 
     doc.y = y + boxHeight + 30;
 
