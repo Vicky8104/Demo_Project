@@ -45,7 +45,7 @@ export default function PreviewPage({
           <div><b>Selection Category:</b><span>{user.selectionCategory || "-"}</span></div>
 
           <div><b>Sub Category:</b><span>{user.subCategory || "-"}</span></div>
-          <div><b>Other Category:</b><span>{personalData?.otherCategory || "-"}</span></div>
+          <div><b>If Other:</b><span>{personalData?.otherCategory || "-"}</span></div>
 
           <div><b>Mobile:</b><span>{user.mobile}</span></div>
           <div><b>Email:</b><span>{user.email}</span></div>
