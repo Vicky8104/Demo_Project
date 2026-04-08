@@ -168,35 +168,59 @@ async function submitFinalForm(req, res) {
     doc.moveDown();
 
     let y = doc.y;
-    const rowHeight = 24;
-    const boxHeight = rowHeight * 5;
+    // const rowHeight = 24;
+    // const boxHeight = rowHeight * 5;
 
-    doc.rect(leftX, y, pageWidth, boxHeight).stroke();
+    // doc.rect(leftX, y, pageWidth, boxHeight).stroke();
 
-    doc.moveTo(leftX + pageWidth / 2, y)
-      .lineTo(leftX + pageWidth / 2, y + boxHeight)
-      .stroke();
+    // doc.moveTo(leftX + pageWidth / 2, y)
+    //   .lineTo(leftX + pageWidth / 2, y + boxHeight)
+    //   .stroke();
 
-    function row(label1, value1, label2, value2, index) {
-      const rowY = y + index * rowHeight;
+    // function row(label1, value1, label2, value2, index) {
+    //   const rowY = y + index * rowHeight;
 
-      if (index !== 0) {
-        doc.moveTo(leftX, rowY).lineTo(leftX + pageWidth, rowY).stroke();
-      }
+    //   if (index !== 0) {
+    //     doc.moveTo(leftX, rowY).lineTo(leftX + pageWidth, rowY).stroke();
+    //   }
 
-      doc.font("Helvetica-Bold").fontSize(10)
-        .text(`${label1}:`, leftX + 5, rowY + 6);
+    //   doc.font("Helvetica-Bold").fontSize(10)
+    //     .text(`${label1}:`, leftX + 5, rowY + 6);
 
-      doc.font("Helvetica")
-        .text(value1 || "-", leftX + 90, rowY + 6);
+    //   doc.font("Helvetica")
+    //     .text(value1 || "-", leftX + 90, rowY + 6);
 
-      doc.font("Helvetica-Bold")
-        .text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
+    //   doc.font("Helvetica-Bold")
+    //     .text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
 
-      doc.font("Helvetica")
-        .text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
-    }
+    //   doc.font("Helvetica")
+    //     .text(value2 || "-", leftX + pageWidth / 2 + 90, rowY + 6);
+    // }
 
+const rowHeight = 24; // हर row की height
+const leftX = 40;
+const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+
+// Row function
+function row(label1, value1, label2, value2, index) {
+  const rowY = y + index * rowHeight;
+
+  // Outer border for all rows
+  doc.rect(leftX, rowY, pageWidth, rowHeight).stroke();
+
+  // Divider between two columns
+  doc.moveTo(leftX + pageWidth / 2, rowY)
+     .lineTo(leftX + pageWidth / 2, rowY + rowHeight)
+     .stroke();
+
+  // Left column
+  doc.font("Helvetica-Bold").fontSize(10).text(`${label1}:`, leftX + 5, rowY + 6);
+  doc.font("Helvetica").text(value1 || "-", leftX + pageWidth / 4 - 10, rowY + 6);
+
+  // Right column
+  doc.font("Helvetica-Bold").text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
+  doc.font("Helvetica").text(value2 || "-", leftX + (3 * pageWidth) / 4 - 10, rowY + 6);
+}
     // row("Name", user.name, "Father Name", user.fatherName, 0);
     // row("DOB", user.dob, "Gender", user.gender, 1);
     // row("Category", user.category, "Mobile", user.mobile, 2);
