@@ -112,7 +112,7 @@ function App() {
     }
 
     if (name === "rollno") {
-      setForm({ ...form, rollno: value.replace(/\D/g, "").slice(0, 6) });
+      setForm({ ...form, rollno: value.replace(/\D/g, "").slice(0, 7) });
       return;
     }
 
