@@ -148,296 +148,130 @@ async function submitFinalForm(req, res) {
     user.schoolChoices = schoolNames;
  
     // ================= PDF =================
-// const doc = new PDFDocument({ margin: 40 });
-// const chunks = [];
-// doc.on("data", (chunk) => chunks.push(chunk));
+const doc = new PDFDocument({ margin: 40 });
+const chunks = [];
+doc.on("data", (chunk) => chunks.push(chunk));
 
-// const leftX = 40;
-// const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
-// const rowHeight = 24;
+const leftX = 40;
+const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+const rowHeight = 24;
 
-// // HEADER
-// doc.font("Helvetica-Bold").fontSize(20).text("Department of Sanskrit Education", { align: "center" });
-// doc.moveDown();
-// doc.fontSize(16).text("Counseling Application Form", { align: "center" });
-// doc.moveDown();
-// doc.text(`Post: ${user.post} | Subject: ${user.subject}`, { align: "center" });
-// doc.moveDown(2);
+// HEADER
+doc.font("Helvetica-Bold").fontSize(20).text("Department of Sanskrit Education", { align: "center" });
+doc.moveDown();
+doc.fontSize(16).text("Counseling Application Form", { align: "center" });
+doc.moveDown();
+doc.text(`Post: ${user.post} | Subject: ${user.subject}`, { align: "center" });
+doc.moveDown(2);
 
-// // PERSONAL DETAILS TITLE
-// doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
-// doc.moveDown();
+// PERSONAL DETAILS TITLE
+doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
+doc.moveDown();
 
-// let y = doc.y;
+let y = doc.y;
 
-// Row function
-// function row(label1, value1, label2, value2, index) {
-//   const rowY = y + index * rowHeight;
+Row function
+function row(label1, value1, label2, value2, index) {
+  const rowY = y + index * rowHeight;
 
-//   // Outer border for row
-//   doc.rect(leftX, rowY, pageWidth, rowHeight).stroke();
+  // Outer border for row
+  doc.rect(leftX, rowY, pageWidth, rowHeight).stroke();
 
-//   // Vertical divider
-//   doc.moveTo(leftX + pageWidth / 2, rowY)
-//      .lineTo(leftX + pageWidth / 2, rowY + rowHeight)
-//      .stroke();
+  // Vertical divider
+  doc.moveTo(leftX + pageWidth / 2, rowY)
+     .lineTo(leftX + pageWidth / 2, rowY + rowHeight)
+     .stroke();
 
-//   // Left column
-//   doc.font("Helvetica-Bold").fontSize(10).text(`${label1}:`, leftX + 5, rowY + 6);
-//   doc.font("Helvetica").text(value1 || "-", leftX + pageWidth / 4 - 10, rowY + 6);
+  // Left column
+  doc.font("Helvetica-Bold").fontSize(10).text(`${label1}:`, leftX + 5, rowY + 6);
+  doc.font("Helvetica").text(value1 || "-", leftX + pageWidth / 4 - 10, rowY + 6);
 
-//   // Right column
-//   doc.font("Helvetica-Bold").text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
-//   doc.font("Helvetica").text(value2 || "-", leftX + (3 * pageWidth) / 4 - 10, rowY + 6);
-// }
+  // Right column
+  doc.font("Helvetica-Bold").text(`${label2}:`, leftX + pageWidth / 2 + 5, rowY + 6);
+  doc.font("Helvetica").text(value2 || "-", leftX + (3 * pageWidth) / 4 - 10, rowY + 6);
+}
 
-// // Rows
-// row("Subject", user.subject, "Merit No", user.meritNo, 0);
-// row("Name", user.name, "Father Name", user.fatherName, 1);
-// row("DOB", user.dob, "Gender", user.gender, 2);
-// row("Marital Status", user.maritalStatus, "Home District", user.homeDistrict, 3);
-// row("Category", user.category, "Selection Category", user.selectionCategory, 4);
-// row("Special Category", user.specialCategory, "If Other", user.otherCategory, 5);
-// row("Mobile", user.mobile, "Email", user.email, 6);
+// Rows
+row("Subject", user.subject, "Merit No", user.meritNo, 0);
+row("Name", user.name, "Father Name", user.fatherName, 1);
+row("DOB", user.dob, "Gender", user.gender, 2);
+row("Marital Status", user.maritalStatus, "Home District", user.homeDistrict, 3);
+row("Category", user.category, "Selection Category", user.selectionCategory, 4);
+row("Special Category", user.specialCategory, "If Other", user.otherCategory, 5);
+row("Mobile", user.mobile, "Email", user.email, 6);
 
-// doc.y = y + rowHeight * 7 + 20; // +20 for spacing after last row
+doc.y = y + rowHeight * 7 + 20; // +20 for spacing after last row
 
   
-// ================= SCHOOL CHOICES =================
-// doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
-//   align: "center",
-// });
-// doc.moveDown(1);
-// doc.fontSize(12);
-// const headerText = "School Choices";
-// const headerFontSize = 18;
-// doc.font("Helvetica-Bold").fontSize(headerFontSize);
+================= SCHOOL CHOICES =================
+doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
+  align: "center",
+});
+doc.moveDown(1);
+doc.fontSize(12);
+const headerText = "School Choices";
+const headerFontSize = 18;
+doc.font("Helvetica-Bold").fontSize(headerFontSize);
 
-// // Manual centering
-// const textWidthHeader = doc.widthOfString(headerText);
-// const xCenter = (doc.page.width - textWidthHeader) / 2;
-// doc.text(headerText, xCenter, doc.y); // doc.y current y-position
-// doc.moveDown(1); // space after header
+// Manual centering
+const textWidthHeader = doc.widthOfString(headerText);
+const xCenter = (doc.page.width - textWidthHeader) / 2;
+doc.text(headerText, xCenter, doc.y); // doc.y current y-position
+doc.moveDown(1); // space after header
 
-// // Reset font for table
-// doc.fontSize(10);
-// let startY = doc.y; // correct y for table start
-// let currentY = startY;
-// const padding = 6;
-// const textWidth = pageWidth / 2 - 90;
+// Reset font for table
+doc.fontSize(10);
+let startY = doc.y; // correct y for table start
+let currentY = startY;
+const padding = 6;
+const textWidth = pageWidth / 2 - 90;
 
-// for (let i = 0; i < schoolNames.length; i += 2) {
-//   const name1 = schoolNames[i] || "-";
-//   const name2 = schoolNames[i + 1] || "-";
+for (let i = 0; i < schoolNames.length; i += 2) {
+  const name1 = schoolNames[i] || "-";
+  const name2 = schoolNames[i + 1] || "-";
 
-//   const h1 = doc.heightOfString(name1, { width: textWidth });
-//   const h2 = doc.heightOfString(name2, { width: textWidth });
-//   const rowH = Math.max(h1, h2) + padding * 2;
+  const h1 = doc.heightOfString(name1, { width: textWidth });
+  const h2 = doc.heightOfString(name2, { width: textWidth });
+  const rowH = Math.max(h1, h2) + padding * 2;
 
-//   // Horizontal divider for each row
-//   if (i !== 0) {
-//     doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
-//   }
+  // Horizontal divider for each row
+  if (i !== 0) {
+    doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
+  }
 
-//   // Left choice
-//   doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
-//   doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, { width: textWidth });
+  // Left choice
+  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
+  doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, { width: textWidth });
 
-//   // Right choice
-//   if (schoolNames[i + 1]) {
-//     doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
-//     doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, currentY + padding, { width: textWidth });
-//   }
+  // Right choice
+  if (schoolNames[i + 1]) {
+    doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
+    doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, currentY + padding, { width: textWidth });
+  }
 
-//   // Vertical divider
-//   doc.moveTo(leftX + pageWidth / 2, currentY)
-//      .lineTo(leftX + pageWidth / 2, currentY + rowH)
-//      .stroke();
+  // Vertical divider
+  doc.moveTo(leftX + pageWidth / 2, currentY)
+     .lineTo(leftX + pageWidth / 2, currentY + rowH)
+     .stroke();
 
-//   currentY += rowH;
-// }
+  currentY += rowH;
+}
 
-// // Outer border for school choices table
-// doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
+// Outer border for school choices table
+doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
 
-// doc.y = currentY + 30;
+doc.y = currentY + 30;
 
-// // SIGNATURE
-// const signX = doc.page.width - 200;
-// doc.text("Candidate Signature", signX);
-// doc.moveDown();
-// doc.text(`Name: ${user.name}`, signX);
-// doc.text(`Post: ${user.post}`, signX);
-// doc.text(`Subject: ${user.subject}`, signX);
-// doc.text(`Date: ${now.toLocaleDateString()}`, signX);
+// SIGNATURE
+const signX = doc.page.width - 200;
+doc.text("Candidate Signature", signX);
+doc.moveDown();
+doc.text(`Name: ${user.name}`, signX);
+doc.text(`Post: ${user.post}`, signX);
+doc.text(`Subject: ${user.subject}`, signX);
+doc.text(`Date: ${now.toLocaleDateString()}`, signX);
 
-
-
-    
-
-    // ================= PDF =================
-    const doc = new PDFDocument({ margin: 40 });
-    const chunks = [];
-    doc.on("data", (chunk) => chunks.push(chunk));
-
-    const leftX = 40;
-    const pageWidth =
-      doc.page.width - doc.page.margins.left - doc.page.margins.right;
-
-    // ✅ HEADER (ONLY FIRST PAGE)
-    function drawHeader() {
-      doc.font("Helvetica-Bold").fontSize(20)
-        .text("Department of Sanskrit Education", { align: "center" });
-
-      doc.moveDown();
-
-      doc.fontSize(16)
-        .text("Counseling Application Form", { align: "center" });
-
-      doc.moveDown();
-
-      doc.text(`Post: ${user.post} | Subject: ${user.subject}`, {
-        align: "center",
-      });
-
-      doc.moveDown(2);
-    }
-
-    drawHeader();
-
-    // ================= PERSONAL DETAILS =================
-    doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
-    doc.moveDown();
-
-    let y = doc.y;
-
-    function row(label1, value1, label2, value2) {
-      const colWidth = pageWidth / 2;
-      const padding = 6;
-
-      const labelWidth = 70;
-      const valueWidth = colWidth / 2 - labelWidth;
-
-      const h1 = doc.heightOfString(value1 || "-", { width: valueWidth });
-      const h2 = doc.heightOfString(value2 || "-", { width: valueWidth });
-
-      const dynamicHeight = Math.max(h1, h2) + padding * 2;
-
-      // ✅ PAGE BREAK (NO HEADER AGAIN)
-      if (y + dynamicHeight > doc.page.height - 50) {
-        doc.addPage();
-        y = 40;
-      }
-
-      const rowY = y;
-
-      doc.rect(leftX, rowY, pageWidth, dynamicHeight).stroke();
-
-      doc.moveTo(leftX + colWidth, rowY)
-        .lineTo(leftX + colWidth, rowY + dynamicHeight)
-        .stroke();
-
-      // LEFT
-      doc.font("Helvetica-Bold").fontSize(10)
-        .text(`${label1}:`, leftX + 5, rowY + padding);
-
-      doc.font("Helvetica")
-        .text(value1 || "-", leftX + labelWidth, rowY + padding, {
-          width: valueWidth,
-        });
-
-      // RIGHT
-      doc.font("Helvetica-Bold")
-        .text(`${label2}:`, leftX + colWidth + 5, rowY + padding);
-
-      doc.font("Helvetica")
-        .text(value2 || "-", leftX + colWidth + labelWidth, rowY + padding, {
-          width: valueWidth,
-        });
-
-      y += dynamicHeight;
-    }
-
-    // ROWS
-    row("Subject", user.subject, "Merit No", user.meritNo);
-    row("Name", user.name, "Father Name", user.fatherName);
-    row("DOB", user.dob, "Gender", user.gender);
-    row("Marital Status", user.maritalStatus, "Home District", user.homeDistrict);
-    row("Category", user.category, "Selection Category", user.selectionCategory);
-    row("Special Category", user.specialCategory, "If Other", user.otherCategory);
-    row("Mobile", user.mobile, "Email", user.email);
-
-    // ================= SCHOOL CHOICES =================
-    doc.moveDown(2);
-
-    doc.font("Helvetica-Bold").fontSize(18);
-    const headerText = "School Choices";
-    const xCenter = (doc.page.width - doc.widthOfString(headerText)) / 2;
-    doc.text(headerText, xCenter, doc.y);
-
-    doc.moveDown(1);
-    doc.fontSize(10);
-
-    let startY = doc.y;
-    let currentY = startY;
-    const padding = 6;
-    const textWidth = pageWidth / 2 - 90;
-
-    for (let i = 0; i < schoolNames.length; i += 2) {
-      const name1 = schoolNames[i] || "-";
-      const name2 = schoolNames[i + 1] || "-";
-
-      const h1 = doc.heightOfString(name1, { width: textWidth });
-      const h2 = doc.heightOfString(name2, { width: textWidth });
-      const rowH = Math.max(h1, h2) + padding * 2;
-
-      if (currentY + rowH > doc.page.height - 50) {
-        doc.addPage();
-        currentY = 40;
-      }
-
-      if (i !== 0) {
-        doc.moveTo(leftX, currentY)
-          .lineTo(leftX + pageWidth, currentY)
-          .stroke();
-      }
-
-      doc.font("Helvetica-Bold")
-        .text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
-
-      doc.font("Helvetica")
-        .text(name1, leftX + 80, currentY + padding, { width: textWidth });
-
-      if (schoolNames[i + 1]) {
-        doc.font("Helvetica-Bold")
-          .text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
-
-        doc.font("Helvetica")
-          .text(name2, leftX + pageWidth / 2 + 80, currentY + padding, {
-            width: textWidth,
-          });
-      }
-
-      doc.moveTo(leftX + pageWidth / 2, currentY)
-        .lineTo(leftX + pageWidth / 2, currentY + rowH)
-        .stroke();
-
-      currentY += rowH;
-    }
-
-    doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
-
-    doc.y = currentY + 30;
-
-    // SIGNATURE
-    const signX = doc.page.width - 200;
-    doc.text("Candidate Signature", signX);
-    doc.moveDown();
-    doc.text(`Name: ${user.name}`, signX);
-    doc.text(`Post: ${user.post}`, signX);
-    doc.text(`Subject: ${user.subject}`, signX);
-    doc.text(`Date: ${now.toLocaleDateString()}`, signX);
-
+  
     // ================= SAVE =================
     doc.on("end", async () => {
       try {
