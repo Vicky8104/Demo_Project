@@ -29,7 +29,7 @@ export default function Header({ user, setUser }) {
       
       {/* LEFT */}
       <div className="left">
-        <img src={members[index].img} alt="Person" />
+        <img src={members[index].img} alt="" />
         <div className="info">
           <h4>{members[index].name}</h4>
           <p>{members[index].post}</p>
