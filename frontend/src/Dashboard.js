@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Dashboard({ user, setUser }) {
 
-  console.log("DASHBOARD USER:", user);
+  // console.log("DASHBOARD USER:", user);
 
   const navigate = useNavigate();
 
@@ -91,7 +91,7 @@ export default function Dashboard({ user, setUser }) {
         const data = await res.json();
         setSchools(data.schools || []);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     };
 
@@ -190,7 +190,7 @@ export default function Dashboard({ user, setUser }) {
       alert("Form Submitted Successfully");
 
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert(err.message || "Something went wrong");
     }
   };
