@@ -274,6 +274,40 @@ async function submitFinalForm(req, res) {
 
 
     // ================= PDF =================
+   async function submitFinalForm(req, res) {
+  try {
+    const now = new Date();
+    const start = new Date(process.env.FORM_START);
+    const end = new Date(process.env.FORM_END);
+
+    if (now < start) {
+      return res.status(403).json({ message: "Form not started yet" });
+    }
+
+    if (now > end) {
+      return res.status(403).json({ message: "Form closed" });
+    }
+
+    const { personalData, schoolNames } = req.body;
+
+    if (!schoolNames || schoolNames.length === 0) {
+      return res.status(400).json({ message: "No school selected" });
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.formSubmitted) {
+      return res.status(403).json({ message: "Form already submitted" });
+    }
+
+    user.maritalStatus = personalData.maritalStatus;
+    user.homeDistrict = personalData.homeDistrict;
+    user.otherCategory = personalData.otherCategory;
+    user.schoolChoices = schoolNames;
+
+    // ================= PDF =================
     const doc = new PDFDocument({ margin: 40 });
     const chunks = [];
     doc.on("data", (chunk) => chunks.push(chunk));
@@ -282,17 +316,14 @@ async function submitFinalForm(req, res) {
     const pageWidth =
       doc.page.width - doc.page.margins.left - doc.page.margins.right;
 
-    // ✅ HEADER FUNCTION
+    // ✅ HEADER (ONLY FIRST PAGE)
     function drawHeader() {
-      doc
-        .font("Helvetica-Bold")
-        .fontSize(20)
+      doc.font("Helvetica-Bold").fontSize(20)
         .text("Department of Sanskrit Education", { align: "center" });
 
       doc.moveDown();
 
-      doc
-        .fontSize(16)
+      doc.fontSize(16)
         .text("Counseling Application Form", { align: "center" });
 
       doc.moveDown();
@@ -304,10 +335,9 @@ async function submitFinalForm(req, res) {
       doc.moveDown(2);
     }
 
-    // ✅ ONLY FIRST PAGE HEADER
     drawHeader();
 
-    // PERSONAL DETAILS
+    // ================= PERSONAL DETAILS =================
     doc.font("Helvetica-Bold").text("PERSONAL DETAILS", { align: "center" });
     doc.moveDown();
 
@@ -316,10 +346,12 @@ async function submitFinalForm(req, res) {
     function row(label1, value1, label2, value2) {
       const colWidth = pageWidth / 2;
       const padding = 6;
-      const textWidth = colWidth / 2;
 
-      const h1 = doc.heightOfString(value1 || "-", { width: textWidth });
-      const h2 = doc.heightOfString(value2 || "-", { width: textWidth });
+      const labelWidth = 70;
+      const valueWidth = colWidth / 2 - labelWidth;
+
+      const h1 = doc.heightOfString(value1 || "-", { width: valueWidth });
+      const h2 = doc.heightOfString(value2 || "-", { width: valueWidth });
 
       const dynamicHeight = Math.max(h1, h2) + padding * 2;
 
@@ -333,30 +365,26 @@ async function submitFinalForm(req, res) {
 
       doc.rect(leftX, rowY, pageWidth, dynamicHeight).stroke();
 
-      doc
-        .moveTo(leftX + colWidth, rowY)
+      doc.moveTo(leftX + colWidth, rowY)
         .lineTo(leftX + colWidth, rowY + dynamicHeight)
         .stroke();
 
-      doc
-        .font("Helvetica-Bold")
-        .fontSize(10)
+      // LEFT
+      doc.font("Helvetica-Bold").fontSize(10)
         .text(`${label1}:`, leftX + 5, rowY + padding);
 
-      doc
-        .font("Helvetica")
-        .text(value1 || "-", leftX + colWidth / 2, rowY + padding, {
-          width: textWidth,
+      doc.font("Helvetica")
+        .text(value1 || "-", leftX + labelWidth, rowY + padding, {
+          width: valueWidth,
         });
 
-      doc
-        .font("Helvetica-Bold")
+      // RIGHT
+      doc.font("Helvetica-Bold")
         .text(`${label2}:`, leftX + colWidth + 5, rowY + padding);
 
-      doc
-        .font("Helvetica")
-        .text(value2 || "-", leftX + colWidth + colWidth / 2, rowY + padding, {
-          width: textWidth,
+      doc.font("Helvetica")
+        .text(value2 || "-", leftX + colWidth + labelWidth, rowY + padding, {
+          width: valueWidth,
         });
 
       y += dynamicHeight;
@@ -376,12 +404,10 @@ async function submitFinalForm(req, res) {
 
     doc.font("Helvetica-Bold").fontSize(18);
     const headerText = "School Choices";
-    const textWidthHeader = doc.widthOfString(headerText);
-    const xCenter = (doc.page.width - textWidthHeader) / 2;
+    const xCenter = (doc.page.width - doc.widthOfString(headerText)) / 2;
     doc.text(headerText, xCenter, doc.y);
 
     doc.moveDown(1);
-
     doc.fontSize(10);
 
     let startY = doc.y;
@@ -397,43 +423,34 @@ async function submitFinalForm(req, res) {
       const h2 = doc.heightOfString(name2, { width: textWidth });
       const rowH = Math.max(h1, h2) + padding * 2;
 
-      // ✅ PAGE BREAK
       if (currentY + rowH > doc.page.height - 50) {
         doc.addPage();
         currentY = 40;
       }
 
       if (i !== 0) {
-        doc
-          .moveTo(leftX, currentY)
+        doc.moveTo(leftX, currentY)
           .lineTo(leftX + pageWidth, currentY)
           .stroke();
       }
 
-      doc
-        .font("Helvetica-Bold")
+      doc.font("Helvetica-Bold")
         .text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
 
-      doc
-        .font("Helvetica")
-        .text(name1, leftX + 80, currentY + padding, {
-          width: textWidth,
-        });
+      doc.font("Helvetica")
+        .text(name1, leftX + 80, currentY + padding, { width: textWidth });
 
       if (schoolNames[i + 1]) {
-        doc
-          .font("Helvetica-Bold")
+        doc.font("Helvetica-Bold")
           .text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
 
-        doc
-          .font("Helvetica")
+        doc.font("Helvetica")
           .text(name2, leftX + pageWidth / 2 + 80, currentY + padding, {
             width: textWidth,
           });
       }
 
-      doc
-        .moveTo(leftX + pageWidth / 2, currentY)
+      doc.moveTo(leftX + pageWidth / 2, currentY)
         .lineTo(leftX + pageWidth / 2, currentY + rowH)
         .stroke();
 
@@ -452,6 +469,50 @@ async function submitFinalForm(req, res) {
     doc.text(`Post: ${user.post}`, signX);
     doc.text(`Subject: ${user.subject}`, signX);
     doc.text(`Date: ${now.toLocaleDateString()}`, signX);
+
+    // ================= SAVE =================
+    doc.on("end", async () => {
+      try {
+        const pdfBuffer = Buffer.concat(chunks);
+
+        const fileName = `${user.post}_${user.subject}_${user.rollno}`
+          .replace(/\s+/g, "_")
+          .replace(/[^a-zA-Z0-9_]/g, "") + ".pdf";
+
+        const tempPath = path.join(__dirname, fileName);
+        fs.writeFileSync(tempPath, pdfBuffer);
+
+        const result = await cloudinary.uploader.upload(tempPath, {
+          resource_type: "raw",
+          folder: "pdfs",
+          public_id: fileName.replace(".pdf", "")
+        });
+
+        fs.unlinkSync(tempPath);
+
+        user.pdfUrl = result.secure_url;
+        user.formSubmitted = true;
+
+        await user.save();
+
+        res.json({
+          message: "Form submitted successfully",
+          pdfUrl: result.secure_url,
+        });
+
+      } catch (err) {
+        console.error("PDF ERROR:", err);
+        res.status(500).json({ message: "Error generating PDF" });
+      }
+    });
+
+    doc.end();
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+}
 
     // ================= SAVE =================
     doc.on("end", async () => {
