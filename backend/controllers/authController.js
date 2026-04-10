@@ -301,6 +301,32 @@ function checkPageBreak(rowH) {
 const startX = leftX;
 let startY = currentY;
 
+function checkPageBreak(rowH) {
+  if (currentY + rowH > doc.page.height - bottomMargin) {
+    doc.addPage();
+
+    // ✅ font reset (main fix)
+    doc.font("Helvetica").fontSize(10);
+
+    currentY = doc.page.margins.top;
+
+    // header repeat
+    doc.font("Helvetica-Bold").fontSize(14).text("School Choices", {
+      align: "center",
+    });
+
+    doc.moveDown(1);
+
+    // ✅ again reset for table
+    doc.font("Helvetica").fontSize(10);
+
+    currentY = doc.y;
+  }
+}
+
+
+
+    
 for (let i = 0; i < schoolNames.length; i += 2) {
   const name1 = schoolNames[i] || "-";
   const name2 = schoolNames[i + 1] || "-";
@@ -321,9 +347,11 @@ for (let i = 0; i < schoolNames.length; i += 2) {
      .stroke();
 
   // left
-  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, startX + 5, currentY + padding);
-  doc.font("Helvetica").text(name1, startX + 80, currentY + padding, {
+  
+  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
+  doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, {
     width: textWidth,
+    lineBreak:true,
   });
 
   // right
@@ -335,10 +363,11 @@ for (let i = 0; i < schoolNames.length; i += 2) {
     );
     doc.font("Helvetica").text(
       name2,
-      startX + pageWidth / 2 + 80,
+      leftX + pageWidth / 2 + 80,
       currentY + padding,
-      { width: textWidth }
-    );
+      { width: textWidth,
+      lineBreak:true,
+      });
   }
 
   currentY += rowH;
