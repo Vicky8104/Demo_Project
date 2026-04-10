@@ -48,8 +48,8 @@ function App() {
       "Hindi",
       "Science",
       "Mathematics",
-      "Mathematics-tsp",
-      "Social Science"
+      "Maths-tsp",
+      "SS"
     ]
   };
 
@@ -150,7 +150,7 @@ useEffect(() => {
 
   // ✅ LOGIN (FINAL FIXED)
   const handleLogin = async () => {
-    console.log("API:", API);
+    // console.log("API:", API);
 
     if (!isFormActive) {
       setError(timeMessage);
@@ -177,19 +177,19 @@ useEffect(() => {
       });
 
       const data = await res.json();
-      console.log("LOGIN RESPONSE:", data);
+      // console.log("LOGIN RESPONSE:", data);
 
       if (!res.ok) {
         setError(data.message || "Login failed");
         return;
       }
-      console.log("LOGIN USER:", data.user);
+      // console.log("LOGIN USER:", data.user);
       // ✅ SUCCESS
       localStorage.setItem("token", data.token);
       setUser(data.user);
 
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setError("Server error");
     } finally {
       setLoading(false); // 🔥 FIX
