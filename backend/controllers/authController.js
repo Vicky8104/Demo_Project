@@ -202,12 +202,67 @@ row("Mobile", user.mobile, "Email", user.email, 6);
 
 doc.y = y + rowHeight * 7 + 20; // +20 for spacing after last row
 
+// // ================= SCHOOL CHOICES =================
+// // doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
+// //   align: "center",
+// // });
+// // doc.moveDown(1);
+// // doc.fontSize(12);
+// const headerText = "School Choices";
+// const headerFontSize = 18;
+// doc.font("Helvetica-Bold").fontSize(headerFontSize);
+
+// // Manual centering
+// const textWidthHeader = doc.widthOfString(headerText);
+// const xCenter = (doc.page.width - textWidthHeader) / 2;
+// doc.text(headerText, xCenter, doc.y); // doc.y current y-position
+// doc.moveDown(1); // space after header
+
+// // Reset font for table
+// doc.fontSize(10);
+// let startY = doc.y; // correct y for table start
+// let currentY = startY;
+// const padding = 6;
+// const textWidth = pageWidth / 2 - 90;
+
+// for (let i = 0; i < schoolNames.length; i += 2) {
+//   const name1 = schoolNames[i] || "-";
+//   const name2 = schoolNames[i + 1] || "-";
+
+//   const h1 = doc.heightOfString(name1, { width: textWidth });
+//   const h2 = doc.heightOfString(name2, { width: textWidth });
+//   const rowH = Math.max(h1, h2) + padding * 2;
+
+//   // Horizontal divider for each row
+//   if (i !== 0) {
+//     doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
+//   }
+
+//   // Left choice
+//   doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
+//   doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, { width: textWidth });
+
+//   // Right choice
+//   if (schoolNames[i + 1]) {
+//     doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
+//     doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, currentY + padding, { width: textWidth });
+//   }
+
+//   // Vertical divider
+//   doc.moveTo(leftX + pageWidth / 2, currentY)
+//      .lineTo(leftX + pageWidth / 2, currentY + rowH)
+//      .stroke();
+
+//   currentY += rowH;
+// }
+
+// // Outer border for school choices table
+// doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
+
+// doc.y = currentY + 30;
+
+
 // ================= SCHOOL CHOICES =================
-// doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
-//   align: "center",
-// });
-// doc.moveDown(1);
-// doc.fontSize(12);
 const headerText = "School Choices";
 const headerFontSize = 18;
 doc.font("Helvetica-Bold").fontSize(headerFontSize);
@@ -215,15 +270,36 @@ doc.font("Helvetica-Bold").fontSize(headerFontSize);
 // Manual centering
 const textWidthHeader = doc.widthOfString(headerText);
 const xCenter = (doc.page.width - textWidthHeader) / 2;
-doc.text(headerText, xCenter, doc.y); // doc.y current y-position
-doc.moveDown(1); // space after header
+doc.text(headerText, xCenter, doc.y);
+doc.moveDown(1);
 
 // Reset font for table
 doc.fontSize(10);
-let startY = doc.y; // correct y for table start
-let currentY = startY;
+
 const padding = 6;
 const textWidth = pageWidth / 2 - 90;
+let currentY = doc.y;
+
+// ✅ bottom margin safety
+const bottomMargin = 50;
+
+// function to check page break
+function checkPageBreak(rowH) {
+  if (currentY + rowH > doc.page.height - bottomMargin) {
+    doc.addPage();
+    currentY = doc.page.margins.top;
+
+    // redraw header on new page
+    doc.font("Helvetica-Bold").fontSize(14).text("School Choices", {
+      align: "center",
+    });
+
+    currentY = doc.y + 10;
+  }
+}
+
+const startX = leftX;
+let startY = currentY;
 
 for (let i = 0; i < schoolNames.length; i += 2) {
   const name1 = schoolNames[i] || "-";
@@ -233,33 +309,48 @@ for (let i = 0; i < schoolNames.length; i += 2) {
   const h2 = doc.heightOfString(name2, { width: textWidth });
   const rowH = Math.max(h1, h2) + padding * 2;
 
-  // Horizontal divider for each row
-  if (i !== 0) {
-    doc.moveTo(leftX, currentY).lineTo(leftX + pageWidth, currentY).stroke();
-  }
+  // ✅ check page break before drawing
+  checkPageBreak(rowH);
 
-  // Left choice
-  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, leftX + 5, currentY + padding);
-  doc.font("Helvetica").text(name1, leftX + 80, currentY + padding, { width: textWidth });
+  // row border
+  doc.rect(startX, currentY, pageWidth, rowH).stroke();
 
-  // Right choice
-  if (schoolNames[i + 1]) {
-    doc.font("Helvetica-Bold").text(`Choice ${i + 2}:`, leftX + pageWidth / 2 + 5, currentY + padding);
-    doc.font("Helvetica").text(name2, leftX + pageWidth / 2 + 80, currentY + padding, { width: textWidth });
-  }
-
-  // Vertical divider
-  doc.moveTo(leftX + pageWidth / 2, currentY)
-     .lineTo(leftX + pageWidth / 2, currentY + rowH)
+  // vertical divider
+  doc.moveTo(startX + pageWidth / 2, currentY)
+     .lineTo(startX + pageWidth / 2, currentY + rowH)
      .stroke();
+
+  // left
+  doc.font("Helvetica-Bold").text(`Choice ${i + 1}:`, startX + 5, currentY + padding);
+  doc.font("Helvetica").text(name1, startX + 80, currentY + padding, {
+    width: textWidth,
+  });
+
+  // right
+  if (schoolNames[i + 1]) {
+    doc.font("Helvetica-Bold").text(
+      `Choice ${i + 2}:`,
+      startX + pageWidth / 2 + 5,
+      currentY + padding
+    );
+    doc.font("Helvetica").text(
+      name2,
+      startX + pageWidth / 2 + 80,
+      currentY + padding,
+      { width: textWidth }
+    );
+  }
 
   currentY += rowH;
 }
 
-// Outer border for school choices table
-doc.rect(leftX, startY, pageWidth, currentY - startY).stroke();
-
+// spacing after table
 doc.y = currentY + 30;
+
+
+
+
+    
 
 // SIGNATURE
 const signX = doc.page.width - 200;
