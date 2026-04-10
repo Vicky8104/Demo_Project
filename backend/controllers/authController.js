@@ -203,7 +203,7 @@ row("Mobile", user.mobile, "Email", user.email, 6);
 doc.y = y + rowHeight * 7 + 20; // +20 for spacing after last row
 
   
-================= SCHOOL CHOICES =================
+//================= SCHOOL CHOICES =================
 doc.font("Helvetica-Bold").fontSize(18).text("School Choices", {
   align: "center",
 });
