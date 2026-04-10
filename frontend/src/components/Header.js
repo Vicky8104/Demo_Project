@@ -5,17 +5,10 @@ import "./Header.css";
 
 const members = [
   {
-    img: "https://i.pravatar.cc/300?img=42",
     name: "Priyanka Jodhawat",
     post: "Commissioner",
   },
-  {
-    img: "https://i.pravatar.cc/300?img=2",
-    name: "Dr. Jitendra Agarwal",
-    post: "Joint Director",
-  },
-  {
-    img: "https://i.pravatar.cc/300?img=4",
+   {
     name: "Dr. Mahender Kumar Sharma",
     post: "Deputy Director",
   },
