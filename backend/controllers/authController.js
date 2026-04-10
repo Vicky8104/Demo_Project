@@ -170,7 +170,7 @@ doc.moveDown();
 
 let y = doc.y;
 
-Row function
+
 function row(label1, value1, label2, value2, index) {
   const rowY = y + index * rowHeight;
 
