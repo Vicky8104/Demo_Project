@@ -48,8 +48,8 @@ function App() {
       "Hindi",
       "Science",
       "Mathematics",
-      "Maths-tsp",
-      "SS"
+      "Mathematics-tsp",
+      "Social Science"
     ]
   };
 
