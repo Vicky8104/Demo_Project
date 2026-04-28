@@ -65,6 +65,24 @@ async function getUser(req, res) {
 }
 
 // ================= GET SCHOOLS =================
+// async function getSchools(req, res) {
+//   try {
+//     let { post, subject } = req.query;
+
+//     post = post?.trim();
+//     subject = subject?.trim();
+
+//     const schools = await School.find({
+//       post: { $regex: post, $options: "i" },
+//       subject: { $regex: subject, $options: "i" },
+//     });
+
+//     res.status(200).json({ schools });
+//   } catch (err) {
+//     // console.error("❌ GET SCHOOLS ERROR:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// }
 async function getSchools(req, res) {
   try {
     let { post, subject } = req.query;
@@ -72,14 +90,16 @@ async function getSchools(req, res) {
     post = post?.trim();
     subject = subject?.trim();
 
-    const schools = await School.find({
-      post: { $regex: post, $options: "i" },
-      subject: { $regex: subject, $options: "i" },
-    });
+    const query = {};
+
+    if (post) query.post = post;
+    if (subject) query.subject = subject;
+
+    const schools = await School.find(query);
 
     res.status(200).json({ schools });
   } catch (err) {
-    // console.error("❌ GET SCHOOLS ERROR:", err);
+    console.error("❌ GET SCHOOLS ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 }
