@@ -1,0 +1,46 @@
+.dashboard{
+    padding:20px;
+}
+.top-buttons{
+    display: flex;
+    gap:10px;
+    background-color: aqua;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+   border-radius: 10px;
+   padding: 5px;   
+}
+.sub-header{
+    margin-bottom: 0;
+}
+.top-buttons button{
+
+    padding:10px 20px;
+    cursor: pointer;
+}
+.report{
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+.cards-container{
+    width: 98%;
+    max-width: 1200px;
+    padding:20px;
+    margin:0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap:50px;
+    justify-content: center;
+    box-sizing: border-box;
+
+}
+.card{
+    width:100%;
+     max-height: 275px;
+    background: #fff;
+    padding:15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}

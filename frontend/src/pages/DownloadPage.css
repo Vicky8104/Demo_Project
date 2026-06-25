@@ -1,0 +1,46 @@
+.download-data{
+
+    align-items: center;
+    text-align: center;
+    margin-top: 60px;
+    padding: 30px;
+}
+.download-data h2{
+    margin: auto;
+    background-color: aqua;
+    text-align: center;
+    width: 300px;
+    padding: 10px 15px ;
+    margin-bottom: 60px;
+    border-radius: 30px;
+}
+.download-btn-div{
+    display: flex;
+    justify-content:center;
+    gap: 50px;
+    flex-wrap: wrap;
+
+}
+.download-btn{
+    background:rgb(118, 235, 9);
+    padding: 10px 20px;
+    width: 200px ;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.selection-info-card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  padding: 10px;
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+.selection-info-card p{
+    font-size: 20px;
+    background-color: aqua;
+    padding: 10px 30px;
+    border-radius: 20px;
+}
