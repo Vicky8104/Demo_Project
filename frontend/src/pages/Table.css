@@ -1,0 +1,74 @@
+.container {
+  padding: 15px;
+}
+
+.date {
+  margin: 15px 0;
+  color: #333;
+}
+
+/* TABLE */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.table th {
+  background: #007bff;
+  color: white;
+}
+
+/* MOBILE CARDS (hidden on desktop) */
+.mobile-cards {
+  display: none;
+}
+
+/* CARD STYLE */
+.card {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+button {
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:first-child {
+  background: green;
+  color: white;
+}
+
+button:last-child {
+  background: red;
+  color: white;
+}
+
+/* 🔥 RESPONSIVE BREAKPOINT */
+@media (max-width: 768px) {
+  .table {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: block;
+  }
+}

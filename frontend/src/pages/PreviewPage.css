@@ -1,0 +1,90 @@
+.preview-personal-data{
+  
+  margin: 40px auto;
+  background: white;
+  padding: 35px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  
+}
+.preview-personal-data h2{
+
+  text-align: center;
+  background-color: aqua;
+}
+.form-container{
+    padding: 15px;
+
+}
+.preview-personal-detail{
+  margin-bottom: 20px;
+}
+.preview-form-grid{
+display: grid;
+  grid-template-columns: 100px 1fr 100px 1fr 100px 1fr;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.school-form-grid{
+  margin: auto;
+width:auto;
+}
+
+/* 🔥 TABLET VIEW */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 125px 1fr;
+  }
+
+  .preview-form-grid {
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+  }
+
+  .form-group {
+    display: contents;
+  }
+
+}
+
+/* 🔥 MOBILE VIEW (BEST UX) */
+@media (max-width: 480px) {
+  .personal-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    /* 🔥 SINGLE COLUMN */
+  }
+
+  .preview-form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .form-group label {
+    margin-bottom: 5px;
+  }
+
+  .button-grid {
+    flex-direction: column;
+    gap: 1px;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  input {
+    box-sizing: border-box;
+
+  }
+}

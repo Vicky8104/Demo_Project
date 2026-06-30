@@ -1,0 +1,51 @@
+.container{
+ width:70%;
+ height: auto;
+}
+.msg-container{
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:30px;
+    padding: 20px;
+}
+.welcome-msg{
+    margin:auto;
+    margin-bottom:20px;
+    text-align: center;
+    background-color: aqua;
+    border: 2px solid yellow;
+    padding-bottom: 30px;
+    border-radius: 20px;
+}
+.card-container{
+    margin:auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:50px;
+    flex-wrap: wrap;
+}
+.card{
+    background-color:bisque;
+    padding:20px;
+    text-align: center;
+    border-radius: 20px;
+}
+.card h2{
+    color: green;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.card button{
+    border:none;
+    padding:5px 8px;
+    width:80px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 2px red;
+}
+.card button:hover{
+    background-color: aqua;
+}

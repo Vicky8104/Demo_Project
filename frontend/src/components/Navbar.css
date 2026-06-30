@@ -1,0 +1,63 @@
+.navbar {
+  width: 90%;
+margin: auto;
+padding-bottom:3px;
+padding-top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ 
+}
+
+.navbar span {
+  font-weight: 600;
+  color: #0d47a1;
+}
+
+.navbar span .nav-btn, .nav-btn {
+  background: linear-gradient(
+    135deg,
+    #1565c0,
+    #1976d2
+  );
+
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 10px 20px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 15px rgba(25,118,210,.35);
+}
+
+.btn:active {
+  transform: scale(.98);
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .navbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+
+    text-align: center;
+  }
+
+  .nav-btn {
+    width: 100%;
+  }
+}
