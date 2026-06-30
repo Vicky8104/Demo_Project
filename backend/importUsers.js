@@ -1,0 +1,59 @@
+const fs = require("fs");
+const csv = require("csv-parser");
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+const User = require("./models/User");
+
+const startImport = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("DB Connected ✅");
+
+    const results = [];
+
+    fs.createReadStream("users.csv")
+      .pipe(csv())
+      .on("data", (row) => {
+        results.push(row); // पहले data collect करो
+      })
+      .on("end", async () => {
+        console.log("CSV Loaded ✅");
+
+        for (let row of results) {
+          try {
+            const exist = await User.findOne({ email: row.email });
+
+            if (!exist) {
+              const hashedPassword = await bcrypt.hash(row.password,10);
+
+              await User.create({
+                name: row.name,
+                email: row.email,
+                password: hashedPassword,
+                role: row.role || "user",
+                teamNumber: row.teamNumber || null
+              });
+
+              console.log("Inserted:", row.email);
+            } else {
+              console.log("Already exists:", row.email);
+            }
+
+          } catch (err) {
+            console.log("Error:", err.message);
+          }
+        }
+
+        console.log("Import Finished ✅");
+
+        await mongoose.connection.close(); // 🔥 अब safe है
+      });
+
+  } catch (err) {
+    console.log("DB Error:", err.message);
+  }
+};
+
+startImport();
