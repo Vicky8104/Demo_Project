@@ -30,7 +30,7 @@ export default function Login() {
     setLoading(true);
     console.log(email, password, role);
     try{
-    const res = await API.post("/login",{ 
+      await API.post("/login",{ 
         email: email.toLowerCase(), 
         password, 
         role 
@@ -52,7 +52,7 @@ export default function Login() {
   const verifyOtpHandler = async () => {
     setLoading(true);
     try{
-    const res = await API.post("/verify-otp", { email, otp });
+        await API.post("/verify-otp", { email, otp });
 
   
       // FINAL LOGIN CALL (same old system)
