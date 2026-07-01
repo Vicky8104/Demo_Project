@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Loader from "../components/Loader";
-import axios from "axios";
 import API from "../api/axios";
 import "./PreviewPage.css";
 
