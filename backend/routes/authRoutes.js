@@ -1,12 +1,11 @@
 
 import express from "express";
-import { login, sendOtp, verifyOtp } from "../controllers/authController.js";
-import { loginLimiter, otpLimiter } from "../middleware/rateLimiter.js";
+import { login, verifyFirebaseAndLogin } from "../controllers/authController.js";
+import { loginLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
 router.post("/login", loginLimiter, login);
-router.post("/send-otp", otpLimiter, sendOtp);
-router.post("/verify-otp", verifyOtp);
+router.post("/verify-firebase", verifyFirebaseAndLogin);
 
 export default router;
