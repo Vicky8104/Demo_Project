@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import admin from "firebase-admin";
 import bcrypt from "bcryptjs";
 
 if (!admin.apps.length) {
