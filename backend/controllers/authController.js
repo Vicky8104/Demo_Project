@@ -1,15 +1,7 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import admin from "firebase-admin";
-
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(
-      JSON.parse(process.env.FIREBASE_ADMIN_KEY)
-    )
-  });
-}
+import admin from "../config/firebaseAdmin.js";
 // ================= LOGIN CONTROLLER =================
 export const login = async (req, res) => {
 try {
