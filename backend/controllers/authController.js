@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import admin from "firebase-admin";
 
 if (!admin.apps.length) {
   admin.initializeApp({
