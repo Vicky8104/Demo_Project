@@ -1,4 +1,4 @@
-import { replace, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "./DownloadPage.css";
 
@@ -12,7 +12,7 @@ export default function DownloadPage() {
     return null;
   }
 
-  const { pdfUrl, submitted, isClosed, selectionData } = location.state || {};
+  const { submitted, isClosed, selectionData } = location.state || {};
 
 
   const handleDownload = async () => {
