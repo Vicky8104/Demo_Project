@@ -197,11 +197,13 @@ try {
 
   // 🔥 setup recaptcha
   if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      { size: "invisible" }
-    );
+window.recaptchaVerifier = new RecaptchaVerifier(
+  "recaptcha-container",
+  {
+    size: "invisible"
+  },
+  auth
+);
   }
 
   const appVerifier = window.recaptchaVerifier;
@@ -227,7 +229,10 @@ setLoading(true);
 
 ```
 try {
-  const result = await confirmationResult.confirm(otp);
+ if (!confirmationResult) {
+  alert("Please request OTP first");
+  return;
+}
 
   const token = await result.user.getIdToken();
 
@@ -273,7 +278,13 @@ role
 ```
   const phone = res.data.phone;
 
-  const appVerifier = window.recaptchaVerifier;
+  if (!window.recaptchaVerifier) {
+  window.recaptchaVerifier = new RecaptchaVerifier(
+    "recaptcha-container",
+    { size: "invisible" },
+    auth
+  );
+}
 
   const result = await signInWithPhoneNumber(auth, phone, appVerifier);
 
@@ -285,6 +296,8 @@ role
 }
 ```
 
+} catch (err) {
+  alert("Invalid OTP ❌");
 };
 
 return (
