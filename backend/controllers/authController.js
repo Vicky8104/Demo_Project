@@ -4,8 +4,6 @@ import otpStore from "../utils/otpStore.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import bcrypt from "bcryptjs";
 
-
-
 // ================= LOGIN CONTROLLER =================
 export const login = async (req, res) => {
   try {
@@ -85,73 +83,37 @@ export const login = async (req, res) => {
 
 // ================= SEND OTP =================
 // export const sendOtp = async (req, res) => {
-//   try {
-//     const { email } = req.body;
+//   const { email } = req.body;
 
-//     if (!email) {
-//       return res.status(400).json({ message: "Email required" });
-//     }
+//   const otp = Math.floor(100000 + Math.random() * 900000);
 
-//     const otp = Math.floor(100000 + Math.random() * 900000);
+//   otpStore.set(email, {
+//     otp,
+//     expires: Date.now() + 5 * 60 * 1000
+//   });
 
-//     otpStore.set(email, {
-//       otp,
-//       expires: Date.now() + 5 * 60 * 1000
-//     });
+//   await sendEmail(email, otp); // 🔥 REAL EMAIL SEND
 
-//     console.log("OTP for", email, ":", otp);
-
-//     return res.json({ message: "OTP sent successfully" });
-
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
+//   return res.json({ message: "OTP sent to email" });
 // };
+export const sendOtp = async (req, res) =>{
+  try {
+    const { email } = req.body;
 
-export const sendOtp = async (req, res) => {
-  const { email } = req.body;
+    const otp = Math.floor(100000 + Math.random() * 900000);
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+    await sendEmail(email, otp);
 
-  otpStore.set(email, {
-    otp,
-    expires: Date.now() + 5 * 60 * 1000
-  });
+    res.status(200).json({ message: "OTP sent successfully" });
 
-  await sendEmail(email, otp); // 🔥 REAL EMAIL SEND
-
-  return res.json({ message: "OTP sent to email" });
-};
-
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || "Failed to send OTP"
+    });
+  }
+});
 
 // ================= VERIFY OTP =================
-// export const verifyOtp = async (req, res) => {
-//   try {
-//     const { email, otp } = req.body;
-
-//     const data = otpStore.get(email);
-
-//     if (!data) {
-//       return res.status(400).json({ message: "OTP not found" });
-//     }
-
-//     if (Date.now() > data.expires) {
-//       return res.status(400).json({ message: "OTP expired" });
-//     }
-
-//     if (Number(otp) !== data.otp) {
-//       return res.status(400).json({ message: "Invalid OTP" });
-//     }
-
-//     otpStore.delete(email);
-
-//     return res.json({ message: "OTP verified successfully" });
-
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
-
 
 export const verifyOtp = async (req, res) => {
   try {
