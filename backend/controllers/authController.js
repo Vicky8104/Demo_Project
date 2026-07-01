@@ -111,7 +111,7 @@ export const sendOtp = async (req, res) =>{
       message: err.message || "Failed to send OTP"
     });
   }
-});
+};
 
 // ================= VERIFY OTP =================
 
