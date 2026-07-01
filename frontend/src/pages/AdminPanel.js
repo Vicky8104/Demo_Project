@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from "react";
 import  API from  "../api/axios";
-import axios from "axios";
+
 
 const AdminPanel = ()=>{
     const [file, setFile] = useState(null);
