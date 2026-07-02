@@ -2,104 +2,113 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import admin from "../config/firebaseAdmin.js";
+
+
 // ================= LOGIN CONTROLLER =================
 export const login = async (req, res) => {
-   console.log("🔥 LOGIN API HIT");
+  console.log("🔥 LOGIN API HIT");
   console.log("BODY:", req.body);
-try {
-const { email, password, role, teamNumber } = req.body;
 
-```
-const user = await User.findOne({ email });
-console.log("BODY:", req.body);
-console.log("USER:", user);
-console.log("PASSWORD:", user?.password);
+  try {
+    const { email, password } = req.body;
 
-if (!user) {
-  return res.status(400).json({ message: "User not found" });
-}
-console.log("PASSWORD FROM DB:", user?.password);
-if (!user.password) {
-  return res.status(500).json({ message: "Password not set for user" });
-}
-const isMatch = await bcrypt.compare(password, user.password);
+    // 🔍 Find user by email
+    const user = await User.findOne({ email });
 
-if (!isMatch) {
-  return res.status(400).json({ message: "Invalid password" });
-}
+    console.log("USER:", user);
 
-if (role && user.role && role !== user.role) {
-  return res.status(403).json({
-    message: "Invalid role login attempt"
-  });
-}
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
 
-if (user.role === "team") {
-  if (!teamNumber) {
-    return res.status(400).json({ message: "Team number required" });
+    // 🔐 Check password exists
+    if (!user.password) {
+      return res.status(500).json({ message: "Password not set for user" });
+    }
+
+    // 🔐 Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    // ✅ Optional: Team validation
+    if (user.role === "team") {
+      if (!user.teamNumber) {
+        return res.status(400).json({
+          message: "Team number missing in DB"
+        });
+      }
+    }
+
+    // ✅ SUCCESS (No JWT yet - OTP step next)
+    return res.json({
+      message: "Credentials verified",
+      phone: user.phone,
+      email: user.email,
+      role: user.role
+    });
+
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
   }
-
-  if (user.teamNumber !== Number(teamNumber)) {
-    return res.status(401).json({ message: "Invalid team number" });
-  }
-}
-
-// 🔥 NO JWT HERE
-return res.json({
-  message: "Credentials verified",
-  phone: user.phone,
-  email: user.email
-});
-```
-
-} catch (error) {
-return res.status(500).json({ error: error.message });
-}
 };
 
 
-//=============== verify otp ====================
+
+// ================= VERIFY FIREBASE OTP + LOGIN =================
 export const verifyFirebaseAndLogin = async (req, res) => {
-try {
-const { token, email } = req.body;
+  try {
+    const { token, email } = req.body;
 
-```
-// 🔥 Firebase token verify
-const decoded = await admin.auth().verifyIdToken(token);
+    console.log("🔥 VERIFY OTP HIT");
+    console.log("EMAIL:", email);
 
-// 🔥 User find
-const user = await User.findOne({ email });
+    // 🔥 Verify Firebase token
+    const decoded = await admin.auth().verifyIdToken(token);
+    console.log("FIREBASE USER:", decoded.uid);
 
-if (!user) {
-  return res.status(404).json({ message: "User not found" });
-}
+    // 🔍 Find user again
+    const user = await User.findOne({ email });
 
-// 🔥 FINAL JWT
-const jwtToken = jwt.sign(
-  {
-    id: user._id,
-    role: user.role,
-    teamNumber: user.teamNumber || null
-  },
-  process.env.JWT_SECRET,
-  { expiresIn: "1d" }
-);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-// 🔥 Cookie set
-res.cookie("token", jwtToken, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None",
-});
+    // 🔐 Create JWT
+    const jwtToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        teamNumber: user.teamNumber || null
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-return res.json({
-  message: "Login successful",
-  user
-});
-```
+    // 🍪 Set cookie
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: true,       // ⚠️ production me true (Render use kar rahe ho → OK)
+      sameSite: "None",   // ⚠️ cross-origin ke liye required
+    });
 
-} catch (err) {
-console.log("FIREBASE VERIFY ERROR:", err);
-return res.status(401).json({ message: "OTP verification failed" });
-}
+    // ✅ Final response
+    return res.json({
+      message: "Login successful",
+      user
+    });
+
+  } catch (err) {
+    console.log("FIREBASE VERIFY ERROR:", err);
+
+    return res.status(401).json({
+      message: "OTP verification failed"
+    });
+  }
 };
