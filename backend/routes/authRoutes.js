@@ -5,7 +5,7 @@ import { loginLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/login", loginLimiter, login);
+router.post("/login",login);
 router.post("/verify-firebase", verifyFirebaseAndLogin);
 
 export default router;
