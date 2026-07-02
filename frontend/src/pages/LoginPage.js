@@ -13,9 +13,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const queryParams = new URLSearchParams(location.search);
-  const role = queryParams.get("role");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,7 +31,6 @@ export default function Login() {
       const res = await API.post("/login", {
         email: email.toLowerCase(),
         password,
-        role,
       });
 
       const phone = res.data.phone;
