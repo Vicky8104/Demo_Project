@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
@@ -9,7 +9,6 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import "./LandingPage.css";
 
 export default function Login() {
-  const location = useLocation();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -22,12 +21,13 @@ export default function Login() {
   const [otp, setOtp] = useState("");
   const [confirmationResult, setConfirmationResult] = useState(null);
 
-  // ✅ LOGIN + SEND OTP
+  // ================= LOGIN + SEND OTP =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // 🔥 Step 1: Verify email/password from backend
       const res = await API.post("/login", {
         email: email.toLowerCase(),
         password,
@@ -35,6 +35,13 @@ export default function Login() {
 
       const phone = res.data.phone;
 
+      if (!phone) {
+        alert("Phone number not found");
+        setLoading(false);
+        return;
+      }
+
+      // 🔥 Step 2: Setup reCAPTCHA
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(
           "recaptcha-container",
@@ -45,6 +52,7 @@ export default function Login() {
 
       const appVerifier = window.recaptchaVerifier;
 
+      // 🔥 Step 3: Send OTP
       const result = await signInWithPhoneNumber(
         auth,
         phone,
@@ -53,14 +61,16 @@ export default function Login() {
 
       setConfirmationResult(result);
       setShowOtp(true);
+
     } catch (err) {
+      console.log("LOGIN ERROR:", err);
       alert(err.response?.data?.message || "Login Failed");
     }
 
     setLoading(false);
   };
 
-  // ✅ VERIFY OTP
+  // ================= VERIFY OTP =================
   const verifyOtpHandler = async () => {
     setLoading(true);
 
@@ -71,17 +81,19 @@ export default function Login() {
         return;
       }
 
-      // ⚠️ FIXED: correct firebase confirmationResult usage
-      const token = await confirmationResult.confirm(otp);
-      const idToken = await token.user.getIdToken();
+      // 🔥 Verify OTP with Firebase
+      const result = await confirmationResult.confirm(otp);
+      const idToken = await result.user.getIdToken();
 
-      const loginRes = await API.post("/verify-firebase", {
+      // 🔥 Final login (backend JWT + cookie)
+      const loginRes = await API.post("/verify-otp", {
         token: idToken,
         email,
       });
 
       const user = loginRes.data.user;
 
+      // 🔥 Save in context
       login({
         token: "cookie-based",
         role: user.role,
@@ -90,34 +102,33 @@ export default function Login() {
         teamNumber: user.teamNumber,
       });
 
+      // 🔥 Redirect based on role
       if (user.role === "candidate") navigate("/candidate");
       else if (user.role === "admin") navigate("/admin");
       else if (user.role === "team") navigate("/team");
+
     } catch (err) {
+      console.log("OTP ERROR:", err);
       alert("Invalid OTP ❌");
     }
 
     setLoading(false);
   };
 
-  // ✅ RESEND OTP
+  // ================= RESEND OTP =================
   const resendOtp = async () => {
     try {
+      if (!email || !password) {
+        alert("Enter email & password first");
+        return;
+      }
+
       const res = await API.post("/login", {
-        email,
+        email: email.toLowerCase(),
         password,
-        role,
       });
 
       const phone = res.data.phone;
-
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          { size: "invisible" },
-          auth
-        );
-      }
 
       const appVerifier = window.recaptchaVerifier;
 
@@ -129,8 +140,10 @@ export default function Login() {
 
       setConfirmationResult(result);
 
-      alert("OTP Resent!");
+      alert("OTP Resent ✅");
+
     } catch (err) {
+      console.log("RESEND ERROR:", err);
       alert("Failed to resend OTP");
     }
   };
@@ -151,6 +164,7 @@ export default function Login() {
                 onChange={(e) =>
                   setEmail(e.target.value.toLowerCase())
                 }
+                required
               />
             </div>
 
@@ -160,6 +174,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
