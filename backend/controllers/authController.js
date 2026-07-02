@@ -9,6 +9,9 @@ const { email, password, role, teamNumber } = req.body;
 
 ```
 const user = await User.findOne({ email });
+console.log("BODY:", req.body);
+console.log("USER:", user);
+console.log("PASSWORD:", user?.password);
 
 if (!user) {
   return res.status(400).json({ message: "User not found" });
