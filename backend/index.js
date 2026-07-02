@@ -57,7 +57,7 @@ app.set("trust proxy", 1);
 app.use(express.json());
 
 // routes
-app.use("/api", globalLimiter);
+// app.use("/api", globalLimiter);
 app.use("/api", authRoutes);
 app.use("/api/selections", selectionRoutes); // ✅ ADD THIS
 app.use("/api/schools", schoolRoutes);
