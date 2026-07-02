@@ -1,11 +1,9 @@
-
 import express from "express";
 import { login, verifyFirebaseAndLogin } from "../controllers/authController.js";
-import { loginLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/login",login);
-router.post("/verify-firebase", verifyFirebaseAndLogin);
+router.post("/login", login);
+router.post("/verify-otp", verifyFirebaseAndLogin);
 
 export default router;
