@@ -56,6 +56,11 @@ app.set("trust proxy", 1);
 
 app.use(express.json());
 
+app.post("/test-login", (req, res) => {
+  console.log("TEST HIT");
+  res.send("OK");
+});
+
 // routes
 // app.use("/api", globalLimiter);
 app.use("/api", authRoutes);
@@ -66,12 +71,6 @@ app.use("/api/final-submit", finalSubmitRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/uploads",express.static("uploads"));
-
-app.post("/test-login", (req, res) => {
-  console.log("TEST HIT");
-  res.send("OK");
-});
-
 
 
 // test route
