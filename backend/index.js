@@ -67,6 +67,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/uploads",express.static("uploads"));
 
+app.post("/test-login", (req, res) => {
+  console.log("TEST HIT");
+  res.send("OK");
+});
+
 
 
 // test route
