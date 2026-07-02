@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import admin from "../config/firebaseAdmin.js";
 // ================= LOGIN CONTROLLER =================
 export const login = async (req, res) => {
+   console.log("🔥 LOGIN API HIT");
+  console.log("BODY:", req.body);
 try {
 const { email, password, role, teamNumber } = req.body;
 
@@ -16,6 +18,7 @@ console.log("PASSWORD:", user?.password);
 if (!user) {
   return res.status(400).json({ message: "User not found" });
 }
+console.log("PASSWORD FROM DB:", user?.password);
 if (!user.password) {
   return res.status(500).json({ message: "Password not set for user" });
 }
