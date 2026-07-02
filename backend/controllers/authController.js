@@ -45,7 +45,7 @@ export const login = async (req, res) => {
     // ✅ SUCCESS (No JWT yet - OTP step next)
     return res.json({
       message: "Credentials verified",
-      phone: user.phone,
+      mobile: user.mobile,
       email: user.email,
       role: user.role
     });
