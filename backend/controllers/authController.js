@@ -13,7 +13,9 @@ const user = await User.findOne({ email });
 if (!user) {
   return res.status(400).json({ message: "User not found" });
 }
-
+if (!user.password) {
+  return res.status(500).json({ message: "Password not set for user" });
+}
 const isMatch = await bcrypt.compare(password, user.password);
 
 if (!isMatch) {
