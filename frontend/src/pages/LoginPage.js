@@ -33,7 +33,7 @@ export default function Login() {
         password,
       });
 
-      const phone = res.data.phone;
+      const phone = res.data.mobile;
 
       if (!phone) {
         alert("Phone number not found");
