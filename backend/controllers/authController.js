@@ -1,114 +1,102 @@
+import nodemailer from "nodemailer";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import admin from "../config/firebaseAdmin.js";
 
+// ================= SMTP =================
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-// ================= LOGIN CONTROLLER =================
-export const login = async (req, res) => {
-  console.log("🔥 LOGIN API HIT");
-  console.log("BODY:", req.body);
+// ================= OTP STORE =================
+const otpStore = {};
 
+// ================= LOGIN + SEND OTP =================
+export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 🔍 Find user by email
+    // 🔍 USER CHECK
     const user = await User.findOne({ email });
-
-    console.log("USER:", user);
-
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // 🔐 Check password exists
-    if (!user.password) {
-      return res.status(500).json({ message: "Password not set for user" });
-    }
-
-    // 🔐 Compare password
+    // 🔐 PASSWORD CHECK
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // ✅ Optional: Team validation
-    if (user.role === "team") {
-      if (!user.teamNumber) {
-        return res.status(400).json({
-          message: "Team number missing in DB"
-        });
-      }
-    }
+    // 🔥 OTP GENERATE
+    const otp = Math.floor(100000 + Math.random() * 900000);
 
-    // ✅ SUCCESS (No JWT yet - OTP step next)
-    return res.json({
-      message: "Credentials verified",
-      mobile: user.mobile,
-      email: user.email,
-      role: user.role
+    // STORE OTP + ROLE (IMPORTANT)
+    otpStore[email] = {
+      otp,
+      role: user.role,   // ⭐ yahi important hai
+      userId: user._id,
+      expires: Date.now() + 5 * 60 * 1000,
+    };
+
+    // 📩 SEND EMAIL
+    await transporter.sendMail({
+      from: `"OTP Service" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}`,
+    });
+
+    res.json({
+      message: "OTP sent",
+      email,
     });
 
   } catch (error) {
     console.log("LOGIN ERROR:", error);
-    return res.status(500).json({
-      message: "Server error",
-      error: error.message
-    });
+    res.status(500).json({ message: "Login failed" });
   }
 };
 
-
-
-// ================= VERIFY FIREBASE OTP + LOGIN =================
-export const verifyFirebaseAndLogin = async (req, res) => {
+// ================= VERIFY OTP =================
+export const verifyOtpController = async (req, res) => {
   try {
-    const { token, email } = req.body;
+    const { email, otp } = req.body;
 
-    console.log("🔥 VERIFY OTP HIT");
-    console.log("EMAIL:", email);
+    const data = otpStore[email];
 
-    // 🔥 Verify Firebase token
-    const decoded = await admin.auth().verifyIdToken(token);
-    console.log("FIREBASE USER:", decoded.uid);
-
-    // 🔍 Find user again
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (!data) {
+      return res.status(400).json({ message: "No OTP found" });
     }
 
-    // 🔐 Create JWT
-    const jwtToken = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-        teamNumber: user.teamNumber || null
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    if (Date.now() > data.expires) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
 
-    // 🍪 Set cookie
-    res.cookie("token", jwtToken, {
-      httpOnly: true,
-      secure: true,       // ⚠️ production me true (Render use kar rahe ho → OK)
-      sameSite: "None",   // ⚠️ cross-origin ke liye required
-    });
+    if (data.otp != otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
 
-    // ✅ Final response
-    return res.json({
+    // ✅ SUCCESS
+    const user = await User.findById(data.userId);
+
+    delete otpStore[email];
+
+    res.json({
       message: "Login successful",
-      user
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,   // ⭐ FINAL ROLE RETURN
+      },
     });
 
-  } catch (err) {
-    console.log("FIREBASE VERIFY ERROR:", err);
-
-    return res.status(401).json({
-      message: "OTP verification failed"
-    });
+  } catch (error) {
+    console.log("VERIFY ERROR:", error);
+    res.status(500).json({ message: "Verification failed" });
   }
 };
