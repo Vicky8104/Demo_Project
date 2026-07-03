@@ -43,11 +43,11 @@ export default function Login() {
 
       // 🔥 Step 2: Setup reCAPTCHA
       if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          { size: "invisible" },
-          auth
-        );
+     window.recaptchaVerifier = new RecaptchaVerifier(
+  auth,
+  "recaptcha-container",
+  { size: "invisible" }
+);
       }
 
       const appVerifier = window.recaptchaVerifier;
