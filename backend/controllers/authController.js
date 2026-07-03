@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import User from "../models/User.js";
+import Otp from "../models/Otp.js"; // ⭐ NEW
 import bcrypt from "bcryptjs";
 
 // ================= SMTP =================
@@ -10,9 +11,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
-
-// ================= OTP STORE =================
-const otpStore = {};
 
 // ================= LOGIN + SEND OTP =================
 export const loginController = async (req, res) => {
@@ -25,22 +23,25 @@ export const loginController = async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // 🔐 PASSWORD CHECK
+    // 🔐 PASSWORD CHECK (HASHED)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
     // 🔥 OTP GENERATE
-    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // STORE OTP + ROLE (IMPORTANT)
-    otpStore[email] = {
+    // 🧹 OLD OTP DELETE (same email ka)
+    await Otp.deleteMany({ email });
+
+    // 💾 SAVE OTP IN DB
+    await Otp.create({
+      email,
       otp,
-      role: user.role,   // ⭐ yahi important hai
       userId: user._id,
-      expires: Date.now() + 5 * 60 * 1000,
-    };
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
+    });
 
     // 📩 SEND EMAIL
     await transporter.sendMail({
@@ -51,7 +52,7 @@ export const loginController = async (req, res) => {
     });
 
     res.json({
-      message: "OTP sent",
+      message: "OTP sent to email",
       email,
     });
 
@@ -66,24 +67,24 @@ export const verifyOtpController = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    const data = otpStore[email];
+    // 🔍 FIND OTP
+    const record = await Otp.findOne({ email, otp });
 
-    if (!data) {
-      return res.status(400).json({ message: "No OTP found" });
-    }
-
-    if (Date.now() > data.expires) {
-      return res.status(400).json({ message: "OTP expired" });
-    }
-
-    if (data.otp != otp) {
+    if (!record) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    // ✅ SUCCESS
-    const user = await User.findById(data.userId);
+    // ⏰ EXPIRY CHECK
+    if (new Date() > record.expiresAt) {
+      await Otp.deleteMany({ email });
+      return res.status(400).json({ message: "OTP expired" });
+    }
 
-    delete otpStore[email];
+    // 👤 GET USER
+    const user = await User.findById(record.userId);
+
+    // 🧹 DELETE OTP AFTER SUCCESS
+    await Otp.deleteMany({ email });
 
     res.json({
       message: "Login successful",
@@ -91,7 +92,7 @@ export const verifyOtpController = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,   // ⭐ FINAL ROLE RETURN
+        role: user.role, // ✅ ROLE
       },
     });
 
