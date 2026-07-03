@@ -34,3 +34,14 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,      // production
+    sameSite: "None",  // agar frontend alag domain pe hai
+  });
+
+  res.json({ message: "Logged out successfully" });
+};
