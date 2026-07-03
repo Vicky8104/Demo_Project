@@ -5,8 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
 import OtpModal from "../components/OtpModal";
 import { auth } from "../firebase";
-import { signInWithPhoneNumber } from "firebase/auth";
-import { RecaptchaVerifier } from "firebase/auth/recaptcha";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import "./LandingPage.css";
 
 export default function Login() {
