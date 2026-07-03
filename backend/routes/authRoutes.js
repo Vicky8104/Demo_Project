@@ -21,5 +21,13 @@ router.get(
     res.json({ message: "Admin panel" });
   }
 );
+router.get(
+  "/candidate",
+  protect,
+  authorizeRoles("candidate"),
+  (req, res) => {
+    res.json({ message: "Candidate Dashboard" });
+  }
+);
 
 export default router;
