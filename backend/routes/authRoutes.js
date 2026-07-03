@@ -1,9 +1,12 @@
 import express from "express";
-import { login, verifyFirebaseAndLogin } from "../controllers/authController.js";
+import {
+  loginController,
+  verifyOtpController,
+} from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/login", login);
-router.post("/verify-otp", verifyFirebaseAndLogin);
+router.post("/login", loginController);
+router.post("/verify-otp", verifyOtpController);
 
 export default router;
