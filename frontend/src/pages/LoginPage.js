@@ -4,8 +4,6 @@ import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
 import OtpModal from "../components/OtpModal";
-import { auth } from "../firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import "./LandingPage.css";
 
 export default function Login() {
@@ -19,7 +17,6 @@ export default function Login() {
 
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState(null);
 
   // ================= LOGIN + SEND OTP =================
   const handleSubmit = async (e) => {
@@ -27,46 +24,14 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // 🔥 Step 1: Verify email/password from backend
-      const res = await API.post("/login", {
+      // 🔥 Backend login → OTP send
+      const res = await API.post("/auth/login", {
         email: email.toLowerCase(),
         password,
       });
 
-      const phone = res.data.mobile;
-
-      if (!phone) {
-        alert("Phone number not found");
-        setLoading(false);
-        return;
-      }
-
-      // 🔥 Step 2: Setup reCAPTCHA
-
-      console.log("AUTH:", auth);
-        if (window.recaptchaVerifier) {
-          window.recaptchaVerifier.clear();
-        }
-        
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          {
-            size: "invisible",
-          },
-          auth
-        );
-
-      const appVerifier = window.recaptchaVerifier;
-
-      // 🔥 Step 3: Send OTP
-      const result = await signInWithPhoneNumber(
-        auth,
-        phone,
-        appVerifier
-      );
-
-      setConfirmationResult(result);
       setShowOtp(true);
+      alert(res.data.message); // OTP sent
 
     } catch (err) {
       console.log("LOGIN ERROR:", err);
@@ -81,41 +46,36 @@ export default function Login() {
     setLoading(true);
 
     try {
-      if (!confirmationResult) {
-        alert("Please request OTP first");
-        setLoading(false);
-        return;
-      }
-
-      // 🔥 Verify OTP with Firebase
-      const result = await confirmationResult.confirm(otp);
-      const idToken = await result.user.getIdToken();
-
-      // 🔥 Final login (backend JWT + cookie)
-      const loginRes = await API.post("/verify-otp", {
-        token: idToken,
+      // 🔥 Backend OTP verify
+      const res = await API.post("/auth/verify-otp", {
         email,
+        otp,
       });
 
-      const user = loginRes.data.user;
+      const user = res.data.user;
 
-      // 🔥 Save in context
+      // 🔥 Save user
       login({
-        token: "cookie-based",
+        token: "session",
         role: user.role,
         email: user.email,
         name: user.name,
-        teamNumber: user.teamNumber,
       });
 
-      // 🔥 Redirect based on role
-      if (user.role === "candidate") navigate("/candidate");
-      else if (user.role === "admin") navigate("/admin");
-      else if (user.role === "team") navigate("/team");
+      // 🔥 ROLE BASED REDIRECT
+      if (user.role === "candidate") {
+        navigate("/candidate");
+      } else if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "team") {
+        navigate("/team");
+      } else {
+        navigate("/");
+      }
 
     } catch (err) {
       console.log("OTP ERROR:", err);
-      alert("Invalid OTP ❌");
+      alert(err.response?.data?.message || "Invalid OTP ❌");
     }
 
     setLoading(false);
@@ -129,22 +89,10 @@ export default function Login() {
         return;
       }
 
-      const res = await API.post("/login", {
+      await API.post("/auth/login", {
         email: email.toLowerCase(),
         password,
       });
-
-      const phone = res.data.phone;
-
-      const appVerifier = window.recaptchaVerifier;
-
-      const result = await signInWithPhoneNumber(
-        auth,
-        phone,
-        appVerifier
-      );
-
-      setConfirmationResult(result);
 
       alert("OTP Resent ✅");
 
@@ -200,8 +148,6 @@ export default function Login() {
               onClose={() => setShowOtp(false)}
             />
           )}
-
-          <div id="recaptcha-container"></div>
         </div>
       </div>
     </>
