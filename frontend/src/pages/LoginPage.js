@@ -42,13 +42,19 @@ export default function Login() {
       }
 
       // 🔥 Step 2: Setup reCAPTCHA
-      if (!window.recaptchaVerifier) {
-     window.recaptchaVerifier = new RecaptchaVerifier(
-  auth,
-  "recaptcha-container",
-  { size: "invisible" }
-);
-      }
+
+      console.log("AUTH:", auth);
+        if (window.recaptchaVerifier) {
+          window.recaptchaVerifier.clear();
+        }
+        
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          "recaptcha-container",
+          {
+            size: "invisible",
+          },
+          auth
+        );
 
       const appVerifier = window.recaptchaVerifier;
 
