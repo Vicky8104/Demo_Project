@@ -1,6 +1,9 @@
 import React, { useEffect, useState} from "react";
 import  API from  "../api/axios";
+<<<<<<< HEAD
 import Loader from "../components/Loader";
+=======
+>>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
 
 
 const AdminPanel = ()=>{

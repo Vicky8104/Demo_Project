@@ -57,9 +57,14 @@ app.set("trust proxy", 1);
 
 app.use(express.json());
 
+app.post("/test-login", (req, res) => {
+  console.log("TEST HIT");
+  res.send("OK");
+});
+
 // routes
-app.use("/api", globalLimiter);
-app.use("/api", authRoutes);
+// app.use("/api", globalLimiter);
+app.use("/api/auth", authRoutes);
 app.use("/api/selections", selectionRoutes); // ✅ ADD THIS
 app.use("/api/schools", schoolRoutes);
 app.use("/api/choices", choiceRoutes);
@@ -68,7 +73,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/files", fileRoutes);
 // app.use("/api", downloadRoutes);
 app.use("/uploads",express.static("uploads"));
-
 
 
 // test route

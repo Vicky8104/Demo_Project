@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "team", "candidate"],
     default: "candidate"
   },
+  mobile:{
+    type:String,
+    required:true
+  },
   teamNumber: {
   type: Number
 }

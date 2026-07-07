@@ -1,16 +1,14 @@
-
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
-import OtpModal from "../components/OtpModal";
 import "./LandingPage.css";
 
 export default function Login() {
-  const location = useLocation();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const role = queryParams.get("role");
@@ -19,15 +17,18 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
 
+=======
 
-  // OTP STATES
-  const [showOtp, setShowOtp] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+>>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
 
-  // STEP 1: LOGIN → SEND OTP
+  // ================= LOGIN =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+<<<<<<< HEAD
     // console.log(email, password, role);
     try {
      const res = await API.post("/login", {
@@ -119,6 +120,47 @@ export default function Login() {
   //     alert("Failed to resend OTP")
   //   }
   // };
+=======
+
+    try {
+      const res = await API.post(
+        "/auth/login",
+        {
+          email: email.toLowerCase(),
+          password,
+        },
+        {
+          withCredentials: true, // 🔥 IMPORTANT (cookie ke liye)
+        }
+      );
+
+      const user = res.data.user;
+
+      // 🔥 Save user in context (NO token needed, cookie me hai)
+      login({
+        role: user.role,
+        email: user.email,
+      });
+
+      // 🔥 ROLE BASED REDIRECT
+      if (user.role === "candidate") {
+        navigate("/candidate");
+      } else if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "team") {
+        navigate("/team");
+      } else {
+        navigate("/");
+      }
+
+    } catch (err) {
+      console.log("LOGIN ERROR:", err);
+      alert(err.response?.data?.message || "Login Failed");
+    }
+
+    setLoading(false);
+  };
+>>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
 
   return (
     <>
@@ -128,14 +170,20 @@ export default function Login() {
         <div className="login-card">
           <h2>Login</h2>
 
-          {/* LOGIN FORM */}
           <form onSubmit={handleSubmit}>
             <div className="form-group1">
               <input
                 placeholder="Email"
                 value={email}
+<<<<<<< HEAD
 
                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
+=======
+                onChange={(e) =>
+                  setEmail(e.target.value.toLowerCase())
+                }
+                required
+>>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
               />
             </div>
 
@@ -145,6 +193,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
@@ -154,6 +203,7 @@ export default function Login() {
               </button>
             </div>
           </form>
+<<<<<<< HEAD
 
           {/* {showOtp && (
             <OtpModal
@@ -165,6 +215,8 @@ export default function Login() {
             />
           )} */}
 
+=======
+>>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
         </div>
       </div>
     </>
