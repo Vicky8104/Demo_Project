@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
 export default function LandingPage() {
 
   const postCards = [
@@ -44,7 +45,7 @@ export default function LandingPage() {
 
 
   return (
-
+    <>
     <div className="all-main" style={{ textAlign: "center" }}>
        {/* <h2>-: संदेश :-</h2>
       <div className="officer-msg-container">
@@ -116,5 +117,6 @@ export default function LandingPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

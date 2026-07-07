@@ -1,11 +1,13 @@
 import React, { useEffect, useState} from "react";
 import  API from  "../api/axios";
-import axios from "axios";
+import Loader from "../components/Loader";
+
 
 const AdminPanel = ()=>{
     const [file, setFile] = useState(null);
     const [name, setName] = useState("");
     const [files, setFiles] =useState([]);
+     const [loading, setLoading] = useState(false);
 
     useEffect (()=>{
         fetchFiles();
@@ -18,6 +20,8 @@ const AdminPanel = ()=>{
     };
 
     const handleUpload = async ()=>{
+         setLoading(true);
+        
         if(!name||!file){
             return alert ("Enter file name & select file");
         }
@@ -32,7 +36,7 @@ const AdminPanel = ()=>{
         await API.post("/files/upload",
             formData
         );
-        
+        setLoading(false);
         alert("Uploaded");
         setFile(null);
         setName("");
@@ -47,6 +51,8 @@ const AdminPanel = ()=>{
     };
 
     return(
+        <>
+         {loading && <Loader />}
         <div style={{padding:20}}>
             <h2>Admin Upload Panel</h2>
             <input 
@@ -91,6 +97,7 @@ const AdminPanel = ()=>{
 
             </table>
         </div>
+        </>
     );
 };
 

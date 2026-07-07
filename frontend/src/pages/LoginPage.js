@@ -11,14 +11,14 @@ export default function Login() {
   const location = useLocation();
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-
+  const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const role = queryParams.get("role");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loading, setLoading] = useState(false);
+
 
   // OTP STATES
   const [showOtp, setShowOtp] = useState(false);
@@ -28,42 +28,20 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(email, password, role);
-    try{
-    const res = await API.post("/login",{ 
-        email: email.toLowerCase(), 
-        password, 
-        role 
-    });
-
-        // SEND OTP
-      await API.post("/send-otp", { email });
-
-      setShowOtp(true);
-
-    } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
-    }
-
-    setLoading(false);
-  };
-
-  // STEP 2: VERIFY OTP → FINAL LOGIN
-  const verifyOtpHandler = async () => {
-    setLoading(true);
-    try{
-    const res = await API.post("/verify-otp", { email, otp });
-
-  
-      // FINAL LOGIN CALL (same old system)
-      const loginRes = await API.post("/login", {
-        email, password, role
+    // console.log(email, password, role);
+    try {
+     const res = await API.post("/login", {
+        email: email.toLowerCase(),
+        password,
+        role
       });
 
-      const loginData = loginRes.data;
+      const loginData = await res.data;
 
-      sessionStorage.setItem("token", loginData.token);
-      sessionStorage.setItem("user", JSON.stringify(loginData.user));
+      // SEND OTP
+      // await API.post("/send-otp", { email });
+
+      // setShowOtp(true);
 
       login({
         token: loginData.token,
@@ -73,28 +51,74 @@ export default function Login() {
         teamNumber: loginData.user.teamNumber
       });
 
-      // ROLE ROUTING (UNCHANGED)
-      if (loginData.user.role === "candidate") navigate("/candidate");
-      else if (loginData.user.role === "admin") navigate("/admin");
-      else if (loginData.user.role === "team") navigate("/team");
 
-    } catch (err) {
-      alert(err.response?.data.message || "OTP Verification Failed");
-    }
+          // ROLE ROUTING (UNCHANGED)
+          if (loginData.user.role === "candidate") navigate("/candidate");
+          else if (loginData.user.role === "admin") navigate("/admin");
+          else if (loginData.user.role === "team") navigate("/team");
 
-    setLoading(false);
-  };
+        } catch (err) {
+          alert(err.response?.data.message);
+        }
+
+        setLoading(false);
+      };
+
+
+  //   } catch (err) {
+  //     alert(err.response?.data?.message || "Login Failed");
+  //   }
+
+  //   setLoading(false);
+  // };
+
+  // STEP 2: VERIFY OTP → FINAL LOGIN
+  // const verifyOtpHandler = async () => {
+  //   setLoading(true);
+  //   try{
+  //       await API.post("/verify-otp", { email, otp });
+
+
+  //     // FINAL LOGIN CALL (same old system)
+  //     const loginRes = await API.post("/login", {
+  //       email, password, role
+  //     });
+
+  //     const loginData = loginRes.data;
+
+  //     sessionStorage.setItem("token", loginData.token);
+  //     sessionStorage.setItem("user", JSON.stringify(loginData.user));
+
+  //     login({
+  //       token: loginData.token,
+  //       role: loginData.user.role,
+  //       email: loginData.user.email,
+  //       name: loginData.user.name,
+  //       teamNumber: loginData.user.teamNumber
+  //     });
+
+  //     // ROLE ROUTING (UNCHANGED)
+  //     if (loginData.user.role === "candidate") navigate("/candidate");
+  //     else if (loginData.user.role === "admin") navigate("/admin");
+  //     else if (loginData.user.role === "team") navigate("/team");
+
+  //   } catch (err) {
+  //     alert(err.response?.data.message || "OTP Verification Failed");
+  //   }
+
+  //   setLoading(false);
+  // };
 
   // RESEND OTP
-  const resendOtp = async () => {
-    try{
-    await API.post("/send-otp", { email });
+  //   const resendOtp = async () => {
+  //     try{
+  //     await API.post("/send-otp", { email });
 
-    alert("OTP Resent!");
-  }catch(err){
-    alert("Failed to resend OTP")
-  }
-};
+  //     alert("OTP Resent!");
+  //   }catch(err){
+  //     alert("Failed to resend OTP")
+  //   }
+  // };
 
   return (
     <>
@@ -110,8 +134,8 @@ export default function Login() {
               <input
                 placeholder="Email"
                 value={email}
-                
-                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
+
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
               />
             </div>
 
@@ -131,7 +155,7 @@ export default function Login() {
             </div>
           </form>
 
-          {showOtp && (
+          {/* {showOtp && (
             <OtpModal
               otp={otp}
               setOtp={setOtp}
@@ -139,7 +163,7 @@ export default function Login() {
               resendOtp={resendOtp}
               onClose={() => setShowOtp(false)}
             />
-          )}
+          )} */}
 
         </div>
       </div>

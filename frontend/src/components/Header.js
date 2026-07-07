@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaBars } from "react-icons/fa";
 import Navbar from "./Navbar";
 import "./Header.css";
 const members = [
@@ -20,7 +21,7 @@ const members = [
 ];
 
 
-export default function Header() {
+export default function Header({ toggleSidebar }) {
   const [index, setIndex] = useState(0);
 
 
@@ -75,6 +76,7 @@ export default function Header() {
                   </div>
                 </div>
         </div>
+        <FaBars className="menu-icon" onClick={toggleSidebar} />
 
       </header>
     

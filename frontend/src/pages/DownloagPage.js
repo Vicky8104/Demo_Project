@@ -1,5 +1,3 @@
-
-
 import { replace, useLocation, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "./DownloadPage.css";
@@ -14,29 +12,20 @@ export default function DownloadPage() {
     return null;
   }
 
-  const { pdfUrl, submitted, isClosed, selectionData } = location.state || {};
+  const { submitted, isClosed, selectionData, pdfUrl } = location.state || {};
 
-
-  const handleDownload = async () => {
-    try {
-      const res = await API.get("/download-pdf", {
-        responseType: "blob"
-      });
-
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "form.pdf");
-      document.body.appendChild(link);
-      link.click();
-    } catch (err) {
-      alert("Download failed");
+  const handleDownload = () => {
+    if (!pdfUrl) {
+      alert("PDF not available");
+      return;
     }
+
+    // ✅ SAME AS TABLE
+    window.open(pdfUrl, "_blank");
   };
 
+
   return (
-
-
 
     <div className="download-data">
       {selectionData && (

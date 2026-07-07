@@ -13,6 +13,7 @@ import finalSubmitRoutes from "./routes/finalSubmitRoutes.js";
 import { globalLimiter } from "./middleware/rateLimiter.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import fileRoutes from "./routes/fileRoutes.js";
+// import downloadRoutes from "./routes/downloadRoutes.js";
 
 
 
@@ -65,6 +66,7 @@ app.use("/api/choices", choiceRoutes);
 app.use("/api/final-submit", finalSubmitRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/files", fileRoutes);
+// app.use("/api", downloadRoutes);
 app.use("/uploads",express.static("uploads"));
 
 

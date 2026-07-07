@@ -113,6 +113,7 @@ export default function CandidateDashboard() {
 
   return (
     <>
+    <div>
       {/* ✅ LOADER */}
       {loading && <Loader />}
       <div className="sub-header">
@@ -140,7 +141,7 @@ export default function CandidateDashboard() {
         )}
 
       </div>
-
+    </div>
     </>
   );
 }

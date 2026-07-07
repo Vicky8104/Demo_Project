@@ -76,9 +76,11 @@ export default function PreviewPage() {
                     pdfUrl: res.data.pdfUrl,
                     submitted: true,     // 🔥 ADD THIS
                     isClosed: false,      // optional but better
-                    selectionData
+                    selectionData,
+                    
                 }
             });
+            
 
         } catch (err) {
             console.log(err);
