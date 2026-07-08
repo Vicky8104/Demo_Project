@@ -64,9 +64,6 @@ export default function Login() {
           email: email.toLowerCase(),
           password,
           role,
-        },
-        {
-          withCredentials: true, // 🔥 IMPORTANT (cookie ke liye)
         }
       );
 
