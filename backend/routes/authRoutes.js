@@ -1,10 +1,11 @@
 import express from "express";
 import { loginUser, logoutUser } from "../controllers/authController.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
+import { loginLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/login", loginUser);
+router.post("/login", loginLimiter, loginUser);
 router.post("/logout", logoutUser);
 
 // protected route
