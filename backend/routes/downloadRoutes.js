@@ -1,13 +1,4 @@
-// import express from "express";
-// import { protect } from "../middleware/authMiddleware.js";
-// import { secureDownloadPdf } from "../controllers/downloadController.js";
 
-// const router = express.Router();
-
-// // 🔐 SECURE ROUTE
-// router.get("/secure-download/:id", protect, secureDownloadPdf);
-
-// export default router;
 
 import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
