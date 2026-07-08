@@ -14,7 +14,6 @@ export default function DownloadPage() {
   }
 
   const { submitted, isClosed, selectionData, pdfUrl } = location.state || {};
-  const { submitted, isClosed, selectionData } = location.state || {};
 
   const handleDownload = () => {
     if (!pdfUrl) {
