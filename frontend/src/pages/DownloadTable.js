@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "./api/axios";
 import { FaDownload } from "react-icons/fa";
 
 const DownloadTable = () => {
@@ -10,17 +10,11 @@ const DownloadTable = () => {
   }, []);
 
   const fetchFiles = async () => {
-    const res = await axios.get("http://localhost:5000/api/files");
+    const res = await API.get("/files");
     setFiles(res.data);
   };
 
-  // ✅ FINAL DOWNLOAD FUNCTION
-  // const handleDownload = (file) => {
-  //   const link = document.createElement("a");
-  //   link.href = file.pdfUrl;
-  //   link.download = file.name + ".pdf";
-  //   link.click();
-  // };
+
   const handleDownload = (file) => {
     window.open(file.pdfUrl, "_blank");
   };
