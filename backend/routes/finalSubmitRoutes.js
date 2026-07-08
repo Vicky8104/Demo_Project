@@ -105,7 +105,7 @@ router.post("/", async (req, res) => {
           resource_type: "raw",
           folder: "pdfs",
           // public_id: `form_${candidate._id}_${Date.now()}`,
-          public_id:`${selectionData.post}_${selectionData.area}_${selectionData.subject}_${selectionData.rollNo}.pdf`
+          public_id:`${selectionData.post}${selectionData.area}${selectionData.subject}${selectionData.rollNo}180711.pdf`
         },
         (err, result) => {
           if (err) reject(err);
