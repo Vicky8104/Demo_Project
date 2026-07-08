@@ -21,96 +21,40 @@ export default function Login() {
     setLoading(true);
 
     // console.log(email, password, role);
-    try {
-     const res = await API.post("/login", {
-        email: email.toLowerCase(),
-        password,
-        role
-      });
+    // try {
+    //  const res = await API.post("/login", {
+    //     email: email.toLowerCase(),
+    //     password,
+    //     role
+    //   });
 
-      const loginData = await res.data;
+    //   const loginData = await res.data;
 
-      // SEND OTP
-      // await API.post("/send-otp", { email });
+    //   // SEND OTP
+    //   // await API.post("/send-otp", { email });
 
-      // setShowOtp(true);
+    //   // setShowOtp(true);
 
-      login({
-        token: loginData.token,
-        role: loginData.user.role,
-        email: loginData.user.email,
-        name: loginData.user.name,
-        teamNumber: loginData.user.teamNumber
-      });
-
-
-          // ROLE ROUTING (UNCHANGED)
-          if (loginData.user.role === "candidate") navigate("/candidate");
-          else if (loginData.user.role === "admin") navigate("/admin");
-          else if (loginData.user.role === "team") navigate("/team");
-
-        } catch (err) {
-          alert(err.response?.data.message);
-        }
-
-        setLoading(false);
-      };
+    //   login({
+    //     token: loginData.token,
+    //     role: loginData.user.role,
+    //     email: loginData.user.email,
+    //     name: loginData.user.name,
+    //     teamNumber: loginData.user.teamNumber
+    //   });
 
 
-  //   } catch (err) {
-  //     alert(err.response?.data?.message || "Login Failed");
-  //   }
+    //       // ROLE ROUTING (UNCHANGED)
+    //       if (loginData.user.role === "candidate") navigate("/candidate");
+    //       else if (loginData.user.role === "admin") navigate("/admin");
+    //       else if (loginData.user.role === "team") navigate("/team");
 
-  //   setLoading(false);
-  // };
+    //     } catch (err) {
+    //       alert(err.response?.data.message);
+    //     }
 
-  // STEP 2: VERIFY OTP → FINAL LOGIN
-  // const verifyOtpHandler = async () => {
-  //   setLoading(true);
-  //   try{
-  //       await API.post("/verify-otp", { email, otp });
-
-
-  //     // FINAL LOGIN CALL (same old system)
-  //     const loginRes = await API.post("/login", {
-  //       email, password, role
-  //     });
-
-  //     const loginData = loginRes.data;
-
-  //     sessionStorage.setItem("token", loginData.token);
-  //     sessionStorage.setItem("user", JSON.stringify(loginData.user));
-
-  //     login({
-  //       token: loginData.token,
-  //       role: loginData.user.role,
-  //       email: loginData.user.email,
-  //       name: loginData.user.name,
-  //       teamNumber: loginData.user.teamNumber
-  //     });
-
-  //     // ROLE ROUTING (UNCHANGED)
-  //     if (loginData.user.role === "candidate") navigate("/candidate");
-  //     else if (loginData.user.role === "admin") navigate("/admin");
-  //     else if (loginData.user.role === "team") navigate("/team");
-
-  //   } catch (err) {
-  //     alert(err.response?.data.message || "OTP Verification Failed");
-  //   }
-
-  //   setLoading(false);
-  // };
-
-  // RESEND OTP
-  //   const resendOtp = async () => {
-  //     try{
-  //     await API.post("/send-otp", { email });
-
-  //     alert("OTP Resent!");
-  //   }catch(err){
-  //     alert("Failed to resend OTP")
-  //   }
-  // };
+    //     setLoading(false);
+    //   };
 
     try {
       const res = await API.post(
@@ -197,8 +141,6 @@ export default function Login() {
               onClose={() => setShowOtp(false)}
             />
           )} */}
-
->>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
         </div>
       </div>
     </>
