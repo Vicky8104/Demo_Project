@@ -20,28 +20,23 @@ import fileRoutes from "./routes/fileRoutes.js";
 dotenv.config();
 
 const app = express();
-const allowedOrigins = [
-  "http://localhost:3000",
-   "https://demo-project-livid-chi.vercel.app", // 👈 apna actual Vercel URL daal
-];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      console.log("Origin:", origin);
 
-      // allow requests with no origin (mobile apps, postman)
-      if (!origin) return callback(null, true);
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? [process.env.CLIENT_URL_PROD]
+    : ["http://localhost:3000"];
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true
+}));
 
 app.use(cookieParser()); // 🔥 MUST
 
@@ -67,8 +62,8 @@ app.post("/test-login", (req, res) => {
 });
 
 // routes
-// app.use("/api", globalLimiter);
-app.use("/api", authRoutes);
+app.use("/api", globalLimiter);
+app.use("/api/auth", authRoutes);
 app.use("/api/selections", selectionRoutes); // ✅ ADD THIS
 app.use("/api/schools", schoolRoutes);
 app.use("/api/choices", choiceRoutes);
@@ -76,7 +71,7 @@ app.use("/api/final-submit", finalSubmitRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/files", fileRoutes);
 // app.use("/api", downloadRoutes);
-app.use("/uploads",express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 
 // test route
@@ -100,10 +95,8 @@ app.get("/health", (req, res) => {
 
 
 
-app.use((req, res, next) => {
-  console.log("Origin:", req.headers.origin);
-  console.log("Cookies:", req.headers.cookie);
-  next();
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 app.use((err, req, res, next) => {
@@ -127,7 +120,7 @@ connectDB()
     process.exit(1);
   });
 
-  process.on("SIGINT", async () => {
+process.on("SIGINT", async () => {
   console.log("Server shutting down...");
   await mongoose.connection.close();
   process.exit(0);
