@@ -11,10 +11,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const role = queryParams.get("role");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  
 
   // ================= LOGIN =================
   const handleSubmit = async (e) => {
