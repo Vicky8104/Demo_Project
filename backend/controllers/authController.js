@@ -25,19 +25,11 @@ export const loginUser = async (req, res) => {
     );
 
     // ✅ 🔥 YAHI LAGANA HAI
-    // const isProd = process.env.NODE_ENV === "production";
-
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: isProd,
-    //   sameSite: isProd ? "None" : "lax",
-    // });
-    res.cookie("token", token, { 
-      httpOnly: true, 
-      secure: true, 
-      sameSite: "None", 
-      path: "/",
-    });
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // 🔥 MUST on production (HTTPS)
+  sameSite: "None", // 🔥 MUST for cross-origin
+});
 
     res.json({
       message: "Login success",
@@ -57,12 +49,11 @@ export const loginUser = async (req, res) => {
 export const logoutUser = (req, res) => {
   // const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("token", token, { 
-      httpOnly: true, 
-      secure: true, 
-      sameSite: "None", 
-      path: "/",
-    });
+   res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // 🔥 MUST on production (HTTPS)
+  sameSite: "None", // 🔥 MUST for cross-origin
+});
 
   res.json({ message: "Logged out successfully" });
 };
