@@ -109,7 +109,6 @@ export default function Login() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                }
                 required
               />
             </div>
