@@ -22,40 +22,40 @@ export default function Login() {
     setLoading(true);
 
     // console.log(email, password, role);
-    // try {
-    //  const res = await API.post("/login", {
-    //     email: email.toLowerCase(),
-    //     password,
-    //     role
-    //   });
+    try {
+     const res = await API.post("/login", {
+        email: email.toLowerCase(),
+        password,
+        role
+      });
 
-    //   const loginData = await res.data;
+      const loginData = await res.data;
 
-    //   // SEND OTP
-    //   // await API.post("/send-otp", { email });
+      // SEND OTP
+      // await API.post("/send-otp", { email });
 
-    //   // setShowOtp(true);
+      // setShowOtp(true);
 
-    //   login({
-    //     token: loginData.token,
-    //     role: loginData.user.role,
-    //     email: loginData.user.email,
-    //     name: loginData.user.name,
-    //     teamNumber: loginData.user.teamNumber
-    //   });
+      login({
+        token: loginData.token,
+        role: loginData.user.role,
+        email: loginData.user.email,
+        name: loginData.user.name,
+        teamNumber: loginData.user.teamNumber
+      });
 
 
-    //       // ROLE ROUTING (UNCHANGED)
-    //       if (loginData.user.role === "candidate") navigate("/candidate");
-    //       else if (loginData.user.role === "admin") navigate("/admin");
-    //       else if (loginData.user.role === "team") navigate("/team");
+          // ROLE ROUTING (UNCHANGED)
+          if (loginData.user.role === "candidate") navigate("/candidate");
+          else if (loginData.user.role === "admin") navigate("/admin");
+          else if (loginData.user.role === "team") navigate("/team");
 
-    //     } catch (err) {
-    //       alert(err.response?.data.message);
-    //     }
+        } catch (err) {
+          alert(err.response?.data.message);
+        }
 
-    //     setLoading(false);
-    //   };
+        setLoading(false);
+      };
 
     try {
       const res = await API.post(
