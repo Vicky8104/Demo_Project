@@ -14,7 +14,7 @@ const AdminPanel = ()=>{
     },[]);
 
     const fetchFiles = async ()=>{
-        // const res = await axios.get("http://localhost:5000/api/files");
+        
         const res = await API.get("/files");
         setFiles(res.data);
     };
@@ -29,10 +29,6 @@ const AdminPanel = ()=>{
         formData.append("file",file);
         formData.append("name", name);
 
-        // await axios.post("http://localhost:5000/api/files/upload",
-        //     formData
-        // );
-
         await API.post("/files/upload",
             formData
         );
@@ -45,7 +41,6 @@ const AdminPanel = ()=>{
 
 
     const handleDelete = async (id)=>{
-        // await axios.delete(`http://localhost:5000/api/files/${id}`);
         await API.delete(`/files/${id}`);
         fetchFiles();
     };

@@ -23,16 +23,7 @@ export default function CandidateDashboard() {
   const fetchSelections = async () => {
     try {
       setLoading(true); // ✅ START
-      // const token = sessionStorage.getItem("token");
-      // const res = await axios.get("http://localhost:5000/api/selections", {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`
-      //   }
-      // });
-
-      const res = await API.get("/selections");
-
-
+       const res = await API.get("/selections");
 
       // console.log("API DATA:", res.data);
       setSelections(res.data);
@@ -50,22 +41,6 @@ export default function CandidateDashboard() {
     try {
       setLoading(true);
 
-      // const token = sessionStorage.getItem("token");
-
-      // const res = await axios.post(
-      //   "http://localhost:5000/api/final-submit/check",
-      //   {
-      //     email: user.email,
-      //     post: selection.post,
-      //     area: selection.area,
-      //     subject: selection.subject,
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
         console.log("CLICKED"); // 🔥 add this
 
       const res = await API.post("/final-submit/check",{

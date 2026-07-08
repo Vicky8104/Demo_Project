@@ -37,11 +37,6 @@ export default function SchoolChoice() {
           return;
         }
 
-
-        // const res = await axios.get(
-        //   `http://localhost:5000/api/schools?post=${post}&area=${area}&subject=${subject}`
-        // );
-
         const res = await API.get(`/schools?post=${post}&area=${area}&subject=${subject}`);
 
         const data = res.data || [];
@@ -79,7 +74,7 @@ export default function SchoolChoice() {
     if (post && area && subject && selectionId) {
       fetchSchools();
     }
-  }, [post, area, subject, selectionId]);
+  }, [post, area, subject, selectionId,navigate]);
 
   // ✅ HANDLE CHANGE + SESSION SAVE
   const handleChange = (index, value) => {

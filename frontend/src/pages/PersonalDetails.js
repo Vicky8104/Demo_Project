@@ -31,14 +31,6 @@ export default function PersonalDetail() {
         const fetchSelectionDetails = async () => {
             try {
                 setLoading(true); // ✅ START
-                // const res = await axios.get(
-                //     `http://localhost:5000/api/selections/${selectionId}/details`,
-                //     {
-                //         headers: {
-                //             Authorization: `Bearer ${user.token}`
-                //         }
-                //     }
-                // );
 
                 const res = await API.get(`/selections/${selectionId}/details`);
 

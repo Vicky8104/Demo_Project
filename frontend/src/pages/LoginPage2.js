@@ -20,19 +20,17 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     setLoading(true);
+    setLoading(true);
 
-    const res = await fetch("http://localhost:5000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password, role })
+    const res = await API.post("/login", {
+      email,
+      password,
+      role,
     });
 
     const data = await res.json();
 
-    
+
 
     // 🔥 FIX ONLY THIS PART
     if (res.ok) {
@@ -55,40 +53,40 @@ export default function Login() {
     } else {
       alert(data.message);
     }
-     setLoading(false);
+    setLoading(false);
   };
 
   return (
     <>
-    {loading && <Loader />}
-    <div className="card-container">
-      <div className="card">
-        <h2>Login</h2>
+      {loading && <Loader />}
+      <div className="card-container">
+        <div className="card">
+          <h2>Login</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group1">
-            <input
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group1">
+              <input
+                placeholder="Email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-          <div className="form-group1">
-            <input
-              placeholder="Password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            <div className="form-group1">
+              <input
+                placeholder="Password"
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          <div className="form-group1">
-            <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}  </button>
-          </div>
-        </form>
+            <div className="form-group1">
+              <button type="submit" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}  </button>
+            </div>
+          </form>
 
+        </div>
       </div>
-    </div>
     </>
   );
 }
