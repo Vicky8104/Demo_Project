@@ -64,7 +64,7 @@ app.post("/test-login", (req, res) => {
 
 // routes
 // app.use("/api", globalLimiter);
-app.use("/api/auth", authRoutes);
+app.use("/api", authRoutes);
 app.use("/api/selections", selectionRoutes); // ✅ ADD THIS
 app.use("/api/schools", schoolRoutes);
 app.use("/api/choices", choiceRoutes);
