@@ -6,139 +6,97 @@ import Loader from "../components/Loader";
 import "./LandingPage.css";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-  const queryParams = new URLSearchParams(location.search);
-  const role = queryParams.get("role");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  
+const navigate = useNavigate();
+const location = useLocation();
+const { login } = useContext(AuthContext);
 
-  // ================= LOGIN =================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
 
-    // console.log(email, password, role);
-    try {
-     const res = await API.post("/login", {
-        email: email.toLowerCase(),
-        password,
-        role
-      });
+// Query param (optional)
+const queryParams = new URLSearchParams(location.search);
+const role = queryParams.get("role");
 
-      const loginData = await res.data;
+// ================= LOGIN =================
+const handleSubmit = async (e) => {
+e.preventDefault();
+setLoading(true);
 
-      // SEND OTP
-      // await API.post("/send-otp", { email });
+try {
+  const res = await API.post("/auth/login", {
+    email: email.toLowerCase(),
+    password,
+    role, // optional
+  });
 
-      // setShowOtp(true);
+  const user = res.data.user;
 
-      login({
-        token: loginData.token,
-        role: loginData.user.role,
-        email: loginData.user.email,
-        name: loginData.user.name,
-        teamNumber: loginData.user.teamNumber
-      });
+  // Save user (cookie backend में already store है)
+  login({
+    role: user.role,
+    email: user.email,
+    name: user.name,
+  });
 
+  // Role-based redirect
+  if (user.role === "candidate") {
+    navigate("/candidate");
+  } else if (user.role === "admin") {
+    navigate("/admin");
+  } else if (user.role === "team") {
+    navigate("/team");
+  } else {
+    navigate("/");
+  }
 
-          // ROLE ROUTING (UNCHANGED)
-          if (loginData.user.role === "candidate") navigate("/candidate");
-          else if (loginData.user.role === "admin") navigate("/admin");
-          else if (loginData.user.role === "team") navigate("/team");
- console.log(res.data);
-        } catch (err) {
-          alert(err.response?.data.message);
-        }
+} catch (err) {
+  console.error("LOGIN ERROR:", err);
+  alert(err?.response?.data?.message || err.message || "Login Failed");
+} finally {
+  setLoading(false);
+}
 
-        setLoading(false);
-      };
+};
 
-  //   try {
-  //     const res = await API.post(
-  //       "/auth/login",
-  //       {
-  //         email: email.toLowerCase(),
-  //         password,
-  //         role,
-  //       }
-  //     );
+return (
+<>
+{loading && <Loader text="Logging in..." />}
 
-  //     const user = res.data.user;
+  <div className="login-card-container">
+    <div className="login-card">
+      <h2>Login</h2>
 
-  //     // 🔥 Save user in context (NO token needed, cookie me hai)
-  //     login({
-  //       role: user.role,
-  //       email: user.email,
-  //     });
-
-  //     // 🔥 ROLE BASED REDIRECT
-  //     if (user.role === "candidate") {
-  //       navigate("/candidate");
-  //     } else if (user.role === "admin") {
-  //       navigate("/admin");
-  //     } else if (user.role === "team") {
-  //       navigate("/team");
-  //     } else {
-  //       navigate("/");
-  //     }
-
-  //   } catch (err) {
-  //     console.log("LOGIN ERROR:", err);
-  //    alert(err?.response?.data?.message || err.message || "Login Failed");
-  // } finally {
-  // setLoading(false); // ✅ safe
-  //   }
-  // };
-  return (
-    <>
-      {loading && <Loader text="Logging in..." />}
-
-      <div className="login-card-container">
-        <div className="login-card">
-          <h2>Login</h2>
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group1">
-              <input
-                placeholder="Email"
-                value={email}
-               onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group1">
-              <input
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group1">
-              <button type="submit" disabled={loading}>
-                Login
-              </button>
-            </div>
-          </form>
-
-          {/* {showOtp && (
-            <OtpModal
-              otp={otp}
-              setOtp={setOtp}
-              verifyOtpHandler={verifyOtpHandler}
-              resendOtp={resendOtp}
-              onClose={() => setShowOtp(false)}
-            />
-          )} */}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group1">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-      </div>
-    </>
-  );
+
+        <div className="form-group1">
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group1">
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</>
+
+);
 }
