@@ -20,6 +20,28 @@ import fileRoutes from "./routes/fileRoutes.js";
 dotenv.config();
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://your-frontend.vercel.app", // 👈 apna actual Vercel URL daal
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      console.log("Origin:", origin);
+
+      // allow requests with no origin (mobile apps, postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(cookieParser()); // 🔥 MUST
 
@@ -33,48 +55,6 @@ app.use((req, res, next) => {
   // console.log("HIT:", req.method, req.url);
   next();
 });
-
-
-// middleware
-// const allowedOrigins =
-//   process.env.NODE_ENV === "production"
-//     ? [process.env.CLIENT_URL_PROD]
-//     : [process.env.CLIENT_URL || "http://localhost:3000"];
-
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("CORS not allowed"));
-//     }
-//   },
-//   credentials: true
-// }));
-
-const allowedOrigins = [
-  "https://demo-project-livid-chi.vercel.app"
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log("Origin:", origin); // DEBUG
-
-    // allow postman / mobile apps
-    if (!origin) return callback(null, true);
-
-    // allow vercel deployments (IMPORTANT 🔥)
-    if (
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".vercel.app")
-    ) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("CORS not allowed"));
-  },
-  credentials: true
-}));
 
 app.set("trust proxy", 1);
 
@@ -120,8 +100,10 @@ app.get("/health", (req, res) => {
 
 
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
+app.use((req, res, next) => {
+  console.log("Origin:", req.headers.origin);
+  console.log("Cookies:", req.headers.cookie);
+  next();
 });
 
 app.use((err, req, res, next) => {
