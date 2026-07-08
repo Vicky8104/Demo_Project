@@ -1,6 +1,5 @@
 
 import { replace, useLocation, useNavigate } from "react-router-dom";
-import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "./DownloadPage.css";
 
