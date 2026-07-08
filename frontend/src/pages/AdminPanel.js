@@ -1,6 +1,8 @@
 import React, { useEffect, useState} from "react";
 import  API from  "../api/axios";
 import Loader from "../components/Loader";
+
+
 const AdminPanel = ()=>{
     const [file, setFile] = useState(null);
     const [name, setName] = useState("");
