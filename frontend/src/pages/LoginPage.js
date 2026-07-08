@@ -59,7 +59,7 @@ export default function Login() {
 
     try {
       const res = await API.post(
-        "/login",
+        "/auth/login",
         {
           email: email.toLowerCase(),
           password,
