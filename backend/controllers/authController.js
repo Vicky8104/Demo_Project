@@ -6,6 +6,10 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
     const user = await User.findOne({
       email: email.toLowerCase(), // 🔥 IMPORTANT FIX
     });
@@ -21,21 +25,26 @@ export const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET
+
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
     );
 
     // ✅ 🔥 YAHI LAGANA HAI
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: true, // 🔥 MUST on production (HTTPS)
-  sameSite: "None", // 🔥 MUST for cross-origin
-});
+    const isProd = process.env.NODE_ENV === "production";
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
     res.json({
       message: "Login success",
       user: {
         email: user.email,
         role: user.role,
+        name: user.name,
       },
     });
 
@@ -47,13 +56,11 @@ res.cookie("token", token, {
 
 
 export const logoutUser = (req, res) => {
-  // const isProd = process.env.NODE_ENV === "production";
-
-   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true, // 🔥 MUST on production (HTTPS)
-  sameSite: "None", // 🔥 MUST for cross-origin
-});
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  });
 
   res.json({ message: "Logged out successfully" });
 };
