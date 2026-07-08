@@ -63,6 +63,7 @@ export default function Login() {
         {
           email: email.toLowerCase(),
           password,
+          role,
         },
         {
           withCredentials: true, // 🔥 IMPORTANT (cookie ke liye)
@@ -90,14 +91,14 @@ export default function Login() {
 
     } catch (err) {
       console.log("LOGIN ERROR:", err);
-      alert(err.response?.data?.message || "Login Failed");
+     alert(err?.response?.data?.message || err.message || "Login Failed");
+  } finally {
+  setLoading(false); // ✅ safe
     }
-
-    setLoading(false);
   };
   return (
     <>
-      {loading && <Loader />}
+      {loading && <Loader text="Logging in..." />}
 
       <div className="login-card-container">
         <div className="login-card">
@@ -108,7 +109,7 @@ export default function Login() {
               <input
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+               onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
