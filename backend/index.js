@@ -22,7 +22,7 @@ dotenv.config();
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://your-frontend.vercel.app", // 👈 apna actual Vercel URL daal
+   "https://demo-project-livid-chi.vercel.app", // 👈 apna actual Vercel URL daal
 ];
 
 app.use(
