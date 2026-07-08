@@ -36,18 +36,43 @@ app.use((req, res, next) => {
 
 
 // middleware
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [process.env.CLIENT_URL_PROD]
-    : [process.env.CLIENT_URL || "http://localhost:3000"];
+// const allowedOrigins =
+//   process.env.NODE_ENV === "production"
+//     ? [process.env.CLIENT_URL_PROD]
+//     : [process.env.CLIENT_URL || "http://localhost:3000"];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("CORS not allowed"));
+//     }
+//   },
+//   credentials: true
+// }));
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://demo-project-livid-chi.vercel.app"
+];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
+    console.log("Origin:", origin); // DEBUG
+
+    // allow postman / mobile apps
+    if (!origin) return callback(null, true);
+
+    // allow vercel deployments (IMPORTANT 🔥)
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
     }
+
+    return callback(new Error("CORS not allowed"));
   },
   credentials: true
 }));
