@@ -66,6 +66,7 @@ export default function CandidateDashboard() {
       //     },
       //   }
       // );
+        console.log("CLICKED"); // 🔥 add this
 
       const res = await API.post("/final-submit/check",{
         email: user.email,
@@ -87,6 +88,7 @@ export default function CandidateDashboard() {
             
           },
         });
+         console.log("RESPONSE:", res.data); // 🔥 add this
         return;
       }
 
