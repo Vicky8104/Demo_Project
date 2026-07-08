@@ -8,7 +8,6 @@ import "./LandingPage.css";
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-<<<<<<< HEAD
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const role = queryParams.get("role");
@@ -16,19 +15,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
-=======
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
->>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
 
   // ================= LOGIN =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-<<<<<<< HEAD
+
     // console.log(email, password, role);
     try {
      const res = await API.post("/login", {
@@ -120,7 +115,6 @@ export default function Login() {
   //     alert("Failed to resend OTP")
   //   }
   // };
-=======
 
     try {
       const res = await API.post(
@@ -160,8 +154,6 @@ export default function Login() {
 
     setLoading(false);
   };
->>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
-
   return (
     <>
       {loading && <Loader />}
@@ -175,15 +167,11 @@ export default function Login() {
               <input
                 placeholder="Email"
                 value={email}
-<<<<<<< HEAD
-
                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
-=======
                 onChange={(e) =>
                   setEmail(e.target.value.toLowerCase())
                 }
                 required
->>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
               />
             </div>
 
@@ -203,7 +191,6 @@ export default function Login() {
               </button>
             </div>
           </form>
-<<<<<<< HEAD
 
           {/* {showOtp && (
             <OtpModal
@@ -215,7 +202,6 @@ export default function Login() {
             />
           )} */}
 
-=======
 >>>>>>> ebfd83f97da3eec23c147c17cdcc7e2daa721312
         </div>
       </div>
