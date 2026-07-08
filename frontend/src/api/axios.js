@@ -1,22 +1,3 @@
-// import axios from "axios";
-
-// const baseURL =
-//   process.env.NODE_ENV === "production"
-//     ? process.env.REACT_APP_API_URL_PROD
-//     : process.env.REACT_APP_API_URL;
-
-// const API = axios.create({
-//   baseURL,
-//   withCredentials: true // 🔥 VERY IMPORTANT
-// });
-
-// API.interceptors.request.use((req) => {
-//   console.log("Request:", req.url);
-//   return req;
-// });
-
-// export default API;
-
 import axios from "axios";
 
 const API = axios.create({
