@@ -57,42 +57,42 @@ export default function Login() {
         setLoading(false);
       };
 
-    try {
-      const res = await API.post(
-        "/auth/login",
-        {
-          email: email.toLowerCase(),
-          password,
-          role,
-        }
-      );
+  //   try {
+  //     const res = await API.post(
+  //       "/auth/login",
+  //       {
+  //         email: email.toLowerCase(),
+  //         password,
+  //         role,
+  //       }
+  //     );
 
-      const user = res.data.user;
+  //     const user = res.data.user;
 
-      // 🔥 Save user in context (NO token needed, cookie me hai)
-      login({
-        role: user.role,
-        email: user.email,
-      });
+  //     // 🔥 Save user in context (NO token needed, cookie me hai)
+  //     login({
+  //       role: user.role,
+  //       email: user.email,
+  //     });
 
-      // 🔥 ROLE BASED REDIRECT
-      if (user.role === "candidate") {
-        navigate("/candidate");
-      } else if (user.role === "admin") {
-        navigate("/admin");
-      } else if (user.role === "team") {
-        navigate("/team");
-      } else {
-        navigate("/");
-      }
+  //     // 🔥 ROLE BASED REDIRECT
+  //     if (user.role === "candidate") {
+  //       navigate("/candidate");
+  //     } else if (user.role === "admin") {
+  //       navigate("/admin");
+  //     } else if (user.role === "team") {
+  //       navigate("/team");
+  //     } else {
+  //       navigate("/");
+  //     }
 
-    } catch (err) {
-      console.log("LOGIN ERROR:", err);
-     alert(err?.response?.data?.message || err.message || "Login Failed");
-  } finally {
-  setLoading(false); // ✅ safe
-    }
-  };
+  //   } catch (err) {
+  //     console.log("LOGIN ERROR:", err);
+  //    alert(err?.response?.data?.message || err.message || "Login Failed");
+  // } finally {
+  // setLoading(false); // ✅ safe
+  //   }
+  // };
   return (
     <>
       {loading && <Loader text="Logging in..." />}
