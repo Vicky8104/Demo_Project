@@ -43,19 +43,6 @@ export default function PreviewPage() {
                 return school?.schoolName || "Unknown";
             });
 
-
-            // const res = await axios.post(
-            //     "http://localhost:5000/api/final-submit",
-            //     {
-            //         selectionId,
-            //         candidate,
-            //         selectionData,
-            //         schools,
-            //         choices: selectedSchoolNames   // ✅ FIX
-            //     }
-            // );
-
-
             const res = await API.post("/final-submit", {
                 selectionId,
                 candidate,
