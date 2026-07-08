@@ -49,7 +49,7 @@ export default function Login() {
           if (loginData.user.role === "candidate") navigate("/candidate");
           else if (loginData.user.role === "admin") navigate("/admin");
           else if (loginData.user.role === "team") navigate("/team");
-
+ console.log(res.data);
         } catch (err) {
           alert(err.response?.data.message);
         }
