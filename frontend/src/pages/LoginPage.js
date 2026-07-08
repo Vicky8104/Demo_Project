@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
@@ -7,6 +7,7 @@ import "./LandingPage.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const queryParams = new URLSearchParams(location.search);
@@ -108,8 +109,6 @@ export default function Login() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                onChange={(e) =>
-                  setEmail(e.target.value.toLowerCase())
                 }
                 required
               />
