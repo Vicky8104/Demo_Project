@@ -23,7 +23,7 @@ export const getSchools = async (req, res) => {
     res.json(schools);
 
   } catch (err) {
-    console.log("ERROR:", err);
+    // console.log("ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };

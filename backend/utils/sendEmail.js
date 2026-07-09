@@ -47,10 +47,10 @@ export const sendEmail = async (email, otp) => {
       text: `Your OTP is ${otp}. It will expire in 5 minutes.`
     });
 
-    console.log("✅ OTP email sent to:", email);
+    // console.log("✅ OTP email sent to:", email);
 
   } catch (err) {
-    console.log("❌ MAIL ERROR:", err);
+    // console.log("❌ MAIL ERROR:", err);
 
     // 👉 error throw karna important hai taaki route me handle ho
     throw new Error("Email sending failed");

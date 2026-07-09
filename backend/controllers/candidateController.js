@@ -19,7 +19,7 @@ exports.getMyProfile = async (req, res) => {
     });
 
   } catch (error) {
-    console.log("ERROR:", error);
+    // console.log("ERROR:", error);
     return res.status(500).json({
       error: error.message
     });

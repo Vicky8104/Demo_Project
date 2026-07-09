@@ -31,16 +31,10 @@ export const loginUser = async (req, res) => {
     );
 
     // ✅ 🔥 YAHI LAGANA HAI
-    const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
     res.json({
       message: "Login success",
+      token,
       user: {
         email: user.email,
         role: user.role,
@@ -49,18 +43,12 @@ export const loginUser = async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({ message: err.message });
   }
 };
 
 
 export const logoutUser = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-  });
-
   res.json({ message: "Logged out successfully" });
 };

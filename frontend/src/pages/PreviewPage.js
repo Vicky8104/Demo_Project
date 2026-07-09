@@ -9,7 +9,7 @@ export default function PreviewPage() {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
 
-    console.log("PREVIEW STATE:", location.state);
+    // console.log("PREVIEW STATE:", location.state);
     const navigate = useNavigate();
 
     if (!location.state) {
@@ -69,7 +69,7 @@ export default function PreviewPage() {
             
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             alert(err.response?.data?.message || "Submission Failed");
         } finally {
             setLoading(false); // ✅ END

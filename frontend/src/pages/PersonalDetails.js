@@ -36,7 +36,7 @@ export default function PersonalDetail() {
 
                 setSelectionData(res.data);
             } catch (err) {
-                console.log("Selection Error:", err);
+                // console.log("Selection Error:", err);
                 alert(err.response?.data?.message || "Failed to load Data")
             } finally {
                 setLoading(false); // ✅ END

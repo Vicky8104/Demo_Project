@@ -1,33 +1,61 @@
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import API from "../api/axios";
 import "./AdminDashboard.css";
 import AdminPanel from "./AdminPanel";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [reports, setReports] = useState([]);
   const [activeTab, setActiveTab] = useState("reports");
 
+  // useEffect(() => {
+  //   if (activeTab === "reports") {
+  //     fetchReport();
+  //   }
+  // }, [activeTab]);
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    // console.log("INIT TOKEN:", token); // 🔥
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     if (activeTab === "reports") {
+      const fetchReport = async () => {
+        try {
+          const token = localStorage.getItem("token");
+
+
+          if (!token) {
+            navigate("/login");
+            return;
+          }
+
+          // console.log("ADMIN TOKEN:", token); // 🔥
+          // console.log("USER:", user); // 
+          const res = await API.get("/admin/report");
+          // console.log("REPORT RESPONSE:", res.data); // 
+          setReports(res.data);
+        } catch (err) {
+          console.error("ADMIN ERROR:", err.response?.data || err.message);
+          console.error(err);
+          alert("Error fetching reports");
+        }
+      };
       fetchReport();
     }
-  }, [activeTab]);
+  }, [activeTab, navigate]);
 
-  const fetchReport = async () => {
-    try {
-      const res = await API.get("/admin/report");
-      setReports(res.data);
-    } catch (err) {
-      console.error(err);
-      alert("Error fetching reports");
-    }
-  };
 
   return (
     <div className="dashboard-container">
-      
+
       {/* HEADER */}
       <div className="sub-header">
         <p>Welcome {user?.name}</p>

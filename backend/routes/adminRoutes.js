@@ -13,6 +13,10 @@ import FinalSubmission from "../models/FinalSubmission.js";
 
 // ✅ Dashboard
 router.get("/dashboard", protect, isAdmin, (req, res) => {
+  //   console.log("===== ADMIN DASHBOARD HIT =====");
+
+  // console.log("AUTH HEADER:", req.headers.authorization); // 🔥
+  // console.log("REQ.USER:", req.user); // 🔥
   res.json({ message: "Admin Dashboard Data" });
 });
 
@@ -34,7 +38,7 @@ router.get("/users", protect, isAdmin, async (req, res) => {
     const users = await User.find().select("-password");
     res.json(users);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -46,7 +50,7 @@ router.get("/schools", protect, isAdmin, async (req, res) => {
     const schools = await School.find();
     res.json(schools);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -60,7 +64,7 @@ router.get("/selections", protect, isAdmin, async (req, res) => {
 
     res.json(selections);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });

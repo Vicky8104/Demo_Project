@@ -29,8 +29,15 @@ try {
     password,
     role, // optional
   });
+    // console.log("LOGIN RESPONSE:", res.data); // 🔥 DEBUG
+ 
+    const { token, user } = res.data;
 
-  const user = res.data.user;
+      localStorage.setItem("token", token);
+    // console.log("TOKEN SAVED:", localStorage.getItem("token")); // 🔥
+
+    // optional user save
+    localStorage.setItem("user", JSON.stringify(user)); 
 
   // Save user (cookie backend में already store है)
   login({

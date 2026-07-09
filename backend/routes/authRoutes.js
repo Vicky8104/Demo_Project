@@ -27,6 +27,8 @@ router.get(
   protect,
   authorizeRoles("candidate"),
   (req, res) => {
+    // console.log("CANDIDATE ROUTE HIT");
+    // console.log("REQ.USER:", req.user);
     res.json({ message: "Candidate Dashboard" });
   }
 );

@@ -47,7 +47,7 @@ export const saveChoices = async (req, res) => {
     res.json({ message: "Choices saved successfully" });
 
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 };

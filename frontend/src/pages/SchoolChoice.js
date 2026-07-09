@@ -64,7 +64,7 @@ export default function SchoolChoice() {
         }
 
       } catch (err) {
-        console.log(err);
+        // console.log(err);
         alert(err.response?.data?.message || "Failed to load schools");
       } finally {
         setLoading(false);

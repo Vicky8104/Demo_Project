@@ -38,7 +38,7 @@ router.post("/check", async (req, res) => {
     });
 
   } catch (err) {
-    console.log("CHECK ERROR:", err);
+    // console.log("CHECK ERROR:", err);
     res.status(500).json({
       success: false,
       message: "Check failed",
@@ -142,7 +142,7 @@ router.post("/", async (req, res) => {
     });
 
   } catch (err) {
-    console.log("FINAL SUBMIT ERROR:", err);
+    // console.log("FINAL SUBMIT ERROR:", err);
 
     res.status(500).json({
       success: false,

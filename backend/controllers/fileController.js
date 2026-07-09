@@ -4,8 +4,8 @@ import cloudinary from "../config/cloudinary.js";
 import File from "../models/File.js";
 
 export const uploadFile = async (req, res) => {
-    console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
+  //   console.log("BODY:", req.body);
+  // console.log("FILE:", req.file);
   try {
     if (!req.file) {
       return res.status(400).json({

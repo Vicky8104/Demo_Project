@@ -12,38 +12,78 @@ export default function CandidateDashboard() {
   const navigate = useNavigate(); // 👈 add this
   const [loading, setLoading] = useState(false);
 
+  // useEffect(() => {
+
+  //   if (user && user.role === "candidate") {
+  //     fetchSelections();
+
+  //   }
+  // }, [user]);
   useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    if (user && user.role === "candidate") {
-      fetchSelections();
+    // console.log("TOKEN:", token);
+    // console.log("USER:", user);
 
+    // ❌ No token → login
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  }, [user]);
 
-  const fetchSelections = async () => {
-    try {
-      setLoading(true); // ✅ START
-       const res = await API.get("/selections");
+    // ⏳ Wait for user (important after refresh)
+    if (!user) return;
 
-      // console.log("API DATA:", res.data);
-      setSelections(res.data);
-
-    } catch (err) {
-      console.log(err);
-      alert(err.response?.data?.message || "Failed to fetch selections")
-    } finally {
-      setLoading(false); // ✅ END
+    // ❌ Wrong role → block
+    if (user.role !== "candidate") {
+      alert("Access denied");
+      navigate("/");
+      return;
     }
-  };
+    const fetchSelections = async () => {
+      try {
+        setLoading(true); // ✅ START
+        const token = localStorage.getItem("token");
+        // console.log("DASHBOARD TOKEN:", token);
+
+
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const res = await API.get("/selections");
+
+        // console.log("SELECTION API RESPONSE:", res.data); // 🔥
+
+        setSelections(res.data);
+
+      } catch (err) {
+        //  console.log("SELECTION ERROR:", err.response?.data || err.message); 
+        alert(err.response?.data?.message || "Failed to fetch selections")
+      } finally {
+        setLoading(false); // ✅ END
+      }
+    };
+    // ✅ All good → fetch data
+    fetchSelections();
+
+  }, [user, navigate]);
+
+
   // console.log("selections", selections)
 
   const handleClick = async (selection) => {
+    if (!user || user.role !== "candidate") {
+      alert("Unauthorized access");
+      return;
+    }
     try {
       setLoading(true);
 
-        console.log("CLICKED"); // 🔥 add this
+      // console.log("CLICKED"); // 🔥 add this
 
-      const res = await API.post("/final-submit/check",{
+      const res = await API.post("/final-submit/check", {
         email: user.email,
         post: selection.post,
         area: selection.area,
@@ -59,18 +99,18 @@ export default function CandidateDashboard() {
             pdfUrl,
             submitted,
             isClosed: true,
-             selectionData: selection   // ✅ ADD THIS
-            
+            selectionData: selection   // ✅ ADD THIS
+
           },
         });
-         console.log("RESPONSE:", res.data); // 🔥 add this
+        //  console.log("RESPONSE:", res.data); // 🔥 add this
         return;
       }
 
       // 🔥 CASE 2: ALREADY SUBMITTED
       if (submitted) {
         navigate("/download", {
-          state: { pdfUrl, submitted, isClosed: false,  selectionData: selection  },
+          state: { pdfUrl, submitted, isClosed: false, selectionData: selection },
         });
       } else {
         sessionStorage.setItem("selectionId", selection._id);
@@ -81,7 +121,7 @@ export default function CandidateDashboard() {
       }
 
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert(err.response?.data?.message || "Something went wrong")
     } finally {
       setLoading(false);
@@ -90,35 +130,35 @@ export default function CandidateDashboard() {
 
   return (
     <>
-    <div>
-      {/* ✅ LOADER */}
-      {loading && <Loader />}
-      <div className="sub-header">
-        <p>Welcome : {user?.name}</p>
-        <p>Email: {user?.email}</p>
+      <div>
+        {/* ✅ LOADER */}
+        {loading && <Loader />}
+        <div className="sub-header">
+          <p>Welcome : {user?.name}</p>
+          <p>Email: {user?.email}</p>
+        </div>
+
+        <div className="sub-heading">
+          <h2>Your Selection Cards</h2>
+        </div>
+
+        <div className="sub-container">
+          {selections.length === 0 ? (
+            <p>No selections found</p>
+          ) : (
+            selections.map((item) => (
+              <div key={item._id} className="sub-card" onClick={() => handleClick(item)}
+
+              >
+                <h3>{item.post}</h3>
+                <p>Area: {item.area}</p>
+                <p>Subject: {item.subject}</p>
+              </div>
+            ))
+          )}
+
+        </div>
       </div>
-
-      <div className="sub-heading">
-        <h2>Your Selection Cards</h2>
-      </div>
-
-      <div className="sub-container">
-        {selections.length === 0 ? (
-          <p>No selections found</p>
-        ) : (
-          selections.map((item) => (
-            <div key={item._id} className="sub-card" onClick={() => handleClick(item)}
-
-            >
-              <h3>{item.post}</h3>
-              <p>Area: {item.area}</p>
-              <p>Subject: {item.subject}</p>
-            </div>
-          ))
-        )}
-
-      </div>
-    </div>
     </>
   );
 }
