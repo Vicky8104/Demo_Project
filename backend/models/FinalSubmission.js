@@ -6,6 +6,16 @@ const finalSubmissionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Selections",
   },
+  name: String,
+  fatherName: String,
+  dob: String,
+  gender: String,
+  maritalStatus: String,
+  homeDistrict: String,
+  category: String,
+  email: String,
+  mobile: String,
+  ifOther: String,
   candidateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Candidate",
@@ -14,6 +24,12 @@ const finalSubmissionSchema = new mongoose.Schema({
   post: String,
   area: String,
   subject: String,
+  rollNo: String,
+  meritNo: String,
+  selCategory: String,
+  splCategory: String,
+
+
 
   choices: [String],
 
@@ -24,5 +40,6 @@ const finalSubmissionSchema = new mongoose.Schema({
     default: "submitted",
   },
 }, { timestamps: true });
+
 
 export default mongoose.model("FinalSubmission", finalSubmissionSchema);

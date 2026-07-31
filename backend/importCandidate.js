@@ -39,11 +39,12 @@ const startImport = async () => {
                 name: row.name,
                 fname: row.fname,
                 dob:row.dob,
-                email:row.email.trim().toLowerCase(),
+                email:row.email.trim().toUpperCase(),
                 gender:row.gender,
                 maritalStatus:row.maritalStatus,
                 homeDistrict:row.homeDistrict,
                 category:row.category,
+                ifOther:row.ifOther,
                 mobile:row.mobile
 
               });

@@ -3,12 +3,22 @@ const router = express.Router();
 
 import { protect } from "../middleware/authMiddleware.js";
 import { isAdmin } from "../middleware/isAdmin.js";
-
+import { 
+        getUsers,
+        getUserById,
+        updateUser,
+        deleteUser,
+        } from "../controllers/adminController.js";
 import Candidate from "../models/Candidate.js";
 import User from "../models/User.js";
 import School from "../models/School.js";
 import Selection from "../models/Selections.js";
 import FinalSubmission from "../models/FinalSubmission.js";
+import {
+  upsertCounselingConfig,
+  getAllConfigs,
+  deleteConfig
+} from "../controllers/adminController.js";
 
 
 // ✅ Dashboard
@@ -33,15 +43,25 @@ router.get("/candidates", protect, isAdmin, async (req, res) => {
 
 
 // ✅ Users
-router.get("/users", protect, isAdmin, async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (error) {
-    // console.log(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// router.get("/users", protect, isAdmin, async (req, res) => {
+//   try {
+//     const users = await User.find().select("-password");
+//     res.json(users);
+//   } catch (error) {
+//     // console.log(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
+router.get("/users", protect, isAdmin, getUsers);
+router.get("/users/:id", protect, isAdmin, getUserById);
+router.put("/users/:id", protect, isAdmin, updateUser);
+router.delete("/users/:id", protect, isAdmin, deleteUser);
+
+router.post("/counseling-config", protect, isAdmin, upsertCounselingConfig);
+router.get("/counseling-config", protect, isAdmin, getAllConfigs);
+router.delete("/counseling-config/:id", protect, isAdmin, deleteConfig);
+
 
 
 // ✅ Schools

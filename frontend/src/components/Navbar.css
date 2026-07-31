@@ -1,17 +1,19 @@
 .navbar {
-  width: 90%;
+  width: 100%;
 margin: auto;
-padding-bottom:3px;
+padding-bottom:5px;
 padding-top: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content:flex-start;
   align-items: center;
- 
+  gap:70px;
 }
 
 .navbar span {
   font-weight: 600;
   color: #0d47a1;
+  margin: 0;
+
 }
 
 .navbar span .nav-btn, .nav-btn {
@@ -20,19 +22,13 @@ padding-top: 0;
     #1565c0,
     #1976d2
   );
-
   color: white;
-
   border: none;
   border-radius: 8px;
-
-  padding: 10px 20px;
-
-  font-size: 15px;
+  padding: 5px 8px;
+  font-size: 12px;
   font-weight: 600;
-
   cursor: pointer;
-
   transition: all 0.3s ease;
 }
 

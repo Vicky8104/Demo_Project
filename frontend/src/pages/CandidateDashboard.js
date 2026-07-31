@@ -1,4 +1,168 @@
 
+// import API from "../api/axios";
+// import { useContext, useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { AuthContext } from "../context/AuthContext";
+// import "./Dashboard.css";
+// import Loader from "../components/Loader";
+
+// export default function CandidateDashboard() {
+//   const { user } = useContext(AuthContext);
+//   const [selections, setSelections] = useState([]);
+//   const navigate = useNavigate(); // 👈 add this
+//   const [loading, setLoading] = useState(false);
+
+//   // useEffect(() => {
+
+//   //   if (user && user.role === "candidate") {
+//   //     fetchSelections();
+
+//   //   }
+//   // }, [user]);
+//   useEffect(() => {
+//     const token = localStorage.getItem("token");
+
+//     // console.log("TOKEN:", token);
+//     // console.log("USER:", user);
+
+//     // ❌ No token → login
+//     if (!token) {
+//       navigate("/login");
+//       return;
+//     }
+
+//     // ⏳ Wait for user (important after refresh)
+//     if (!user) return;
+
+//     // ❌ Wrong role → block
+//     if (user.role !== "candidate") {
+//       alert("Access denied");
+//       navigate("/");
+//       return;
+//     }
+//     const fetchSelections = async () => {
+//       try {
+//         setLoading(true); // ✅ START
+//         const token = localStorage.getItem("token");
+//         // console.log("DASHBOARD TOKEN:", token);
+
+
+//         if (!token) {
+//           navigate("/login");
+//           return;
+//         }
+
+//         const res = await API.get("/selections");
+
+//         // console.log("SELECTION API RESPONSE:", res.data); // 🔥
+
+//         setSelections(res.data);
+
+//       } catch (err) {
+//         //  console.log("SELECTION ERROR:", err.response?.data || err.message); 
+//         alert(err.response?.data?.message || "Failed to fetch selections")
+//       } finally {
+//         setLoading(false); // ✅ END
+//       }
+//     };
+//     // ✅ All good → fetch data
+//     fetchSelections();
+
+//   }, [user, navigate]);
+
+
+//   // console.log("selections", selections)
+
+//   const handleClick = async (selection) => {
+//     if (!user || user.role !== "candidate") {
+//       alert("Unauthorized access");
+//       return;
+//     }
+//     try {
+//       setLoading(true);
+
+//       // console.log("CLICKED"); // 🔥 add this
+
+//       const res = await API.post("/final-submit/check", {
+//         email: user.email,
+//         post: selection.post,
+//         area: selection.area,
+//         subject: selection.subject,
+//       });
+
+//       const { submitted, pdfUrl, isClosed } = res.data;
+
+//       // 🔥 CASE 1: DATE CLOSED
+//       if (isClosed) {
+//         navigate("/download", {
+//           state: {
+//             pdfUrl,
+//             submitted,
+//             isClosed: true,
+//             selectionData: selection   // ✅ ADD THIS
+
+//           },
+//         });
+//         //  console.log("RESPONSE:", res.data); // 🔥 add this
+//         return;
+//       }
+
+//       // 🔥 CASE 2: ALREADY SUBMITTED
+//       if (submitted) {
+//         navigate("/download", {
+//           state: { pdfUrl, submitted, isClosed: false, selectionData: selection },
+//         });
+//       } else {
+//         sessionStorage.setItem("selectionId", selection._id);
+
+//         navigate("/personal-details", {
+//           state: { selectionId: selection._id },
+//         });
+//       }
+
+//     } catch (err) {
+//       // console.log(err);
+//       alert(err.response?.data?.message || "Something went wrong")
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div>
+//         {/* ✅ LOADER */}
+//         {loading && <Loader />}
+//         <div className="sub-header">
+//           <p>Welcome : {user?.name}</p>
+//           <p>Email: {user?.email}</p>
+//         </div>
+
+//         <div className="sub-heading">
+//           <h2>Your Selection Cards</h2>
+//         </div>
+
+//         <div className="sub-container">
+//           {selections.length === 0 ? (
+//             <p>No selections found</p>
+//           ) : (
+//             selections.map((item) => (
+//               <div key={item._id} className="sub-card" onClick={() => handleClick(item)}
+
+//               >
+//                 <h3>{item.post}</h3>
+//                 <p>Area: {item.area}</p>
+//                 <p>Subject: {item.subject}</p>
+//               </div>
+//             ))
+//           )}
+
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
 import API from "../api/axios";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,79 +173,46 @@ import Loader from "../components/Loader";
 export default function CandidateDashboard() {
   const { user } = useContext(AuthContext);
   const [selections, setSelections] = useState([]);
-  const navigate = useNavigate(); // 👈 add this
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
+  // ✅ FETCH FUNCTION
+  const fetchSelections = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get("/selections");
+      setSelections(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to fetch selections");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //   if (user && user.role === "candidate") {
-  //     fetchSelections();
-
-  //   }
-  // }, [user]);
+  // ✅ USE EFFECT
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // console.log("TOKEN:", token);
-    // console.log("USER:", user);
-
-    // ❌ No token → login
     if (!token) {
       navigate("/login");
       return;
     }
 
-    // ⏳ Wait for user (important after refresh)
     if (!user) return;
 
-    // ❌ Wrong role → block
     if (user.role !== "candidate") {
       alert("Access denied");
       navigate("/");
       return;
     }
-    const fetchSelections = async () => {
-      try {
-        setLoading(true); // ✅ START
-        const token = localStorage.getItem("token");
-        // console.log("DASHBOARD TOKEN:", token);
 
-
-        if (!token) {
-          navigate("/login");
-          return;
-        }
-
-        const res = await API.get("/selections");
-
-        // console.log("SELECTION API RESPONSE:", res.data); // 🔥
-
-        setSelections(res.data);
-
-      } catch (err) {
-        //  console.log("SELECTION ERROR:", err.response?.data || err.message); 
-        alert(err.response?.data?.message || "Failed to fetch selections")
-      } finally {
-        setLoading(false); // ✅ END
-      }
-    };
-    // ✅ All good → fetch data
     fetchSelections();
+  }, [user]);
 
-  }, [user, navigate]);
-
-
-  // console.log("selections", selections)
-
+  // ✅ CLICK HANDLER
   const handleClick = async (selection) => {
-    if (!user || user.role !== "candidate") {
-      alert("Unauthorized access");
-      return;
-    }
     try {
       setLoading(true);
-
-      // console.log("CLICKED"); // 🔥 add this
 
       const res = await API.post("/final-submit/check", {
         email: user.email,
@@ -92,25 +223,26 @@ export default function CandidateDashboard() {
 
       const { submitted, pdfUrl, isClosed } = res.data;
 
-      // 🔥 CASE 1: DATE CLOSED
       if (isClosed) {
         navigate("/download", {
           state: {
             pdfUrl,
             submitted,
             isClosed: true,
-            selectionData: selection   // ✅ ADD THIS
-
+            selectionData: selection,
           },
         });
-        //  console.log("RESPONSE:", res.data); // 🔥 add this
         return;
       }
 
-      // 🔥 CASE 2: ALREADY SUBMITTED
       if (submitted) {
         navigate("/download", {
-          state: { pdfUrl, submitted, isClosed: false, selectionData: selection },
+          state: {
+            pdfUrl,
+            submitted,
+            isClosed: false,
+            selectionData: selection,
+          },
         });
       } else {
         sessionStorage.setItem("selectionId", selection._id);
@@ -119,10 +251,8 @@ export default function CandidateDashboard() {
           state: { selectionId: selection._id },
         });
       }
-
     } catch (err) {
-      // console.log(err);
-      alert(err.response?.data?.message || "Something went wrong")
+      alert(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -130,34 +260,35 @@ export default function CandidateDashboard() {
 
   return (
     <>
-      <div>
-        {/* ✅ LOADER */}
-        {loading && <Loader />}
-        <div className="sub-header">
-          <p>Welcome : {user?.name}</p>
-          <p>Email: {user?.email}</p>
-        </div>
+    <div>
+      {loading && <Loader />}
 
-        <div className="sub-heading">
-          <h2>Your Selection Cards</h2>
-        </div>
+      <div className="sub-header">
+        <p>Welcome: {user?.name}</p>
+        <p>Email: {user?.email}</p>
+      </div>
 
-        <div className="sub-container">
-          {selections.length === 0 ? (
-            <p>No selections found</p>
-          ) : (
-            selections.map((item) => (
-              <div key={item._id} className="sub-card" onClick={() => handleClick(item)}
+      <div className="sub-heading">
+        <h2>Your Selection Cards</h2>
+      </div>
 
-              >
-                <h3>{item.post}</h3>
-                <p>Area: {item.area}</p>
-                <p>Subject: {item.subject}</p>
-              </div>
-            ))
-          )}
-
-        </div>
+      <div className="sub-container">
+        {selections.length === 0 ? (
+          <p>No selections found</p>
+        ) : (
+          selections.map((item) => (
+            <div
+              key={item._id}
+              className="sub-card"
+              onClick={() => handleClick(item)}
+            >
+              <h3>{item.post}</h3>
+              <p>Area: {item.area}</p>
+              <p>Subject: {item.subject}</p>
+            </div>
+          ))
+        )}
+      </div>
       </div>
     </>
   );

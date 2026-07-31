@@ -25,7 +25,7 @@ setLoading(true);
 
 try {
   const res = await API.post("/auth/login", {
-    email: email.toLowerCase(),
+    email: email.toUpperCase(),
     password,
     role, // optional
   });

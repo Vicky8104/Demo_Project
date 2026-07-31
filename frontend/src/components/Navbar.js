@@ -40,8 +40,9 @@ export default function Navbar() {
       </div>
 
       {/* CENTER */}
-      <div>{user && <span>Welcome - {user.name}</span>}</div>
+      
       <div><button className="nav-btn" onClick={goToDownloads}>Download</button></div>
+      {/* <div>{user && <span>Welcome - {user.name}</span>}</div> */}
 
       {/* RIGHT */}
       <div>

@@ -1,0 +1,106 @@
+/* Container */
+.admin-panel-container {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+.admin-panel-container h2 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+/* Upload Box */
+.upload-box {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+/* Inputs */
+.upload-box input[type="text"],
+.upload-box input[type="file"] {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  width: 35%;
+}
+
+/* File input fix */
+.upload-box input[type="file"] {
+  cursor: pointer;
+}
+
+/* Button */
+.upload-box button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #3498db;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.upload-box button:hover {
+  background: #2980b9;
+}
+
+/* Table */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.admin-table thead {
+  background: #2c3e50;
+  color: #fff;
+}
+
+.admin-table th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* Body */
+.admin-table td {
+  padding: 10px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Zebra rows */
+.admin-table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+/* Hover */
+.admin-table tbody tr:hover {
+  background: #eef3ff;
+  transition: 0.2s;
+}
+
+/* Delete button */
+.admin-table button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background: #e74c3c;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-table button:hover {
+  background: #c0392b;
+}

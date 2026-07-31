@@ -11,7 +11,7 @@ export const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({
-      email: email.toLowerCase(), // 🔥 IMPORTANT FIX
+      email: email.toUpperCase(), // 🔥 IMPORTANT FIX
     });
 
     if (!user) {

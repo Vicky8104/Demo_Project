@@ -1,15 +1,64 @@
-.dashboard{
-    padding:20px;
+.dashboard-container{
+    width:100%;
+    margin-top: 30px;
+    margin-bottom: 100px;
 }
-.top-buttons{
-    display: flex;
-    gap:10px;
-    background-color: aqua;
-    margin-bottom: 20px;
-    justify-content: flex-start;
-   border-radius: 10px;
-   padding: 5px;   
+/* TOP BUTTONS WRAPPER */
+.top-buttons {
+  display: flex;
+  gap: 25px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  position: relative;
 }
+
+/* BUTTON BASE */
+.top-buttons button {
+  background: none;
+  border: none;
+  padding: 10px 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+/* HOVER */
+.top-buttons button:hover {
+  color: #0f172a;
+}
+
+/* ACTIVE TEXT */
+.top-buttons button.active {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* UNDERLINE ANIMATION */
+.top-buttons button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0%;
+  background: #0f172a;
+  transition: width 0.3s ease;
+}
+
+/* ACTIVE UNDERLINE */
+.top-buttons button.active::after {
+  width: 100%;
+}
+
+/* HOVER UNDERLINE (light) */
+.top-buttons button:hover::after {
+  width: 100%;
+  background: #94a3b8;
+}
+
 .sub-header{
     margin-bottom: 0;
 }
@@ -26,7 +75,7 @@
 .cards-container{
     width: 98%;
     max-width: 1200px;
-    padding:20px;
+    padding:10px;
     margin:0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -43,4 +92,14 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     box-sizing: border-box;
+}
+
+.content{
+  margin-top: 0;
+}
+@media (max-width: 600px) {
+  .top-buttons {
+    width: 100%;
+    overflow-x: auto;
+  }
 }

@@ -1,0 +1,87 @@
+/* Container */
+.download-container {
+  padding: 20px;
+  font-family: Inter, sans-serif;
+  width: 90%;
+}
+
+/* Title */
+.download-container h2 {
+  margin-bottom: 18px;
+  color: #0f172a;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Table */
+.download-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb; /* subtle border instead of heavy shadow */
+}
+
+/* Header */
+.download-table thead {
+  background: #37383a;
+  color:white;
+}
+
+.download-table th {
+  padding: 13px 14px;
+  font-size: 13px;
+  text-align: left;
+  color: white;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Body */
+.download-table td {
+  padding: 13px 14px;
+  font-size: 14px;
+  color: #343536;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Zebra (soft) */
+.download-table tbody tr:nth-child(even) {
+  background: #fcfcfd;
+}
+
+/* Hover (clean, no zoom) */
+.download-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* Download cell */
+.download-cell {
+  text-align: center;
+}
+
+/* 🔥 Professional Button (clean, not flashy) */
+.download-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: transparent;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #c7d2fe;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.download-btn:hover {
+  background: #d2dbf1;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* Active */
+.download-btn:active {
+  transform: scale(0.97);
+}

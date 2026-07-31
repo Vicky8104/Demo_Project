@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { FaBars } from "react-icons/fa";
+// import { FaBars } from "react-icons/fa";
 import Navbar from "./Navbar";
+
 import "./Header.css";
 const members = [
   {
@@ -34,11 +35,40 @@ export default function Header({ toggleSidebar }) {
 
   return (
 
-      <header className="header">
+    <header className="header">
 
-        <div className="header-top">
+      <div className="header-top">
         {/* LEFT */}
-        <div className="left">
+        <div className="logo">
+          <img src="/imageslogo-removebg-preview.png" alt="Person" />
+          {/* <div className="info">
+            <h4>{members[index].name}</h4>
+            <p>{members[index].post}</p>
+          </div> */}
+        </div>
+
+
+        <div className="center">
+
+          <div className="center-top">
+            <h1 className="depName">संस्कृत-शिक्षा-विभाग-राजस्थानम्</h1>
+          </div>
+
+          {/* 🔥 NAVBAR (IMPORTANT) */}
+          <div className="center-bottom">
+            <h2>पदस्थापन-परामर्श-पोर्टलम्</h2>
+          </div>
+        </div>
+
+
+
+
+        {/* RIGHT */}
+        {/* <div className="right">
+          <h2>पदस्थापन-परामर्श-पोर्टलम्</h2>
+        </div> */}
+
+          <div className="left">
           <img src={members[index].img} alt="Person" />
           <div className="info">
             <h4>{members[index].name}</h4>
@@ -46,41 +76,28 @@ export default function Header({ toggleSidebar }) {
           </div>
         </div>
 
+      </div>
 
-        <div className="center">
-            
-        <div className="center-top">
-          <h1 className="depName">संस्कृत-शिक्षा-विभाग-राजस्थानम्</h1>
+
+      <div className="navbar-container">
+       <div className="nav-with-icon">
+         {/* <FaBars className="menu-icon" onClick={toggleSidebar} />  */}
+               <Navbar />
         </div>
 
-        {/* 🔥 NAVBAR (IMPORTANT) */}
-        <div className="center-bottom">
-          <Navbar />
-        </div>
-        </div>
+          <div className="marquee">
+            <div className="marquee-container1">
+              <div className="marquee-text">
+                📢 आवेदन की अंतिम तिथि: 20-06-2026
+              </div>
+            </div>
+          </div>
+    </div>
 
 
+    </header>
 
 
-        {/* RIGHT */}
-        <div className="right">
-          <h2>पदस्थापन-परामर्श-पोर्टलम्</h2>
-        </div>
-
-        </div>
-      
-        <div className="marquee">
-                <div className="marquee-container1">
-                  <div className="marquee-text">
-                    📢 आवेदन की अंतिम तिथि: 20-06-2026
-                  </div>
-                </div>
-        </div>
-        <FaBars className="menu-icon" onClick={toggleSidebar} />
-
-      </header>
-    
-     
 
   );
 }

@@ -1,15 +1,9 @@
 import Selections from "../models/Selections.js";
 import Candidate from "../models/Candidate.js";
+import CounselingConfig from "../models/CounselingConfig.js";
 
 export const getSelections = async (req, res) => {
   try {
-
-    // console.log("===== SELECTION API HIT =====");
-
-    // 🔥 TOKEN CHECK
-    // console.log("REQ.HEADERS.AUTH:", req.headers.authorization);
-    // console.log("REQ.USER:", req.user);
-    // user se candidate profile find karo
     const candidate = await Candidate.findOne({
       userId: req.user.id
     });
@@ -28,7 +22,33 @@ export const getSelections = async (req, res) => {
       .select("email post area subject meritNo rollNo")
       .lean();
   //  console.log("SELECTION DATA:", data); // 🔥 DEBUG
-    return res.json(data);
+  const now = new Date();
+
+  const updateData = await Promise.all(
+    data.map(async (item) => {
+      
+  const config=  await CounselingConfig.findOne({
+    post: item.post,
+    area: item.area,
+    subject: item.subject,
+  });
+  let isOpen = false;
+  if (config && config.isActive){
+    isOpen =
+    now >= new Date(config.startDate) &&
+    now >= new Date(config.endDate);
+  }
+
+  return{
+    ...item,
+    isOpen,
+    startDate: config?.startDate || null,
+    endDate: config?.endDate || null
+  };
+})
+);
+
+    return res.json(updateData);
 
   } catch (error) {
       //  console.log("SELECTION ERROR:", error.message); // 🔥 DEBUG
@@ -36,8 +56,6 @@ export const getSelections = async (req, res) => {
       error: error.message
     });
   }
-
-
 };
 export const getSelectionWithUser = async (req, res) => {
   try {

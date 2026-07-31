@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from "react";
 import  API from  "../api/axios";
 import Loader from "../components/Loader";
+import "./AdminPanel.css";
 
 
 const AdminPanel = ()=>{
@@ -48,8 +49,9 @@ const AdminPanel = ()=>{
     return(
         <>
          {loading && <Loader />}
-        <div style={{padding:20}}>
+        <div className="admin-panel-container">
             <h2>Admin Upload Panel</h2>
+            <div className="upload-box">
             <input 
                 type="text"
                 placeholder="File Name"
@@ -62,10 +64,11 @@ const AdminPanel = ()=>{
                 onChange={(e)=>setFile(e.target.files[0])}
             />
             <button onClick={handleUpload}>Upload</button>
+            </div>
 
             <hr />
 
-            <table border="1" width="100%" cellPadding="10">
+            <table className="admin-table">
                 <thead>
                     <tr>
                         <th>Name</th>
