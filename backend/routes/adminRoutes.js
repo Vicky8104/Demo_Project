@@ -8,6 +8,17 @@ import {
         getUserById,
         updateUser,
         deleteUser,
+        updatePassword,
+        getCandidates,
+        getCandidateById,
+        deleteCandidate,
+        updateCandidate,
+        getSelections,
+        getSelectionsById,
+        deleteSelection,
+        updateSelection,
+        getFinalSubmission,
+        deleteFinalSubmission,
         } from "../controllers/adminController.js";
 import Candidate from "../models/Candidate.js";
 import User from "../models/User.js";
@@ -32,31 +43,40 @@ router.get("/dashboard", protect, isAdmin, (req, res) => {
 
 
 // ✅ All Candidates
-router.get("/candidates", protect, isAdmin, async (req, res) => {
-  try {
-    const candidates = await Candidate.find();
-    res.json(candidates);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-
-// ✅ Users
-// router.get("/users", protect, isAdmin, async (req, res) => {
+// router.get("/candidates", protect, isAdmin, async (req, res) => {
 //   try {
-//     const users = await User.find().select("-password");
-//     res.json(users);
+//     const candidates = await Candidate.find();
+//     res.json(candidates);
 //   } catch (error) {
-//     // console.log(error);
-//     res.status(500).json({ message: "Server error" });
+//     res.status(500).json({ message: error.message });
 //   }
 // });
+
 
 router.get("/users", protect, isAdmin, getUsers);
 router.get("/users/:id", protect, isAdmin, getUserById);
 router.put("/users/:id", protect, isAdmin, updateUser);
 router.delete("/users/:id", protect, isAdmin, deleteUser);
+router.put(
+    "/users/:id/password",
+    protect,
+    isAdmin,
+    updatePassword
+);
+
+
+router.get("/candidates", protect, isAdmin, getCandidates);
+router.get("/candidates/:id", protect, isAdmin,getCandidateById);
+router.delete("/candidates/:id",protect, isAdmin, deleteCandidate);
+router.put("/candidates/:id", protect, isAdmin, updateCandidate);
+
+router.get("/getSelections", protect, isAdmin, getSelections);
+router.get("/getSelections/:id", protect, isAdmin, getSelectionsById);
+router.delete("/getSelections/:id",protect, isAdmin,deleteSelection);
+router.put("/getSelections/:id", protect, isAdmin, updateSelection);
+
+router.get("/getFinalSubmission",protect, isAdmin, getFinalSubmission);
+router.delete("/getFinalSubmission/:id",protect,isAdmin,deleteFinalSubmission);
 
 router.post("/counseling-config", protect, isAdmin, upsertCounselingConfig);
 router.get("/counseling-config", protect, isAdmin, getAllConfigs);

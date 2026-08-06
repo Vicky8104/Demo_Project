@@ -192,7 +192,6 @@
   }
   .depName {
     font-size: 22px;
-  
   }
  
   .center-bottom h2 {
@@ -230,4 +229,10 @@
   .marquee-text {
     font-size: 14px;
   }
+  .navbar-container{
+  display: grid;
+  grid-template-columns: 1fr;
+  
+  justify-content: space-around;
+}
 }

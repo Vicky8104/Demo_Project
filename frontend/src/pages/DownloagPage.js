@@ -76,7 +76,7 @@ export default function DownloadPage() {
 
         {isClosed && !submitted && (
           <p style={{ color: "red" }}>
-            ❌ Form date closed. You have not submitted the form.
+            ❌ Sorry! Form उपलब्ध नहीं है। कृपया हेल्प डेस्क पर सम्पर्क करें। धन्यवाद!
           </p>
         )}
       </div>

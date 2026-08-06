@@ -207,7 +207,7 @@ export default function CandidateDashboard() {
     }
 
     fetchSelections();
-  }, [user]);
+  }, [user,navigate]);
 
   // ✅ CLICK HANDLER
   const handleClick = async (selection) => {

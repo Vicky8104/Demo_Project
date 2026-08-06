@@ -1,0 +1,318 @@
+/* Container */
+.admin-container {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+.admin-container h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Table */
+.admin-candidate-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.admin-candidate-table thead {
+  background: #2c3e50;
+  color: #fff;
+}
+
+.admin-candidate-table th {
+  padding: 8px;
+  text-align: center;
+  word-wrap:break-word;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* Body */
+.admin-candidate-table td {
+  padding: 8px;
+  text-align: center;
+  word-wrap:break-word;
+  font-size: 14px;
+  color: #444;
+  
+}
+.admin-candidate-table th:first-child,
+.admin-candidate-table td:first-child{
+  width: 40px;
+}
+.admin-candidate-table th:last-child,
+.admin-candidate-table td:last-child{
+  width: 120px;
+}
+.admin-candidate-table th:nth-child(2),
+.admin-candidate-table td:nth-child(2) {
+  width: 85px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(3),
+.admin-candidate-table td:nth-child(3) {
+  width: 80px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(4),
+.admin-candidate-table td:nth-child(4) {
+  width: 75px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(5),
+.admin-candidate-table td:nth-child(5) {
+  width: 50px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(6),
+.admin-candidate-table td:nth-child(6) {
+  width: 80px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(7),
+.admin-candidate-table td:nth-child(7) {
+  width: 80px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(8),
+.admin-candidate-table td:nth-child(8) {
+  width: 50px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(9),
+.admin-candidate-table td:nth-child(9) {
+  width: 40px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(10),
+.admin-candidate-table td:nth-child(10) {
+  width: 130px; /* fatherName */
+}
+.admin-candidate-table th:nth-child(11),
+.admin-candidate-table td:nth-child(11) {
+  width: 70px; /* fatherName */
+}
+
+/* Zebra rows */
+.admin-candidate-table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+/* Hover effect */
+.admin-candidate-table tbody tr:hover {
+  background: #eef3ff;
+  transition: 0.2s;
+}
+
+/* Action buttons */
+.admin-candidate-table button {
+  margin: 2px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+/* Button colors */
+.admin-candidate-table button:nth-child(1) {
+  background: #3498db;
+  color: #fff;
+}
+
+.admin-candidate-table button:nth-child(2) {
+  background: #f39c12;
+  color: #fff;
+}
+
+.admin-candidate-table button:nth-child(3) {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.admin-candidate-table button:hover {
+  opacity: 0.85;
+}
+
+/* Modal */
+
+/* Card */
+
+.admin-candidate-modal {
+  position: fixed;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.admin-candidate-card {
+  background: #fff;
+  width: 80%;
+  max-height: 70vh;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+   overflow-y: auto;
+}
+   
+
+/* ❌ Close button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+  color: red;
+}
+
+/* Scroll fix */
+.admin-candidate-card-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-top: 5px;
+    display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 2 columns */
+  gap: 5px;
+}
+
+/* Row styling */
+.row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+}
+
+.row b {
+  color: #333;
+}
+
+.row span {
+  word-break: break-word;
+  color: #555;
+}
+
+/* Input */
+input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+.admin-candidate-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.admin-candidate-btns button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-candidate-btns button:first-child {
+  background: green;
+  color: white;
+}
+
+.admin-candidate-btns button:last-child {
+  background: red;
+  color: white;
+}
+
+
+.title {
+  margin: 10px 0;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* 🔥 Candidate Grid */
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.grid-item {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.label {
+  font-weight: bold;
+  display: block;
+  font-size: 12px;
+  color: #555;
+}
+
+.value {
+  font-size: 14px;
+}
+
+/* 🔥 Selection Cards */
+.selection-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.selection-card {
+  width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  transition: 0.2s;
+}
+
+.selection-card:hover {
+  transform: scale(1.03);
+}
+
+/* Status Colors */
+.selection-card.submitted {
+  
+  background: green;
+}
+
+.selection-card.pending {
+  
+  background: red;
+}
+
+.card-header {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.card-body p {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+.card-footer {
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+/* No Data */
+.no-data {
+  color: gray;
+}

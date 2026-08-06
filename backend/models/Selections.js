@@ -24,7 +24,7 @@ const selectionSchema = new mongoose.Schema({
   },
   area:{
     type:String,
-    rquired:true
+    required:true
   },
 
   subject: {
@@ -63,8 +63,8 @@ const selectionSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["pending", "verified", "rejected"],
-    default: "pending"
+    enum: ["Pending", "Submitted"],
+    default: "Pending"
   },
 
   isLocked: { type: Boolean, default: false },

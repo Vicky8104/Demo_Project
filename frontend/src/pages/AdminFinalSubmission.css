@@ -1,0 +1,226 @@
+/* Container */
+.admin-container {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+.admin-container h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Table */
+.admin-finalSubmission-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.admin-finalSubmission-table thead {
+  background: #2c3e50;
+  color: #fff;
+}
+
+.admin-finalSubmission-table th {
+  padding: 8px;
+  text-align: center;
+  word-wrap:break-word;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* Body */
+.admin-finalSubmission-table td {
+  padding: 8px;
+  text-align: center;
+  word-wrap:break-word;
+  font-size: 14px;
+  color: #444;
+  
+}
+.admin-finalSubmission-table th:first-child,
+.admin-finalSubmission-table td:first-child{
+  width: 40px;
+}
+.admin-finalSubmission-table th:last-child,
+.admin-finalSubmission-table td:last-child{
+  width: 120px;
+}
+.admin-finalSubmission-table th:nth-child(2),
+.admin-finalSubmission-table td:nth-child(2) {
+  width: 110px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(3),
+.admin-finalSubmission-table td:nth-child(3) {
+  width: 110px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(4),
+.admin-finalSubmission-table td:nth-child(4) {
+  width: 75px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(5),
+.admin-finalSubmission-table td:nth-child(5) {
+  width: 50px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(6),
+.admin-finalSubmission-table td:nth-child(6) {
+  width: 65px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(7),
+.admin-finalSubmission-table td:nth-child(7) {
+  width: 60px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(8),
+.admin-finalSubmission-table td:nth-child(8) {
+  width: 50px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(9),
+.admin-finalSubmission-table td:nth-child(9) {
+  width: 70px; /* fatherName */
+}
+.admin-finalSubmission-table th:nth-child(10),
+.admin-finalSubmission-table td:nth-child(10) {
+  width: 100px; /* fatherName */
+}
+
+
+/* Zebra rows */
+.admin-finalSubmission-table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+/* Hover effect */
+.admin-finalSubmission-table tbody tr:hover {
+  background: #eef3ff;
+  transition: 0.2s;
+}
+
+/* Action buttons */
+.admin-finalSubmission-table button {
+  margin: 2px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+/* Button colors */
+.admin-finalSubmission-table button:nth-child(1) {
+  background: #3498db;
+  color: #fff;
+}
+
+.admin-finalSubmission-table button:nth-child(2) {
+  background: #e75410;
+  color: #fff;
+}
+
+.admin-finalSubmission-table button:hover {
+  opacity: 0.85;
+}
+
+/* Modal */
+
+/* Card */
+
+.admin-finalSubmission-modal {
+  position: fixed;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.admin-finalSubmission-card {
+  background: #fff;
+  width: 80%;
+  max-height: 70vh;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+   overflow-y: auto;
+}
+   
+
+/* ❌ Close button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+  color: red;
+}
+
+/* Scroll fix */
+.admin-finalSubmission-card-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-top: 5px;
+display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 2 columns */
+  gap: 5px;
+}
+
+/* Row styling */
+.row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+}
+
+.row b {
+  color: #333;
+}
+
+.row span {
+  word-break: break-word;
+  color: #555;
+}
+
+/* Input */
+input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+.admin-finalSubmission-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.admin-finalSubmission-btns button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-finalSubmission-btns button:first-child {
+  background: green;
+  color: white;
+}
+
+.admin-finalSubmission-btns button:last-child {
+  background: red;
+  color: white;
+}

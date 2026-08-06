@@ -1,6 +1,5 @@
 .dashboard-container{
     width:100%;
-    margin-top: 30px;
     margin-bottom: 100px;
 }
 /* TOP BUTTONS WRAPPER */
@@ -19,7 +18,7 @@
   padding: 10px 2px;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: hsl(256, 97%, 48%);
   cursor: pointer;
   position: relative;
   transition: color 0.25s ease;
@@ -27,13 +26,15 @@
 
 /* HOVER */
 .top-buttons button:hover {
-  color: #0f172a;
+  color:#fff;
 }
 
 /* ACTIVE TEXT */
 .top-buttons button.active {
-  color: #0f172a;
-  font-weight: 600;
+   color: #fff;
+  background-color: #21f33d;
+  border-radius: 6px;
+
 }
 
 /* UNDERLINE ANIMATION */
@@ -44,19 +45,21 @@
   bottom: -1px;
   height: 2px;
   width: 0%;
-  background: #0f172a;
+  background: #3806ee;
   transition: width 0.3s ease;
 }
 
 /* ACTIVE UNDERLINE */
 .top-buttons button.active::after {
   width: 100%;
+  background: #2af50f;
 }
 
 /* HOVER UNDERLINE (light) */
 .top-buttons button:hover::after {
   width: 100%;
-  background: #94a3b8;
+  background: yellow;
+  border-radius: 10px;
 }
 
 .sub-header{
@@ -72,9 +75,10 @@
     padding: 0;
     margin: 0;
 }
-.cards-container{
+.report-cards-container{
     width: 98%;
     max-width: 1200px;
+    
     padding:10px;
     margin:0 auto;
     display: grid;
@@ -88,6 +92,7 @@
     width:100%;
      max-height: 275px;
     background: #fff;
+    
     padding:15px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
