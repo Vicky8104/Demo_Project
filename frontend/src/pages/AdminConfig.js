@@ -8,7 +8,7 @@ export default function AdminConfig() {
         area: "",
         subject: "",
         startDate: "",
-        lastDate: "",
+        endDate: "",
     });
 
     const [editId, setEditId] = useState(null);
@@ -46,7 +46,7 @@ export default function AdminConfig() {
                 alert("Added successfully");
             }
 
-            setForm({ post: "", area: "", subject: "", lastDate: "" });
+            setForm({ post: "", area: "", subject: "", startDate: "", endDate: "" });
             setEditId(null);
             fetchConfigs();
         } catch (err) {
@@ -57,11 +57,11 @@ export default function AdminConfig() {
     // ✅ EDIT
     const handleEdit = (item) => {
         setForm({
-            post:item.post,
-            area:item.area,
-            subject:item.subject,
-            startDate:item.startDate?.slice(0,10),
-            endDate:item.endDate?.slice(0,10),
+            post: item.post,
+            area: item.area,
+            subject: item.subject,
+            startDate: item.startDate?.slice(0, 16),
+            endDate: item.endDate?.slice(0, 16),
         });
         setEditId(item._id);
     };
@@ -86,9 +86,9 @@ export default function AdminConfig() {
             <input name="area" placeholder="Area" value={form.area} onChange={handleChange} />
             <input name="subject" placeholder="Subject" value={form.subject} onChange={handleChange} />
             <label  >Start Date:-
-            <input name="startDate" type="date" value={form.startDate} onChange={handleChange} /></label>
+                <input name="startDate" type="datetime-local" value={form.startDate} onChange={handleChange} /></label>
             <label>End Date:-
-            <input name="endDate" type="date" value={form.endDate} onChange={handleChange} /></label>
+                <input name="endDate" type="datetime-local" value={form.endDate} onChange={handleChange} /></label>
 
             <br /><br />
 
@@ -101,7 +101,8 @@ export default function AdminConfig() {
             {/* LIST */}
             {configs.map((item) => (
                 <div key={item._id} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-                    <p>{item.post} | {item.area} | {item.subject} | start:{item.startDate?.slice(0,10)} | End: {item.endDate?.slice(0,10)}</p>
+                    <p>{item.post} | {item.area} | {item.subject} | Start: {new Date(item.startDate).toLocaleString()} |
+                        End: {new Date(item.endDate).toLocaleString()}</p>
                     {/* <p>Last Date: {item.lastDate?.slice(0, 10)}</p> */}
 
                     <button onClick={() => handleEdit(item)}>Edit</button>
