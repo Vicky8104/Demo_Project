@@ -41,11 +41,19 @@ export const uploadFile = async (req, res) => {
       file: newFile,
     });
   } catch (err) {
-    console.error(err);
+    console.error("UPLOAD ERROR:", err);
+
+    // cloudinary size / api error
+    if (err.http_code === 400) {
+      return res.status(400).json({
+        success: false,
+        message: err.message || "Upload failed (possibly file too large)",
+      });
+    }
 
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Server Error",
     });
   }
 };
@@ -106,10 +114,10 @@ export const downloadFile = async (req, res) => {
     res.setHeader(
       "Content-Disposition",
       // `attachment; filename="${file.name.endsWith(".pdf") ? file.name : file.name + ".pdf"}`
-       `attachment; filename="${file.name}.pdf"`
+      `attachment; filename="${file.name}.pdf"`
     );
 
-   
+
 
     response.data.pipe(res);
   } catch (err) {

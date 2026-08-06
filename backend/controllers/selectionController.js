@@ -36,7 +36,7 @@ export const getSelections = async (req, res) => {
   if (config && config.isActive){
     isOpen =
     now >= new Date(config.startDate) &&
-    now >= new Date(config.endDate);
+    now <= new Date(config.endDate);
   }
 
   return{
