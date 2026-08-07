@@ -88,7 +88,7 @@ export default function Header({ toggleSidebar }) {
           <div className="marquee">
             <div className="marquee-container1">
               <div className="marquee-text">
-                📢 आवेदन की अंतिम तिथि: 20-06-2026
+                📢 पुस्तकालयाध्यक्ष ग्रेड-ााा पदस्थापन काउंसलिंग परामर्श (Counselling Form) हेतु अन्तिम तिथि 09.08.2026 को सांय 05ः00 बजे है। 
               </div>
             </div>
           </div>
