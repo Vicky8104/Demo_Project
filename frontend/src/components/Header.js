@@ -5,17 +5,17 @@ import Navbar from "./Navbar";
 import "./Header.css";
 const members = [
   {
-    img: "https://i.pravatar.cc/300?img=42",
+    // img: "https://i.pravatar.cc/300?img=42",
     name: "प्रियंका जोधावत",
     post: "आयुक्त",
   },
   {
-    img: "https://i.pravatar.cc/300?img=2",
+    // img: "https://i.pravatar.cc/300?img=2",
     name: "डाॅ. भास्कर शर्मा",
     post: "संयुक्त निदेशक",
   },
   {
-    img: "https://i.pravatar.cc/300?img=4",
+    // img: "https://i.pravatar.cc/300?img=4",
     name: "डाॅ. महेन्द्र कुमार शर्मा",
     post: "उपनिदेशक",
   },
