@@ -68,13 +68,13 @@ export default function Header({ toggleSidebar }) {
           <h2>पदस्थापन-परामर्श-पोर्टलम्</h2>
         </div> */}
 
-          // <div className="left">
-          // <img src={members[index].img} alt="Person" />
+          <div className="left">
+     
           <div className="info">
             <h4>{members[index].name}</h4>
             <p>{members[index].post}</p>
           </div>
-        // </div>
+        </div>
 
       </div>
 
