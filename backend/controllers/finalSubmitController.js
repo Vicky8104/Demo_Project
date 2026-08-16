@@ -59,8 +59,8 @@ export const finalSubmit = async (req, res) => {
   try {
     const { selectionId, candidate, selectionData, schools, choices } = req.body;
 
-    console.log("BODY:", req.body);
-    console.log("selectionId:", selectionId);
+    // console.log("BODY:", req.body);
+    // console.log("selectionId:", selectionId);
 
     // ========================================
     // ✅ BASIC VALIDATION
@@ -215,7 +215,7 @@ export const finalSubmit = async (req, res) => {
       }
     );
 
-    console.log("Updated Selection:", updatedSelection);
+    // console.log("Updated Selection:", updatedSelection);
 
     // ========================================
     // ✅ FINAL RESPONSE
@@ -228,7 +228,7 @@ export const finalSubmit = async (req, res) => {
     });
 
   } catch (err) {
-    console.log("FINAL ERROR:", err);
+    // console.log("FINAL ERROR:", err);
 
     return res.status(500).json({
       success: false,
