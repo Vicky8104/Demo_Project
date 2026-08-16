@@ -98,7 +98,7 @@ export default function LandingPage() {
       <h1>COUNSELLING PORTAL</h1>
 
       <div className="all-main-content" >
-        <h2>चतुर्थ श्रेणी सीधी भर्ती-2025</h2>
+        <h2>चतुर्थ श्रेणी सीधी भर्ती-2024</h2>
 
         <div className="all-main-container" >
           <div
