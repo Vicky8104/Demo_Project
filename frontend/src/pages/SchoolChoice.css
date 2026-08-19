@@ -1,0 +1,318 @@
+/* =========================================================
+   SCHOOL FORM GRID
+   ========================================================= */
+.personal-data{
+  margin: 45px auto;
+}
+.school-form-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+
+/* =========================================================
+   EACH CHOICE ROW
+   ========================================================= */
+
+.school-choice-row {
+  width: 100%;
+}
+
+
+/* =========================================================
+   CHOICE + DROPDOWN SAME ROW
+   ========================================================= */
+
+.school-dropdown-wrapper {
+  position: relative;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CHOICE LABEL
+   ========================================================= */
+
+.school-choice-label {
+  flex: 0 0 100px;
+
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   DROPDOWN CONTAINER
+   ========================================================= */
+
+.school-dropdown-container {
+  position: relative;
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   DROPDOWN BUTTON
+   ========================================================= */
+
+.school-dropdown-button {
+  width: 90%;
+
+  min-height: 42px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  background: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  box-sizing: border-box;
+}
+
+
+.school-dropdown-button:hover {
+  border-color: #888;
+}
+
+
+.school-dropdown-button.active {
+  border-color: #555;
+}
+
+
+.school-dropdown-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.dropdown-arrow {
+  margin-left: 10px;
+
+  font-size: 11px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   DROPDOWN MENU
+   ========================================================= */
+
+.school-dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 4px);
+  left: 0;
+
+  width: 100%;
+
+  background: #fff;
+
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15);
+
+  z-index: 999;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.school-search-box {
+  padding: 8px;
+
+  border-bottom: 1px solid #eee;
+
+  background: #fff;
+}
+
+
+.school-search-box input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 9px 10px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  outline: none;
+
+  font-size: 14px;
+}
+
+
+.school-search-box input:focus {
+  border-color: #666;
+}
+
+
+/* =========================================================
+   SCHOOL LIST
+   ========================================================= */
+
+.school-dropdown-list {
+  max-height: 200px;
+
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+}
+
+
+/* =========================================================
+   SCHOOL OPTION
+   ========================================================= */
+
+.school-option {
+  min-height: 40px;
+
+  padding: 10px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  border-bottom: 1px solid #f1f1f1;
+
+  box-sizing: border-box;
+}
+
+
+.school-option:hover {
+  background: #f5f5f5;
+}
+
+
+.school-option.selected {
+  font-weight: 600;
+}
+
+
+.selected-tick {
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   NO SCHOOL
+   ========================================================= */
+
+.no-school {
+  padding: 15px;
+
+  text-align: center;
+
+  color: #777;
+}
+
+
+/* =========================================================
+   LOAD MORE SCHOOLS
+   ========================================================= */
+
+.load-more-schools {
+  padding: 10px;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  color: #777;
+
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   MORE CHOICES
+   ========================================================= */
+
+.more-choices {
+  text-align: center;
+
+  padding: 20px;
+
+  font-weight: 500;
+
+  color: #666;
+}
+
+
+.all-choices {
+  text-align: center;
+
+  padding: 20px;
+
+  font-weight: 500;
+
+  color: #555;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .school-dropdown-wrapper {
+    gap: 10px;
+  }
+
+  .school-choice-label {
+    flex: 0 0 75px;
+
+    font-size: 13px;
+  }
+
+  .school-dropdown-button {
+    font-size: 13px;
+
+    min-height: 40px;
+  }
+}
