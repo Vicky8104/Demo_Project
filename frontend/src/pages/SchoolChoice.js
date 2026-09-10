@@ -1,3 +1,4 @@
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../api/axios";
@@ -72,6 +73,17 @@ function SchoolDropdown({
 
   const handleSelect = (school) => {
     onChange(index, school._id);
+
+    setOpen(false);
+    setSearch("");
+  };
+
+  /* =======================================================
+     SELECT SCHOOL = BLANK
+     ======================================================= */
+
+  const handleReset = () => {
+    onChange(index, "");
 
     setOpen(false);
     setSearch("");
@@ -175,6 +187,21 @@ function SchoolDropdown({
             className="school-dropdown-list"
             onScroll={handleDropdownScroll}
           >
+
+            {/* ==========================================
+                BLANK / SELECT SCHOOL OPTION
+                VALUE = ""
+                ========================================== */}
+
+            <div
+              className="school-option select-school-option"
+              onClick={handleReset}
+            >
+              <span>
+                ------ Select School ------
+              </span>
+            </div>
+
             {displayedSchools.length > 0 ? (
               displayedSchools.map((school) => {
                 const schoolName =
@@ -476,9 +503,7 @@ export default function SchoolChoice() {
 
     if (emptyIndex !== -1) {
       alert(
-        `Please select school for Choice ${
-          emptyIndex + 1
-        }`
+        `Please select school for Choice ${emptyIndex + 1}`
       );
 
       /* ==============================================
@@ -631,11 +656,13 @@ export default function SchoolChoice() {
                     choice,
                     index
                   ) => (
+
                     <div
                       key={index}
                       id={`choice-${index}`}
                       className="form-group"
                     >
+
                       <SchoolDropdown
                         index={index}
                         value={
@@ -653,7 +680,9 @@ export default function SchoolChoice() {
                           loading
                         }
                       />
+
                     </div>
+
                   )
                 )}
 
