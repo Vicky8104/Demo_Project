@@ -88,7 +88,7 @@ export default function Header({ toggleSidebar }) {
           <div className="marquee">
             <div className="marquee-container1">
               <div className="marquee-text">
-                📢 चतुर्थ श्रेणी कर्मचारी पदस्थापन काउंसलिंग परामर्श (Counselling Form) द्वितीय चरण हेतु अन्तिम तिथि 22.09.2026 को सांय 0500 बजे है। 
+                📢 चतुर्थ श्रेणी कर्मचारी पदस्थापन काउंसलिंग परामर्श (Counselling Form) द्वितीय चरण हेतु अन्तिम तिथि 22.09.2026 को सांय 0600 बजे है। 
               </div>
             </div>
           </div>
