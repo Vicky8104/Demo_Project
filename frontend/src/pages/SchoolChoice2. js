@@ -1,0 +1,920 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import API from "../api/axios";
+import Loader from "../components/Loader";
+import "./SchoolChoice.css";
+
+/* =========================================================
+   MAIN SCHOOL CHOICE PAGE
+   ========================================================= */
+
+export default function SchoolChoice() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [loading, setLoading] = useState(false);
+
+  /* =========================================================
+     DATA FROM PREVIOUS PAGE
+     ========================================================= */
+
+  const selectionData =
+    location.state?.selectionData;
+
+  const candidate =
+    location.state?.candidate;
+
+  const post = selectionData?.post;
+  const area = selectionData?.area;
+  const subject = selectionData?.subject;
+  const selectionId = selectionData?._id;
+
+
+  /* =========================================================
+     SCHOOL DATA
+     ========================================================= */
+
+  const [schools, setSchools] = useState([]);
+
+  /*
+    choices = selected school IDs
+
+    Array ka order hi preference order hai.
+
+    Example:
+
+    [
+      "schoolC",
+      "schoolA",
+      "schoolF"
+    ]
+
+    Choice 1 = School C
+    Choice 2 = School A
+    Choice 3 = School F
+  */
+
+  const [choices, setChoices] = useState([]);
+
+
+  /* =========================================================
+     MINIMUM SCHOOL SELECTION
+     
+     IMPORTANT:
+     Future me 10 ko 15 / 20 / etc. kar sakte ho.
+     ========================================================= */
+
+  const MIN_SCHOOL_CHOICES = 10;
+
+
+  /* =========================================================
+     CHECK DATA
+     ========================================================= */
+
+  useEffect(() => {
+    if (!selectionData || !candidate) {
+      navigate("/candidate");
+    }
+  }, [
+    selectionData,
+    candidate,
+    navigate,
+  ]);
+
+
+  /* =========================================================
+     FETCH SCHOOLS
+     ========================================================= */
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        setLoading(true);
+
+        if (!selectionId) {
+          alert("Invalid selection");
+          navigate("/candidate");
+          return;
+        }
+
+
+        /* ===================================================
+           GET RELATED SCHOOLS
+           =================================================== */
+
+        const res = await API.get(
+          `/schools?post=${encodeURIComponent(
+            post
+          )}&area=${encodeURIComponent(
+            area
+          )}&subject=${encodeURIComponent(
+            subject
+          )}`
+        );
+
+
+        const data = Array.isArray(
+          res.data
+        )
+          ? res.data
+          : [];
+
+
+        setSchools(data);
+
+
+        /* ===================================================
+           RESTORE SESSION STORAGE
+           =================================================== */
+
+        const saved =
+          sessionStorage.getItem(
+            `schoolChoice_${selectionId}`
+          );
+
+
+        if (saved) {
+          try {
+            const parsed =
+              JSON.parse(saved);
+
+
+            if (
+              Array.isArray(parsed)
+            ) {
+
+              /*
+                Current school list ke
+                valid IDs only rakhenge.
+              */
+
+              const schoolIds =
+                new Set(
+                  data.map(
+                    (school) =>
+                      school._id
+                  )
+                );
+
+
+              /*
+                Invalid IDs remove
+                + duplicate IDs remove
+              */
+
+              const validChoices = [
+                ...new Set(
+                  parsed.filter(
+                    (id) =>
+                      schoolIds.has(
+                        id
+                      )
+                  )
+                ),
+              ];
+
+
+              setChoices(
+                validChoices
+              );
+
+            } else {
+              setChoices([]);
+            }
+
+          } catch (error) {
+            console.error(
+              "Invalid saved school choices:",
+              error
+            );
+
+            setChoices([]);
+          }
+
+        } else {
+          setChoices([]);
+        }
+
+
+      } catch (err) {
+
+        console.error(
+          "Failed to load schools:",
+          err
+        );
+
+        alert(
+          err.response?.data?.message ||
+            "Failed to load schools"
+        );
+
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+    if (
+      post &&
+      area &&
+      subject &&
+      selectionId
+    ) {
+      fetchSchools();
+    }
+
+  }, [
+    post,
+    area,
+    subject,
+    selectionId,
+    navigate,
+  ]);
+
+
+  /* =========================================================
+     GET SCHOOL NAME
+     ========================================================= */
+
+  const getSchoolName = (
+    school
+  ) => {
+    return (
+      school.schoolName ||
+      school.name ||
+      ""
+    );
+  };
+
+
+  /* =========================================================
+     SAVE CHOICES TO SESSION STORAGE
+     ========================================================= */
+
+  const saveChoices = (
+    updatedChoices
+  ) => {
+
+    if (!selectionId) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      `schoolChoice_${selectionId}`,
+      JSON.stringify(
+        updatedChoices
+      )
+    );
+  };
+
+
+  /* =========================================================
+     ADD SCHOOL
+     ========================================================= */
+
+  const handleAddSchool = (
+    schoolId
+  ) => {
+
+    if (loading) {
+      return;
+    }
+
+
+    /* ======================================================
+       DUPLICATE PROTECTION
+       ====================================================== */
+
+    if (
+      choices.includes(
+        schoolId
+      )
+    ) {
+      return;
+    }
+
+
+    /*
+      New school last preference
+      me add hogi.
+    */
+
+    const updatedChoices = [
+      ...choices,
+      schoolId,
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     REMOVE SCHOOL
+     ========================================================= */
+
+  const handleRemoveSchool = (
+    schoolId
+  ) => {
+
+    if (loading) {
+      return;
+    }
+
+
+    const updatedChoices =
+      choices.filter(
+        (id) =>
+          id !== schoolId
+      );
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     MOVE SCHOOL UP
+     ========================================================= */
+
+  const handleMoveUp = (
+    index
+  ) => {
+
+    if (
+      index <= 0 ||
+      loading
+    ) {
+      return;
+    }
+
+
+    const updatedChoices = [
+      ...choices,
+    ];
+
+
+    /*
+      Current school aur previous
+      school ko swap karenge.
+    */
+
+    [
+      updatedChoices[index - 1],
+      updatedChoices[index],
+    ] = [
+      updatedChoices[index],
+      updatedChoices[index - 1],
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     MOVE SCHOOL DOWN
+     ========================================================= */
+
+  const handleMoveDown = (
+    index
+  ) => {
+
+    if (
+      index >=
+        choices.length - 1 ||
+      loading
+    ) {
+      return;
+    }
+
+
+    const updatedChoices = [
+      ...choices,
+    ];
+
+
+    /*
+      Current school aur next
+      school ko swap karenge.
+    */
+
+    [
+      updatedChoices[index],
+      updatedChoices[index + 1],
+    ] = [
+      updatedChoices[index + 1],
+      updatedChoices[index],
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     AVAILABLE SCHOOLS
+     
+     Selected school automatically
+     Available list se remove ho jayegi.
+     ========================================================= */
+
+  const availableSchools =
+    schools.filter(
+      (school) =>
+        !choices.includes(
+          school._id
+        )
+    );
+
+
+  /* =========================================================
+     GET SELECTED SCHOOL
+     ========================================================= */
+
+  const getSchoolById = (
+    schoolId
+  ) => {
+
+    return schools.find(
+      (school) =>
+        school._id ===
+        schoolId
+    );
+  };
+
+
+  /* =========================================================
+     SAVE & NEXT
+     ========================================================= */
+
+  const handleSubmit = (
+    e
+  ) => {
+
+    e.preventDefault();
+
+
+    /* ======================================================
+       MINIMUM SCHOOL VALIDATION
+       ====================================================== */
+
+    if (
+      choices.length <
+      MIN_SCHOOL_CHOICES
+    ) {
+
+      alert(
+        `Please select at least ${MIN_SCHOOL_CHOICES} schools.`
+      );
+
+      return;
+    }
+
+
+    /* ======================================================
+       SAVE CURRENT CHOICES
+       ====================================================== */
+
+    saveChoices(
+      choices
+    );
+
+
+    /* ======================================================
+       GO TO PREVIEW
+       ====================================================== */
+
+    navigate("/preview", {
+      state: {
+        selectionId,
+        selectionData,
+        choices,
+        schools,
+        candidate,
+      },
+    });
+  };
+
+
+  /* =========================================================
+     UI
+     ========================================================= */
+
+  return (
+    <>
+      <div className="personal-data">
+
+        {loading && (
+          <Loader />
+        )}
+
+
+        <div className="form-container">
+
+
+          {/* ==================================================
+              PAGE TITLE
+              ================================================== */}
+
+          <h2>
+            School Choice Form
+          </h2>
+
+
+          {/* ==================================================
+              HEADER
+              ================================================== */}
+
+          <div className="school-form-header">
+
+
+            <div className="form-group">
+
+              <label>
+                Post:
+              </label>
+
+              <input
+                value={
+                  post || ""
+                }
+                readOnly
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>
+                Area:
+              </label>
+
+              <input
+                value={
+                  area || ""
+                }
+                readOnly
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>
+                Subject:
+              </label>
+
+              <input
+                value={
+                  subject || ""
+                }
+                readOnly
+              />
+
+            </div>
+
+
+          </div>
+
+
+          {/* ==================================================
+              FORM
+              ================================================== */}
+
+          <form
+            onSubmit={
+              handleSubmit
+            }
+          >
+
+
+            <h2>
+              Choose Your Schools
+            </h2>
+
+
+            {/* =================================================
+                NOT ENOUGH AVAILABLE SCHOOLS
+                ================================================= */}
+
+            {!loading &&
+              schools.length <
+                MIN_SCHOOL_CHOICES && (
+                <div className="school-warning">
+
+                  Only{" "}
+                  <strong>
+                    {schools.length}
+                  </strong>{" "}
+                  schools are available.
+
+                  <br />
+
+                  Minimum{" "}
+                  <strong>
+                    {MIN_SCHOOL_CHOICES}
+                  </strong>{" "}
+                  schools are required.
+
+                </div>
+              )}
+
+
+            {/* =================================================
+                SCHOOL SELECTION CONTAINER
+                ================================================= */}
+
+            <div className="school-selection-container">
+
+
+              {/* =================================================
+                  AVAILABLE SCHOOLS
+                  ================================================= */}
+
+              <div className="available-schools-box">
+
+
+                <div className="school-box-header">
+
+                  <h3>
+                    Available Schools
+                  </h3>
+
+                  <span>
+                    {availableSchools.length}
+                  </span>
+
+                </div>
+
+
+                <div className="available-school-list">
+
+
+                  {availableSchools.length >
+                  0 ? (
+
+                    availableSchools.map(
+                      (school) => {
+
+                        const schoolName =
+                          getSchoolName(
+                            school
+                          );
+
+
+                        return (
+
+                          <div
+                            key={
+                              school._id
+                            }
+                            className="available-school-row"
+                          >
+
+
+                            <span className="available-school-name">
+
+                              {schoolName}
+
+                            </span>
+
+
+                            {/* =================================
+                                ADD BUTTON
+                                ================================= */}
+
+                            <button
+                              type="button"
+                              className="add-school-button"
+                              onClick={() =>
+                                handleAddSchool(
+                                  school._id
+                                )
+                              }
+                              disabled={
+                                loading
+                              }
+                              title="Add School"
+                            >
+                              +
+                            </button>
+
+
+                          </div>
+
+                        );
+                      }
+                    )
+
+                  ) : (
+
+                    <div className="no-school-message">
+
+                      {schools.length ===
+                      0
+                        ? "No schools available."
+                        : "All schools selected."}
+
+                    </div>
+
+                  )}
+
+
+                </div>
+
+              </div>
+
+
+              {/* =================================================
+                  SELECTED SCHOOLS
+                  ================================================= */}
+
+              <div className="selected-schools-box">
+
+
+                <div className="school-box-header">
+
+                  <h3>
+                    Selected Schools
+                  </h3>
+
+                  <span>
+                    {choices.length}
+                  </span>
+
+                </div>
+
+
+                <div className="selected-school-list">
+
+
+                  {choices.length >
+                  0 ? (
+
+                    choices.map(
+                      (
+                        schoolId,
+                        index
+                      ) => {
+
+                        const school =
+                          getSchoolById(
+                            schoolId
+                          );
+
+
+                        if (!school) {
+                          return null;
+                        }
+
+
+                        const schoolName =
+                          getSchoolName(
+                            school
+                          );
+
+
+                        return (
+
+                          <div
+                            key={
+                              schoolId
+                            }
+                            className="selected-school-row"
+                          >
+
+
+                            {/* ===============================
+                                PREFERENCE NUMBER
+                                =============================== */}
+
+                            <span className="preference-number">
+
+                              {index + 1}
+
+                            </span>
+
+
+                            {/* ===============================
+                                SCHOOL NAME
+                                =============================== */}
+
+                            <span className="selected-school-name">
+
+                              {schoolName}
+
+                            </span>
+
+
+                            {/* ===============================
+                                UP
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="preference-button"
+                              onClick={() =>
+                                handleMoveUp(
+                                  index
+                                )
+                              }
+                              disabled={
+                                index ===
+                                  0 ||
+                                loading
+                              }
+                              title="Move Up"
+                            >
+                              ↑
+                            </button>
+
+
+                            {/* ===============================
+                                DOWN
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="preference-button"
+                              onClick={() =>
+                                handleMoveDown(
+                                  index
+                                )
+                              }
+                              disabled={
+                                index ===
+                                    choices.length -
+                                      1 ||
+                                loading
+                              }
+                              title="Move Down"
+                            >
+                              ↓
+                            </button>
+
+
+                            {/* ===============================
+                                REMOVE
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="remove-school-button"
+                              onClick={() =>
+                                handleRemoveSchool(
+                                  schoolId
+                                )
+                              }
+                              disabled={
+                                loading
+                              }
+                              title="Remove School"
+                            >
+                              ×
+                            </button>
+
+
+                          </div>
+
+                        );
+                      }
+                    )
+
+                  ) : (
+
+                    <div className="no-selected-message">
+
+                      No school selected.
+
+            
