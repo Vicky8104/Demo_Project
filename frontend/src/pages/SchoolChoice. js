@@ -4,9 +4,7 @@ import API from "../api/axios";
 import Loader from "../components/Loader";
 import "./SchoolChoice.css";
 
-/* =========================================================
-   MAIN SCHOOL CHOICE PAGE
-   ========================================================= */
+/* ======= MAIN SCHOOL CHOICE PAGE ====== */
 
 export default function SchoolChoice() {
   const navigate = useNavigate();
