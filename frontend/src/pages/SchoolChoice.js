@@ -6,254 +6,6 @@ import Loader from "../components/Loader";
 import "./SchoolChoice.css";
 
 /* =========================================================
-   CUSTOM SCHOOL DROPDOWN
-   ========================================================= */
-
-function SchoolDropdown({
-  index,
-  value,
-  schools,
-  availableSchools,
-  onChange,
-  disabled,
-}) {
-  const [open, setOpen] = useState(false);
-
-  // Initially 20 schools
-  const [visibleSchools, setVisibleSchools] = useState(20);
-
-  // Search
-  const [search, setSearch] = useState("");
-
-  /* =======================================================
-     RESET WHEN DROPDOWN OPENS
-     ======================================================= */
-
-  useEffect(() => {
-    if (open) {
-      setVisibleSchools(20);
-      setSearch("");
-    }
-  }, [open]);
-
-  /* =======================================================
-     SCHOOL NAME
-     ======================================================= */
-
-  const getSchoolName = (school) => {
-    return school.schoolName || school.name || "";
-  };
-
-  /* =======================================================
-     SEARCH FILTER
-     ======================================================= */
-
-  const filteredSchools = availableSchools.filter(
-    (school) => {
-      const name = getSchoolName(school);
-
-      return name
-        .toLowerCase()
-        .includes(search.toLowerCase());
-    }
-  );
-
-  /* =======================================================
-     ONLY SHOW VISIBLE SCHOOLS
-     ======================================================= */
-
-  const displayedSchools = filteredSchools.slice(
-    0,
-    visibleSchools
-  );
-
-  /* =======================================================
-     SELECT SCHOOL
-     ======================================================= */
-
-  const handleSelect = (school) => {
-    onChange(index, school._id);
-
-    setOpen(false);
-    setSearch("");
-  };
-
-  /* =======================================================
-     SELECT SCHOOL = BLANK
-     ======================================================= */
-
-  const handleReset = () => {
-    onChange(index, "");
-
-    setOpen(false);
-    setSearch("");
-  };
-
-  /* =======================================================
-     DROPDOWN INTERNAL SCROLL
-     NEXT 20 SCHOOLS
-     ======================================================= */
-
-  const handleDropdownScroll = (e) => {
-    const element = e.currentTarget;
-
-    const nearBottom =
-      element.scrollTop + element.clientHeight >=
-      element.scrollHeight - 30;
-
-    if (nearBottom) {
-      setVisibleSchools((prev) => {
-        if (prev >= filteredSchools.length) {
-          return prev;
-        }
-
-        return Math.min(
-          prev + 20,
-          filteredSchools.length
-        );
-      });
-    }
-  };
-
-  /* =======================================================
-     SELECTED SCHOOL
-     ======================================================= */
-
-  const selectedSchool = schools.find(
-    (school) => school._id === value
-  );
-
-  const selectedSchoolName = selectedSchool
-    ? getSchoolName(selectedSchool)
-    : "";
-
-  /* =======================================================
-     UI
-     ======================================================= */
-
-  return (
-    <div className="school-dropdown-wrapper">
-      <label>Choice {index + 1}</label>
-
-      {/* ================================================
-          DROPDOWN BUTTON
-          ================================================ */}
-
-      <button
-        type="button"
-        className={`school-dropdown-button ${
-          open ? "active" : ""
-        }`}
-        onClick={() => {
-          if (!disabled) {
-            setOpen((prev) => !prev);
-          }
-        }}
-        disabled={disabled}
-      >
-        <span>
-          {selectedSchoolName || "Select School"}
-        </span>
-
-        <span className="dropdown-arrow">
-          {open ? "▲" : "▼"}
-        </span>
-      </button>
-
-      {/* ================================================
-          DROPDOWN MENU
-          ================================================ */}
-
-      {open && (
-        <div className="school-dropdown-menu">
-          {/* SEARCH */}
-
-          <div className="school-search-box">
-            <input
-              type="text"
-              placeholder="Search school..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setVisibleSchools(20);
-              }}
-              autoFocus
-            />
-          </div>
-
-          {/* SCHOOL LIST */}
-
-          <div
-            className="school-dropdown-list"
-            onScroll={handleDropdownScroll}
-          >
-
-            {/* ==========================================
-                BLANK / SELECT SCHOOL OPTION
-                VALUE = ""
-                ========================================== */}
-
-            <div
-              className="school-option select-school-option"
-              onClick={handleReset}
-            >
-              <span>
-                ------ Select School ------
-              </span>
-            </div>
-
-            {displayedSchools.length > 0 ? (
-              displayedSchools.map((school) => {
-                const schoolName =
-                  getSchoolName(school);
-
-                const isSelected =
-                  value === school._id;
-
-                return (
-                  <div
-                    key={school._id}
-                    className={`school-option ${
-                      isSelected ? "selected" : ""
-                    }`}
-                    onClick={() =>
-                      handleSelect(school)
-                    }
-                  >
-                    <span>{schoolName}</span>
-
-                    {isSelected && (
-                      <span className="selected-tick">
-                        ✓
-                      </span>
-                    )}
-                  </div>
-                );
-              })
-            ) : (
-              <div className="no-school">
-                No school found
-              </div>
-            )}
-
-            {/* ==========================================
-                MORE SCHOOLS AVAILABLE
-                ========================================== */}
-
-            {displayedSchools.length <
-              filteredSchools.length && (
-              <div className="load-more-schools">
-                Scroll down for next 20 schools...
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* =========================================================
    MAIN SCHOOL CHOICE PAGE
    ========================================================= */
 
@@ -262,6 +14,10 @@ export default function SchoolChoice() {
   const location = useLocation();
 
   const [loading, setLoading] = useState(false);
+
+  /* =========================================================
+     DATA FROM PREVIOUS PAGE
+     ========================================================= */
 
   const selectionData =
     location.state?.selectionData;
@@ -274,18 +30,43 @@ export default function SchoolChoice() {
   const subject = selectionData?.subject;
   const selectionId = selectionData?._id;
 
-  const [schools, setSchools] = useState([]);
-  const [choices, setChoices] = useState([]);
 
   /* =========================================================
-     CHOICE BATCH SIZE
-     20 DROPDOWNS AT A TIME
+     SCHOOL DATA
      ========================================================= */
 
-  const CHOICE_BATCH_SIZE = 20;
+  const [schools, setSchools] = useState([]);
 
-  const [visibleCount, setVisibleCount] =
-    useState(CHOICE_BATCH_SIZE);
+  /*
+    choices = selected school IDs
+
+    Array ka order hi preference order hai.
+
+    Example:
+
+    [
+      "schoolC",
+      "schoolA",
+      "schoolF"
+    ]
+
+    Choice 1 = School C
+    Choice 2 = School A
+    Choice 3 = School F
+  */
+
+  const [choices, setChoices] = useState([]);
+
+
+  /* =========================================================
+     MINIMUM SCHOOL SELECTION
+     
+     IMPORTANT:
+     Future me 10 ko 15 / 20 / etc. kar sakte ho.
+     ========================================================= */
+
+  const MIN_SCHOOL_CHOICES = 1;
+
 
   /* =========================================================
      CHECK DATA
@@ -300,6 +81,7 @@ export default function SchoolChoice() {
     candidate,
     navigate,
   ]);
+
 
   /* =========================================================
      FETCH SCHOOLS
@@ -316,6 +98,11 @@ export default function SchoolChoice() {
           return;
         }
 
+
+        /* ===================================================
+           GET RELATED SCHOOLS
+           =================================================== */
+
         const res = await API.get(
           `/schools?post=${encodeURIComponent(
             post
@@ -326,61 +113,107 @@ export default function SchoolChoice() {
           )}`
         );
 
-        const data = res.data || [];
+
+        const data = Array.isArray(
+          res.data
+        )
+          ? res.data
+          : [];
+
 
         setSchools(data);
 
-        /* ================================================
-           SESSION STORAGE
-           ================================================ */
 
-        const saved = sessionStorage.getItem(
-          `schoolChoice_${selectionId}`
-        );
+        /* ===================================================
+           RESTORE SESSION STORAGE
+           =================================================== */
+
+        const saved =
+          sessionStorage.getItem(
+            `schoolChoice_${selectionId}`
+          );
+
 
         if (saved) {
           try {
-            const parsed = JSON.parse(saved);
+            const parsed =
+              JSON.parse(saved);
+
 
             if (
-              Array.isArray(parsed) &&
-              parsed.length === data.length
+              Array.isArray(parsed)
             ) {
-              setChoices(parsed);
-            } else {
+
+              /*
+                Current school list ke
+                valid IDs only rakhenge.
+              */
+
+              const schoolIds =
+                new Set(
+                  data.map(
+                    (school) =>
+                      school._id
+                  )
+                );
+
+
+              /*
+                Invalid IDs remove
+                + duplicate IDs remove
+              */
+
+              const validChoices = [
+                ...new Set(
+                  parsed.filter(
+                    (id) =>
+                      schoolIds.has(
+                        id
+                      )
+                  )
+                ),
+              ];
+
+
               setChoices(
-                Array(data.length).fill("")
+                validChoices
               );
+
+            } else {
+              setChoices([]);
             }
+
           } catch (error) {
             console.error(
               "Invalid saved school choices:",
               error
             );
 
-            setChoices(
-              Array(data.length).fill("")
-            );
+            setChoices([]);
           }
+
         } else {
-          setChoices(
-            Array(data.length).fill("")
-          );
+          setChoices([]);
         }
 
-        // Start with 20 choices
-        setVisibleCount(
-          CHOICE_BATCH_SIZE
-        );
+
       } catch (err) {
+
+        console.error(
+          "Failed to load schools:",
+          err
+        );
+
         alert(
           err.response?.data?.message ||
             "Failed to load schools"
         );
+
       } finally {
         setLoading(false);
       }
     };
+
 
     if (
       post &&
@@ -390,6 +223,7 @@ export default function SchoolChoice() {
     ) {
       fetchSchools();
     }
+
   }, [
     post,
     area,
@@ -398,167 +232,287 @@ export default function SchoolChoice() {
     navigate,
   ]);
 
-  /* =========================================================
-     PAGE SCROLL
-     NEXT 20 CHOICES
-     ========================================================= */
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (loading) return;
-
-      const scrollTop = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight =
-        document.documentElement.scrollHeight;
-
-      const nearBottom =
-        scrollTop + windowHeight >=
-        documentHeight - 300;
-
-      if (nearBottom) {
-        setVisibleCount((prev) => {
-          if (prev >= choices.length) {
-            return prev;
-          }
-
-          return Math.min(
-            prev + CHOICE_BATCH_SIZE,
-            choices.length
-          );
-        });
-      }
-    };
-
-    window.addEventListener(
-      "scroll",
-      handleScroll
-    );
-
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-    };
-  }, [
-    choices.length,
-    loading,
-  ]);
 
   /* =========================================================
-     HANDLE CHANGE
+     GET SCHOOL NAME
      ========================================================= */
 
-  const handleChange = (
-    index,
-    value
+  const getSchoolName = (
+    school
   ) => {
-    const updated = [...choices];
+    return (
+      school.schoolName ||
+      school.name ||
+      ""
+    );
+  };
 
-    updated[index] = value;
 
-    setChoices(updated);
+  /* =========================================================
+     SAVE CHOICES TO SESSION STORAGE
+     ========================================================= */
+
+  const saveChoices = (
+    updatedChoices
+  ) => {
+
+    if (!selectionId) {
+      return;
+    }
 
     sessionStorage.setItem(
       `schoolChoice_${selectionId}`,
-      JSON.stringify(updated)
+      JSON.stringify(
+        updatedChoices
+      )
     );
   };
 
+
   /* =========================================================
-     NO DUPLICATE SCHOOL
+     ADD SCHOOL
      ========================================================= */
 
-  const getAvailableSchools = (
-    currentIndex
+  const handleAddSchool = (
+    schoolId
   ) => {
-    return schools.filter((school) => {
-      const selectedElsewhere =
-        choices.some(
-          (c, i) =>
-            c === school._id &&
-            i !== currentIndex
-        );
 
-      return !selectedElsewhere;
-    });
+    if (loading) {
+      return;
+    }
+
+
+    /* ======================================================
+       DUPLICATE PROTECTION
+       ====================================================== */
+
+    if (
+      choices.includes(
+        schoolId
+      )
+    ) {
+      return;
+    }
+
+
+    /*
+      New school last preference
+      me add hogi.
+    */
+
+    const updatedChoices = [
+      ...choices,
+      schoolId,
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
   };
 
+
   /* =========================================================
-     SUBMIT
+     REMOVE SCHOOL
      ========================================================= */
 
-  const handleSubmit = (e) => {
+  const handleRemoveSchool = (
+    schoolId
+  ) => {
+
+    if (loading) {
+      return;
+    }
+
+
+    const updatedChoices =
+      choices.filter(
+        (id) =>
+          id !== schoolId
+      );
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     MOVE SCHOOL UP
+     ========================================================= */
+
+  const handleMoveUp = (
+    index
+  ) => {
+
+    if (
+      index <= 0 ||
+      loading
+    ) {
+      return;
+    }
+
+
+    const updatedChoices = [
+      ...choices,
+    ];
+
+
+    /*
+      Current school aur previous
+      school ko swap karenge.
+    */
+
+    [
+      updatedChoices[index - 1],
+      updatedChoices[index],
+    ] = [
+      updatedChoices[index],
+      updatedChoices[index - 1],
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     MOVE SCHOOL DOWN
+     ========================================================= */
+
+  const handleMoveDown = (
+    index
+  ) => {
+
+    if (
+      index >=
+        choices.length - 1 ||
+      loading
+    ) {
+      return;
+    }
+
+
+    const updatedChoices = [
+      ...choices,
+    ];
+
+
+    /*
+      Current school aur next
+      school ko swap karenge.
+    */
+
+    [
+      updatedChoices[index],
+      updatedChoices[index + 1],
+    ] = [
+      updatedChoices[index + 1],
+      updatedChoices[index],
+    ];
+
+
+    setChoices(
+      updatedChoices
+    );
+
+
+    saveChoices(
+      updatedChoices
+    );
+  };
+
+
+  /* =========================================================
+     AVAILABLE SCHOOLS
+     
+     Selected school automatically
+     Available list se remove ho jayegi.
+     ========================================================= */
+
+  const availableSchools =
+    schools.filter(
+      (school) =>
+        !choices.includes(
+          school._id
+        )
+    );
+
+
+  /* =========================================================
+     GET SELECTED SCHOOL
+     ========================================================= */
+
+  const getSchoolById = (
+    schoolId
+  ) => {
+
+    return schools.find(
+      (school) =>
+        school._id ===
+        schoolId
+    );
+  };
+
+
+  /* =========================================================
+     SAVE & NEXT
+     ========================================================= */
+
+  const handleSubmit = (
+    e
+  ) => {
+
     e.preventDefault();
 
-    const emptyIndex =
-      choices.findIndex(
-        (c) => !c
-      );
 
-    /* ================================================
-       EMPTY CHOICE
-       ================================================ */
+    /* ======================================================
+       MINIMUM SCHOOL VALIDATION
+       ====================================================== */
 
-    if (emptyIndex !== -1) {
+    if (
+      choices.length <
+      MIN_SCHOOL_CHOICES
+    ) {
+
       alert(
-        `Please select school for Choice ${emptyIndex + 1}`
+        `Please select at least ${MIN_SCHOOL_CHOICES} schools.`
       );
-
-      /* ==============================================
-         CHOICE NOT CURRENTLY RENDERED
-         ============================================== */
-
-      if (emptyIndex >= visibleCount) {
-        setVisibleCount(
-          Math.min(
-            emptyIndex + 1,
-            choices.length
-          )
-        );
-
-        setTimeout(() => {
-          const el =
-            document.getElementById(
-              `choice-${emptyIndex}`
-            );
-
-          if (el) {
-            el.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
-        }, 100);
-
-        return;
-      }
-
-      /* ==============================================
-         FOCUS CURRENT CHOICE
-         ============================================== */
-
-      const el =
-        document.getElementById(
-          `choice-${emptyIndex}`
-        );
-
-      if (el) {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
 
       return;
     }
 
-    /* ================================================
-       ALL CHOICES COMPLETE
-       ================================================ */
 
-    setLoading(true);
+    /* ======================================================
+       SAVE CURRENT CHOICES
+       ====================================================== */
+
+    saveChoices(
+      choices
+    );
+
+
+    /* ======================================================
+       GO TO PREVIEW
+       ====================================================== */
 
     navigate("/preview", {
       state: {
@@ -571,6 +525,7 @@ export default function SchoolChoice() {
     });
   };
 
+
   /* =========================================================
      UI
      ========================================================= */
@@ -579,170 +534,512 @@ export default function SchoolChoice() {
     <>
       <div className="personal-data">
 
-        {loading && <Loader />}
+        {loading && (
+          <Loader />
+        )}
+
 
         <div className="form-container">
+
+
+          {/* ==================================================
+              PAGE TITLE
+              ================================================== */}
 
           <h2>
             School Choice Form
           </h2>
 
-          {/* ==============================================
+
+          {/* ==================================================
               HEADER
-              ============================================== */}
+              ================================================== */}
 
           <div className="school-form-header">
 
-            <div className="form-group">
-              <label>Post:</label>
-
-              <input
-                value={post || ""}
-                readOnly
-              />
-            </div>
 
             <div className="form-group">
-              <label>Area:</label>
+
+              <label>
+                Post:
+              </label>
 
               <input
-                value={area || ""}
+                value={
+                  post || ""
+                }
                 readOnly
               />
+
             </div>
+
 
             <div className="form-group">
-              <label>Subject:</label>
+
+              <label>
+                Area:
+              </label>
 
               <input
-                value={subject || ""}
+                value={
+                  area || ""
+                }
                 readOnly
               />
+
             </div>
+
+
+            <div className="form-group">
+
+              <label>
+                Subject:
+              </label>
+
+              <input
+                value={
+                  subject || ""
+                }
+                readOnly
+              />
+
+            </div>
+
 
           </div>
 
-          {/* ==============================================
-              FORM
-              ============================================== */}
 
-          <form onSubmit={handleSubmit}>
+          {/* ==================================================
+              FORM
+              ================================================== */}
+
+          <form
+            onSubmit={
+              handleSubmit
+            }
+          >
+
 
             <h2>
-              Choice Your Schools
+              Choose Your Schools
             </h2>
 
-            {schools.length === 0 &&
-              !loading && (
-                <p>
-                  No schools available
-                  for this selection
-                </p>
+
+            {/* =================================================
+                NOT ENOUGH AVAILABLE SCHOOLS
+                ================================================= */}
+
+            {!loading &&
+              schools.length <
+                MIN_SCHOOL_CHOICES && (
+                <div className="school-warning">
+
+                  Only{" "}
+                  <strong>
+                    {schools.length}
+                  </strong>{" "}
+                  schools are available.
+
+                  <br />
+
+                  Minimum{" "}
+                  <strong>
+                    {MIN_SCHOOL_CHOICES}
+                  </strong>{" "}
+                  schools are required.
+
+                </div>
               )}
 
-            {/* ==========================================
-                ONLY 20 CHOICES AT A TIME
-                ========================================== */}
 
-            <div className="school-form-grid">
+            {/* =================================================
+                SCHOOL SELECTION CONTAINER
+                ================================================= */}
 
-              {choices
-                .slice(
-                  0,
-                  visibleCount
-                )
-                .map(
-                  (
-                    choice,
-                    index
-                  ) => (
+            <div className="school-selection-container">
 
-                    <div
-                      key={index}
-                      id={`choice-${index}`}
-                      className="form-group"
-                    >
 
-                      <SchoolDropdown
-                        index={index}
-                        value={
-                          choices[index] ||
-                          ""
-                        }
-                        schools={schools}
-                        availableSchools={getAvailableSchools(
-                          index
-                        )}
-                        onChange={
-                          handleChange
-                        }
-                        disabled={
-                          loading
-                        }
-                      />
+              {/* =================================================
+                  AVAILABLE SCHOOLS
+                  ================================================= */}
+
+              <div className="available-schools-box">
+
+
+                <div className="school-box-header">
+
+                  <h3>
+                    Available Schools
+                  </h3>
+
+                  <span>
+                    {availableSchools.length}
+                  </span>
+
+                </div>
+
+
+                <div className="available-school-list">
+
+
+                  {availableSchools.length >
+                  0 ? (
+
+                    availableSchools.map(
+                      (school) => {
+
+                        const schoolName =
+                          getSchoolName(
+                            school
+                          );
+
+
+                        return (
+
+                          <div
+                            key={
+                              school._id
+                            }
+                            className="available-school-row"
+                          >
+
+
+                            <span className="available-school-name">
+
+                              {schoolName}
+
+                            </span>
+
+
+                            {/* =================================
+                                ADD BUTTON
+                                ================================= */}
+
+                            <button
+                              type="button"
+                              className="add-school-button"
+                              onClick={() =>
+                                handleAddSchool(
+                                  school._id
+                                )
+                              }
+                              disabled={
+                                loading
+                              }
+                              title="Add School"
+                            >
+                              +
+                            </button>
+
+
+                          </div>
+
+                        );
+                      }
+                    )
+
+                  ) : (
+
+                    <div className="no-school-message">
+
+                      {schools.length ===
+                      0
+                        ? "No schools available."
+                        : "All schools selected."}
 
                     </div>
 
-                  )
-                )}
+                  )}
+
+
+                </div>
+
+              </div>
+
+
+              {/* =================================================
+                  SELECTED SCHOOLS
+                  ================================================= */}
+
+              <div className="selected-schools-box">
+
+
+                <div className="school-box-header">
+
+                  <h3>
+                    Selected Schools
+                  </h3>
+
+                  <span>
+                    {choices.length}
+                  </span>
+
+                </div>
+
+
+                <div className="selected-school-list">
+
+
+                  {choices.length >
+                  0 ? (
+
+                    choices.map(
+                      (
+                        schoolId,
+                        index
+                      ) => {
+
+                        const school =
+                          getSchoolById(
+                            schoolId
+                          );
+
+
+                        if (!school) {
+                          return null;
+                        }
+
+
+                        const schoolName =
+                          getSchoolName(
+                            school
+                          );
+
+
+                        return (
+
+                          <div
+                            key={
+                              schoolId
+                            }
+                            className="selected-school-row"
+                          >
+
+
+                            {/* ===============================
+                                PREFERENCE NUMBER
+                                =============================== */}
+
+                            <span className="preference-number">
+
+                              {index + 1}
+
+                            </span>
+
+
+                            {/* ===============================
+                                SCHOOL NAME
+                                =============================== */}
+
+                            <span className="selected-school-name">
+
+                              {schoolName}
+
+                            </span>
+
+
+                            {/* ===============================
+                                UP
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="preference-button"
+                              onClick={() =>
+                                handleMoveUp(
+                                  index
+                                )
+                              }
+                              disabled={
+                                index ===
+                                  0 ||
+                                loading
+                              }
+                              title="Move Up"
+                            >
+                              ↑
+                            </button>
+
+
+                            {/* ===============================
+                                DOWN
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="preference-button"
+                              onClick={() =>
+                                handleMoveDown(
+                                  index
+                                )
+                              }
+                              disabled={
+                                index ===
+                                    choices.length -
+                                      1 ||
+                                loading
+                              }
+                              title="Move Down"
+                            >
+                              ↓
+                            </button>
+
+
+                            {/* ===============================
+                                REMOVE
+                                =============================== */}
+
+                            <button
+                              type="button"
+                              className="remove-school-button"
+                              onClick={() =>
+                                handleRemoveSchool(
+                                  schoolId
+                                )
+                              }
+                              disabled={
+                                loading
+                              }
+                              title="Remove School"
+                            >
+                              ×
+                            </button>
+
+
+                          </div>
+
+                        );
+                      }
+                    )
+
+                  ) : (
+
+                    <div className="no-selected-message">
+
+                      No school selected.
+
+                      <br />
+
+                      Click + to add schools.
+
+                    </div>
+
+                  )}
+
+
+                </div>
+
+              </div>
+
 
             </div>
 
-            {/* ==========================================
-                MORE CHOICES
-                ========================================== */}
 
-            {visibleCount <
-              choices.length && (
-              <div className="more-choices">
-                Scroll down for next 20
-                choices...
-              </div>
-            )}
+            {/* =================================================
+                SELECTION INFORMATION
+                ================================================= */}
 
-            {/* ==========================================
-                ALL CHOICES LOADED
-                ========================================== */}
+            <div className="preference-info">
 
-            {visibleCount >=
-              choices.length &&
-              choices.length > 0 && (
-              <div className="all-choices">
-                All {choices.length} choices
-                loaded
-              </div>
-            )}
+              Selected Schools:{" "}
 
-            {/* ==========================================
+              <strong>
+                {choices.length}
+              </strong>
+
+              {" / "}
+
+              Minimum Required:{" "}
+
+              <strong>
+                {MIN_SCHOOL_CHOICES}
+              </strong>
+
+
+              <br />
+
+
+              {choices.length <
+              MIN_SCHOOL_CHOICES ? (
+
+                <>
+                  Please select{" "}
+                  <strong>
+                    {
+                      MIN_SCHOOL_CHOICES -
+                      choices.length
+                    }
+                  </strong>{" "}
+                  more school
+                  {MIN_SCHOOL_CHOICES -
+                    choices.length !==
+                  1
+                    ? "s"
+                    : ""}
+                  .
+                </>
+
+              ) : (
+
+                <>
+                  Minimum school selection
+                  completed.
+
+                  <br />
+
+                  The order above is your
+                  preference order.
+                </>
+
+              )}
+
+            </div>
+
+
+            {/* =================================================
                 BUTTONS
-                ========================================== */}
+                ================================================= */}
 
             <div className="button-grid">
 
+
               <div>
+
                 <button
                   type="button"
                   onClick={() =>
                     navigate(-1)
                   }
-                  disabled={loading}
+                  disabled={
+                    loading
+                  }
                 >
                   Back
                 </button>
+
               </div>
+
 
               <div>
+
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={
+                    loading ||
+                    choices.length <
+                      MIN_SCHOOL_CHOICES
+                  }
                 >
                   {loading
-                    ? "Saving..."
+                    ? "Loading..."
                     : "Save & Next"}
                 </button>
+
               </div>
 
+
             </div>
+
 
           </form>
 
