@@ -1,9 +1,8 @@
+
 /* =========================================================
    SCHOOL FORM GRID
    ========================================================= */
-.personal-data{
-  margin: 45px auto;
-}
+
 .school-form-grid {
   display: flex;
   flex-direction: column;
@@ -13,284 +12,476 @@
 
 
 /* =========================================================
-   EACH CHOICE ROW
+   SCHOOL HEADER
    ========================================================= */
 
-.school-choice-row {
-  width: 100%;
+.school-form-header {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 15px;
+
+  margin-bottom: 25px;
 }
 
 
 /* =========================================================
-   CHOICE + DROPDOWN SAME ROW
+   SCHOOL SELECTION CONTAINER
    ========================================================= */
 
-.school-dropdown-wrapper {
-  position: relative;
+.school-selection-container {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 20px;
 
   width: 100%;
 
-  display: flex;
-  align-items: center;
+  margin-top: 20px;
+}
 
-  gap: 10px;
+
+/* =========================================================
+   AVAILABLE / SELECTED BOX
+   ========================================================= */
+
+.available-schools-box,
+.selected-schools-box {
+  width: 100%;
+
+  border: 1px solid #ccc;
+
+  border-radius: 6px;
+
+  background: #fff;
+
+  overflow: hidden;
 
   box-sizing: border-box;
 }
 
 
 /* =========================================================
-   CHOICE LABEL
+   BOX HEADER
    ========================================================= */
 
-.school-choice-label {
-  flex: 0 0 100px;
+.school-box-header {
+  display: flex;
 
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 12px 15px;
+
+  background: #f5f5f5;
+
+  border-bottom: 1px solid #ddd;
+}
+
+.school-box-header h3 {
   margin: 0;
 
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
 
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   DROPDOWN CONTAINER
-   ========================================================= */
-
-.school-dropdown-container {
-  position: relative;
-
-  flex: 1;
-
-  min-width: 0;
-}
-
-
-/* =========================================================
-   DROPDOWN BUTTON
-   ========================================================= */
-
-.school-dropdown-button {
-  width: 90%;
-
-  min-height: 42px;
-
-  padding: 10px 12px;
-
-  border: 1px solid #ccc;
-  border-radius: 5px;
-
-  background: #fff;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  font-size: 14px;
-
-  box-sizing: border-box;
-}
-
-
-.school-dropdown-button:hover {
-  border-color: #888;
-}
-
-
-.school-dropdown-button.active {
-  border-color: #555;
-}
-
-
-.school-dropdown-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-
-/* =========================================================
-   ARROW
-   ========================================================= */
-
-.dropdown-arrow {
-  margin-left: 10px;
-
-  font-size: 11px;
-
-  flex-shrink: 0;
-}
-
-
-/* =========================================================
-   DROPDOWN MENU
-   ========================================================= */
-
-.school-dropdown-menu {
-  position: absolute;
-
-  top: calc(100% + 4px);
-  left: 0;
-
-  width: 100%;
-
-  background: #fff;
-
-  border: 1px solid #ccc;
-  border-radius: 5px;
-
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.15);
-
-  z-index: 999;
-
-  box-sizing: border-box;
-}
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-.school-search-box {
-  padding: 8px;
-
-  border-bottom: 1px solid #eee;
-
-  background: #fff;
-}
-
-
-.school-search-box input {
-  width: 100%;
-
-  box-sizing: border-box;
-
-  padding: 9px 10px;
-
-  border: 1px solid #ccc;
-  border-radius: 4px;
-
-  outline: none;
-
-  font-size: 14px;
-}
-
-
-.school-search-box input:focus {
-  border-color: #666;
-}
-
-
-/* =========================================================
-   SCHOOL LIST
-   ========================================================= */
-
-.school-dropdown-list {
-  max-height: 200px;
-
-  overflow-y: auto;
-
-  overscroll-behavior: contain;
-}
-
-
-/* =========================================================
-   SCHOOL OPTION
-   ========================================================= */
-
-.school-option {
-  min-height: 40px;
-
-  padding: 10px 12px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  cursor: pointer;
-
-  font-size: 14px;
-
-  border-bottom: 1px solid #f1f1f1;
-
-  box-sizing: border-box;
-}
-
-
-.school-option:hover {
-  background: #f5f5f5;
-}
-
-
-.school-option.selected {
   font-weight: 600;
 }
 
-
-.selected-tick {
-  font-weight: bold;
-}
-
-
-/* =========================================================
-   NO SCHOOL
-   ========================================================= */
-
-.no-school {
-  padding: 15px;
+.school-box-header span {
+  min-width: 25px;
 
   text-align: center;
 
-  color: #777;
-}
-
-
-/* =========================================================
-   LOAD MORE SCHOOLS
-   ========================================================= */
-
-.load-more-schools {
-  padding: 10px;
-
-  text-align: center;
-
-  font-size: 12px;
-
-  color: #777;
-
-  background: #fafafa;
-}
-
-
-/* =========================================================
-   MORE CHOICES
-   ========================================================= */
-
-.more-choices {
-  text-align: center;
-
-  padding: 20px;
-
-  font-weight: 500;
+  font-size: 13px;
 
   color: #666;
 }
 
 
-.all-choices {
+/* =========================================================
+   AVAILABLE SCHOOL LIST
+   ========================================================= */
+
+.available-school-list {
+  max-height: 450px;
+
+  overflow-y: auto;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   AVAILABLE SCHOOL ROW
+   ========================================================= */
+
+.available-school-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  min-height: 50px;
+
+  padding: 8px 12px;
+
+  border-bottom: 1px solid #eee;
+
+  box-sizing: border-box;
+}
+
+.available-school-row:last-child {
+  border-bottom: none;
+}
+
+.available-school-row:hover {
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   AVAILABLE SCHOOL NAME
+   ========================================================= */
+
+.available-school-name {
+  flex: 1;
+
+  min-width: 0;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   ADD BUTTON
+   ========================================================= */
+
+.add-school-button {
+  flex: 0 0 36px;
+
+  width: 36px;
+
+  height: 36px;
+
+  padding: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+  background: #fff;
+
+  font-size: 22px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.add-school-button:hover:not(:disabled) {
+  background: #f1f1f1;
+
+  border-color: #999;
+}
+
+.add-school-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   SELECTED SCHOOL LIST
+   ========================================================= */
+
+.selected-school-list {
+  max-height: 450px;
+
+  overflow-y: auto;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   SELECTED SCHOOL ROW
+   ========================================================= */
+
+.selected-school-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 55px;
+
+  padding: 8px 10px;
+
+  border-bottom: 1px solid #eee;
+
+  box-sizing: border-box;
+}
+
+.selected-school-row:last-child {
+  border-bottom: none;
+}
+
+.selected-school-row:hover {
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   PREFERENCE NUMBER
+   ========================================================= */
+
+.preference-number {
+  flex: 0 0 32px;
+
+  width: 32px;
+
+  height: 32px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 50%;
+
+  background: #f5f5f5;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   SELECTED SCHOOL NAME
+   ========================================================= */
+
+.selected-school-name {
+  flex: 1;
+
+  min-width: 0;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   UP / DOWN BUTTON
+   ========================================================= */
+
+.preference-button {
+  flex: 0 0 32px;
+
+  width: 32px;
+
+  height: 32px;
+
+  padding: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+  background: #fff;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.preference-button:hover:not(:disabled) {
+  background: #f1f1f1;
+
+  border-color: #999;
+}
+
+.preference-button:disabled {
+  opacity: 0.35;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   REMOVE BUTTON
+   ========================================================= */
+
+.remove-school-button {
+  flex: 0 0 32px;
+
+  width: 32px;
+
+  height: 32px;
+
+  padding: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+  background: #fff;
+
+  font-size: 21px;
+
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.remove-school-button:hover:not(:disabled) {
+  background: #f1f1f1;
+
+  border-color: #999;
+}
+
+.remove-school-button:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   EMPTY MESSAGES
+   ========================================================= */
+
+.no-school-message,
+.no-selected-message {
+  padding: 30px 15px;
+
   text-align: center;
 
-  padding: 20px;
+  color: #777;
 
-  font-weight: 500;
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   MINIMUM SCHOOL WARNING
+   ========================================================= */
+
+.school-warning {
+  width: 100%;
+
+  margin: 15px 0;
+
+  padding: 12px 15px;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+  background: #f8f8f8;
+
+  text-align: center;
+
+  font-size: 13px;
+
+  line-height: 1.6;
 
   color: #555;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PREFERENCE INFORMATION
+   ========================================================= */
+
+.preference-info {
+  margin-top: 15px;
+
+  padding: 10px 15px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 5px;
+
+  background: #f8f8f8;
+
+  text-align: center;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+
+  color: #555;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.available-school-list::-webkit-scrollbar,
+.selected-school-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.available-school-list::-webkit-scrollbar-track,
+.selected-school-list::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.available-school-list::-webkit-scrollbar-thumb,
+.selected-school-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+
+  border-radius: 10px;
+}
+
+.available-school-list::-webkit-scrollbar-thumb:hover,
+.selected-school-list::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 
@@ -298,21 +489,144 @@
    MOBILE
    ========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
-  .school-dropdown-wrapper {
-    gap: 10px;
+  /* ---------------------------------------------
+     HEADER
+     --------------------------------------------- */
+
+  .school-form-header {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
   }
 
-  .school-choice-label {
-    flex: 0 0 75px;
 
+  /* ---------------------------------------------
+     AVAILABLE + SELECTED
+     --------------------------------------------- */
+
+  .school-selection-container {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+
+  /* ---------------------------------------------
+     LIST HEIGHT
+     --------------------------------------------- */
+
+  .available-school-list,
+  .selected-school-list {
+    max-height: 400px;
+  }
+
+
+  /* ---------------------------------------------
+     HEADER
+     --------------------------------------------- */
+
+  .school-box-header {
+    padding: 11px 12px;
+  }
+
+  .school-box-header h3 {
+    font-size: 15px;
+  }
+
+
+  /* ---------------------------------------------
+     SCHOOL TEXT
+     --------------------------------------------- */
+
+  .available-school-name,
+  .selected-school-name {
     font-size: 13px;
   }
 
-  .school-dropdown-button {
-    font-size: 13px;
+}
 
-    min-height: 40px;
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .school-selection-container {
+    gap: 12px;
   }
+
+
+  /* ---------------------------------------------
+     AVAILABLE SCHOOL
+     --------------------------------------------- */
+
+  .available-school-row {
+    padding: 8px 9px;
+  }
+
+
+  /* ---------------------------------------------
+     SELECTED SCHOOL
+     --------------------------------------------- */
+
+  .selected-school-row {
+    gap: 5px;
+
+    padding: 8px;
+  }
+
+
+  .available-school-name,
+  .selected-school-name {
+    font-size: 12px;
+  }
+
+
+  /* ---------------------------------------------
+     PREFERENCE NUMBER
+     --------------------------------------------- */
+
+  .preference-number {
+    flex: 0 0 29px;
+
+    width: 29px;
+
+    height: 29px;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------------------------------------------
+     BUTTONS
+     --------------------------------------------- */
+
+  .add-school-button,
+  .preference-button,
+  .remove-school-button {
+    flex: 0 0 30px;
+
+    width: 30px;
+
+    height: 30px;
+  }
+
+
+  .add-school-button {
+    font-size: 19px;
+  }
+
+
+  .preference-button {
+    font-size: 15px;
+  }
+
+
+  .remove-school-button {
+    font-size: 19px;
+  }
+
 }
